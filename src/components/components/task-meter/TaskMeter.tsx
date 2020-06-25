@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ProgressBar } from '../progress-bar/ProgressBar';
+import { ProgressBar } from '../../atoms/progress-bar/ProgressBar';
 
 import './TaskMeter.scss';
 

@@ -25,12 +25,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { IconBox } from '../../components/atoms/icon-box/IconBox';
 import { ProgressBar } from '../../components/atoms/progress-bar/ProgressBar';
-import { TaskMeter } from '../../components/atoms/task-meter/TaskMeter';
+import { TaskMeter } from '../../components/components/task-meter/TaskMeter';
 import { Button } from '../../components/atoms/button/Button';
 import { TextField } from '../../components/atoms/text-field/TextField';
 import { Select } from '../../components/atoms/select/Select';
 import { EventCard } from '../../components/atoms/event-card/EventCard';
-import { Calendar } from '../../components/atoms/calendar/Calendar';
+import { Calendar } from '../../components/components/calendar/Calendar';
 
 export type StyleDemoPropsType = {};
 
