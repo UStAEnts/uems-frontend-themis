@@ -22,6 +22,7 @@ import {
     faTablet,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconBox } from '../../components/atoms/icon-box/IconBox';
+import { ProgressBar } from '../../components/atoms/progress-bar/ProgressBar';
 
 export type StyleDemoPropsType = {};
 
@@ -60,6 +61,16 @@ export class StyleDemo extends React.Component<StyleDemoPropsType, StyleDemoStat
                     <IconBox icon={faRadiationAlt} color="#1B1464" />
                     <IconBox icon={faSadCry} color="#5758BB" />
                     <IconBox icon={faTablet} color="#6F1E51" />
+                </div>
+                <h2>Progress Bars</h2>
+                <hr />
+                <h3>Solo Bar</h3>
+                <div>
+                    <ProgressBar />
+                    <ProgressBar value={25} />
+                    <ProgressBar value={50} />
+                    <ProgressBar value={75} />
+                    <ProgressBar value={100} />
                 </div>
             </div>
         );
