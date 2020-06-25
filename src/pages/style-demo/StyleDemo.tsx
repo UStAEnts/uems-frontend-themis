@@ -23,6 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { IconBox } from '../../components/atoms/icon-box/IconBox';
 import { ProgressBar } from '../../components/atoms/progress-bar/ProgressBar';
+import { TaskMeter } from '../../components/atoms/task-meter/TaskMeter';
 
 export type StyleDemoPropsType = {};
 
@@ -71,6 +72,50 @@ export class StyleDemo extends React.Component<StyleDemoPropsType, StyleDemoStat
                     <ProgressBar value={50} />
                     <ProgressBar value={75} />
                     <ProgressBar value={100} />
+                </div>
+                <h3>Task Meters</h3>
+                <div>
+                    <div className="row">
+                        <div className="col-xs-6">
+                            <TaskMeter taskName="Rethink the framework" />
+                            <TaskMeter
+                                taskName="Bring out the richness of materials"
+                                value={25}
+                                displayType="fraction"
+                                float
+                            />
+                            <TaskMeter
+                                taskName={"Update the numbers using the latest quarterly financial's"}
+                                value={50}
+                            />
+                            <TaskMeter
+                                taskName="Make sure the numbers are appropriately caveated"
+                                value={75}
+                                displayType="fraction"
+                                float
+                            />
+                            <TaskMeter taskName="Schedule a review call with all the partners" value={100} />
+                        </div>
+                        <div className="col-xs-6">
+                            <TaskMeter taskName="Rethink the framework" float />
+                            <TaskMeter
+                                taskName="Bring out the richness of materials"
+                                value={25}
+                                displayType="fraction"
+                            />
+                            <TaskMeter
+                                taskName={"Update the numbers using the latest quarterly financial's"}
+                                value={50}
+                                float
+                            />
+                            <TaskMeter
+                                taskName="Make sure the numbers are appropriately caveated"
+                                value={75}
+                                displayType="fraction"
+                            />
+                            <TaskMeter taskName="Schedule a review call with all the partners" value={100} float />
+                        </div>
+                    </div>
                 </div>
             </div>
         );
