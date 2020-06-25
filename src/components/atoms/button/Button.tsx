@@ -7,18 +7,32 @@ import { ColorUtilities } from '../../../utilities/ColorUtilities';
 import './Button.scss';
 
 export type ButtonPropsType = {
+    /**
+     * The optional icon to be displayed to the left of the text on this button
+     */
     icon?: IconDefinition,
+    /**
+     * The optional color code to be used for this button. Default prop provided
+     */
     color: string,
+    /**
+     * The text to display for this button
+     */
     text: string,
+    /**
+     * If the arrow on the right hand side of the text should be displayed in this button
+     */
     includeArrow: boolean,
+    /**
+     * If this button should span the full width of its container
+     */
     fullWidth: boolean,
 };
 
-export type ButtonStateType = {};
-
 export function Button(props: ButtonPropsType) {
     const arrow = props.includeArrow ? <FontAwesomeIcon className="arrow" icon={faArrowRight} /> : null;
-    const icon = props.icon === undefined ? <i style={{ height: '1em' }} />
+    const icon = props.icon === undefined
+        ? <i style={{ height: '1em' }} />
         : <FontAwesomeIcon className="icon" icon={props.icon} fixedWidth />;
 
     const buttonStyle = {
