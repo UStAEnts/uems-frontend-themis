@@ -30,6 +30,7 @@ import { Button } from '../../components/atoms/button/Button';
 import { TextField } from '../../components/atoms/text-field/TextField';
 import { Select } from '../../components/atoms/select/Select';
 import { EventCard } from '../../components/atoms/event-card/EventCard';
+import { Calendar } from '../../components/atoms/calendar/Calendar';
 
 export type StyleDemoPropsType = {};
 
@@ -341,6 +342,10 @@ export class StyleDemo extends React.Component<StyleDemoPropsType, StyleDemoStat
                             />
                         </div>
                     </div>
+                </div>
+                <h2>Calendar</h2>
+                <div>
+                    <Calendar events={this.events} />
                 </div>
             </div>
         );
