@@ -1,0 +1,35 @@
+.button{
+  display: inline-flex;
+  padding: 12px 20px;
+  margin: 0 10px;
+  border-radius: 100px;
+  align-items: center;
+  box-shadow: 2px 2px 8px -4px #d9d9d9;
+  cursor: pointer;
+  border: none;
+  background-color: #2196f3;
+  justify-content: center;
+
+  filter: brightness(100%);
+  background-position: center;
+  transition: filter 1s;
+
+  &:focus{
+    outline: none;
+    border: none;
+  }
+
+  &:active {
+    filter: brightness(120%);
+    background-size: 100%;
+    transition: filter 0s;
+  }
+
+  .arrow{
+    margin-left: 10px;
+  }
+
+  .icon{
+    margin-right: 10px;
+  }
+}

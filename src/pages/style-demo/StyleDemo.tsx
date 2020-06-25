@@ -1,5 +1,7 @@
 import * as React from 'react';
 import {
+    faAddressCard,
+    faAdjust,
     faAppleAlt,
     faBookDead,
     faCoffee,
@@ -24,6 +26,7 @@ import {
 import { IconBox } from '../../components/atoms/icon-box/IconBox';
 import { ProgressBar } from '../../components/atoms/progress-bar/ProgressBar';
 import { TaskMeter } from '../../components/atoms/task-meter/TaskMeter';
+import { Button } from '../../components/atoms/button/Button';
 
 export type StyleDemoPropsType = {};
 
@@ -116,6 +119,20 @@ export class StyleDemo extends React.Component<StyleDemoPropsType, StyleDemoStat
                             <TaskMeter taskName="Schedule a review call with all the partners" value={100} float />
                         </div>
                     </div>
+                </div>
+                <h2>Buttons</h2>
+                <hr />
+                <div>
+                    <Button text="Submit" icon={faAddressCard} color="#1289A7" />
+                    <Button text="Submit" color="#0652DD" />
+                    <Button text="Submit" icon={faAdjust} includeArrow color="#1B1464" />
+                    <Button text="Submit" color="#ED4C67" />
+                    <br />
+                    <span style={{ padding: '1px 0', display: 'inline-block' }} />
+                    <br />
+                    <Button text="Submit" icon={faAddressCard} color="#B53471" />
+                    <Button text="Submit" icon={faAdjust} includeArrow color="#833471" />
+                    <Button text="Submit" includeArrow color="#6F1E51" />
                 </div>
             </div>
         );
