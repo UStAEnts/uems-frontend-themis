@@ -28,6 +28,7 @@ import { ProgressBar } from '../../components/atoms/progress-bar/ProgressBar';
 import { TaskMeter } from '../../components/atoms/task-meter/TaskMeter';
 import { Button } from '../../components/atoms/button/Button';
 import { TextField } from '../../components/atoms/text-field/TextField';
+import { Select } from '../../components/atoms/select/Select';
 
 export type StyleDemoPropsType = {};
 
@@ -146,6 +147,7 @@ export class StyleDemo extends React.Component<StyleDemoPropsType, StyleDemoStat
                             <Button text="Join" icon={faSignInAlt} fullWidth color="#D980FA" />
                         </div>
                         <div className="col-xs-6">
+                            <Select placeholder="Placeholder" name="select" options={['a', 'b', 'c']} />
                             <TextField name="Salary" type="textarea" />
                             <TextField name="Salary" type="textarea" required />
                         </div>
