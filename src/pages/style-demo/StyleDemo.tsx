@@ -20,13 +20,14 @@ import {
     faPaintRoller,
     faQrcode,
     faRadiationAlt,
-    faSadCry,
+    faSadCry, faSignInAlt,
     faTablet,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconBox } from '../../components/atoms/icon-box/IconBox';
 import { ProgressBar } from '../../components/atoms/progress-bar/ProgressBar';
 import { TaskMeter } from '../../components/atoms/task-meter/TaskMeter';
 import { Button } from '../../components/atoms/button/Button';
+import { TextField } from '../../components/atoms/text-field/TextField';
 
 export type StyleDemoPropsType = {};
 
@@ -133,6 +134,22 @@ export class StyleDemo extends React.Component<StyleDemoPropsType, StyleDemoStat
                     <Button text="Submit" icon={faAddressCard} color="#B53471" />
                     <Button text="Submit" icon={faAdjust} includeArrow color="#833471" />
                     <Button text="Submit" includeArrow color="#6F1E51" />
+                </div>
+                <h2>Forms</h2>
+                <div>
+                    <div className="row">
+                        <div className="col-xs-6">
+                            <TextField name="Username" />
+                            <TextField name="Password" type="password" required />
+                            <TextField name="Email Address" type="text" />
+                            <TextField name="Salary" type="number" />
+                            <Button text="Join" icon={faSignInAlt} fullWidth color="#D980FA" />
+                        </div>
+                        <div className="col-xs-6">
+                            <TextField name="Salary" type="textarea" />
+                            <TextField name="Salary" type="textarea" required />
+                        </div>
+                    </div>
                 </div>
             </div>
         );

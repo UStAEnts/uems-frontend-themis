@@ -1,0 +1,13 @@
+.text-field.text-area {
+  margin-top: 40px;
+
+  textarea {
+    resize: vertical;
+    min-height: 40px;
+    font-family: sans-serif;
+  }
+
+  label.contains {
+    top: -15px;
+  }
+}
