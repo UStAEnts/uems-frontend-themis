@@ -29,12 +29,108 @@ import { TaskMeter } from '../../components/atoms/task-meter/TaskMeter';
 import { Button } from '../../components/atoms/button/Button';
 import { TextField } from '../../components/atoms/text-field/TextField';
 import { Select } from '../../components/atoms/select/Select';
+import { EventCard } from '../../components/atoms/event-card/EventCard';
 
 export type StyleDemoPropsType = {};
 
 export type StyleDemoStateType = {};
 
 export class StyleDemo extends React.Component<StyleDemoPropsType, StyleDemoStateType> {
+
+    private events = [
+        {
+            name: 'Jesus, Gandhi and Dan',
+            venue: "Sandy's",
+            bookingStart: new Date(2020, 5, 24, 3, 0),
+            bookingEnd: new Date(2020, 5, 24, 15, 0),
+            attendance: 230,
+            entsStatus: { name: 'singup' },
+        },
+        {
+            name: 'Gems for Jesus',
+            venue: "Sandy's",
+            bookingStart: new Date(2020, 5, 28, 16, 30),
+            bookingEnd: new Date(2020, 5, 29, 2, 30),
+            attendance: 262,
+            entsStatus: { name: 'waiting' },
+        },
+        {
+            name: 'Extinction Distinction',
+            venue: 'StAge',
+            bookingStart: new Date(2020, 5, 24, 14, 0),
+            bookingEnd: new Date(2020, 5, 24, 22, 0),
+            attendance: 3,
+            entsStatus: { name: 'undefined' },
+            state: {
+                state: 'ready',
+                color: '#B53471',
+            },
+        },
+        {
+            name: 'Jimmy Buffet’s Granola Fantasy Canteen',
+            venue: 'undefined',
+            bookingStart: new Date(2020, 5, 29, 11, 0),
+            bookingEnd: new Date(2020, 5, 29, 15, 0),
+            attendance: 395,
+            entsStatus: { name: 'undefined' },
+        },
+        {
+            name: 'Fork in the Roadkill',
+            venue: "Sandy's",
+            bookingStart: new Date(2020, 5, 28, 14, 0),
+            bookingEnd: new Date(2020, 5, 28, 19, 0),
+            attendance: 278,
+            entsStatus: { name: 'ready' },
+            state: {
+                state: 'waiting',
+                color: '#F79F1F',
+            },
+        },
+        {
+            name: 'Dawn of the Dead Festival',
+            venue: '601+Stage',
+            bookingStart: new Date(2020, 5, 28, 10, 0),
+            bookingEnd: new Date(2020, 5, 28, 18, 0),
+            attendance: 410,
+            entsStatus: { name: 'unknown' },
+        },
+        {
+            name: 'Lambastica',
+            venue: "Sandy's",
+            bookingStart: new Date(2020, 5, 25, 21, 0),
+            bookingEnd: new Date(2020, 5, 26, 0, 0),
+            attendance: 568,
+            entsStatus: { name: 'unknown' },
+        },
+        {
+            name: 'Cubicide',
+            venue: 'undefined',
+            bookingStart: new Date(2020, 5, 24, 4, 30),
+            bookingEnd: new Date(2020, 5, 24, 7, 30),
+            attendance: 329,
+            entsStatus: { name: 'ready' },
+        },
+        {
+            name: 'GeekSeek',
+            venue: 'StAge',
+            bookingStart: new Date(2020, 5, 27, 5, 30),
+            bookingEnd: new Date(2020, 5, 27, 7, 30),
+            attendance: 280,
+            entsStatus: { name: 'waiting' },
+            state: {
+                state: 'cancelled',
+                color: '#EA2027',
+            },
+        },
+        {
+            name: 'Bébé Boom',
+            venue: '601+Stage',
+            bookingStart: new Date(2020, 5, 25, 20, 0),
+            bookingEnd: new Date(2020, 5, 25, 23, 0),
+            attendance: 263,
+            entsStatus: { name: 'unknown' },
+        },
+    ];
 
     render() {
 
@@ -150,6 +246,99 @@ export class StyleDemo extends React.Component<StyleDemoPropsType, StyleDemoStat
                             <Select placeholder="Placeholder" name="select" options={['a', 'b', 'c']} />
                             <TextField name="Salary" type="textarea" />
                             <TextField name="Salary" type="textarea" required />
+                        </div>
+                    </div>
+                </div>
+                <h2>Event Cards</h2>
+                <div>
+                    <div className="row">
+                        <div className="col-xs-4">
+                            <EventCard event={{
+                                name: 'Some random event',
+                                venue: '601',
+                                bookingStart: new Date(2020, 5, 22, 22, 0),
+                                bookingEnd: new Date(2020, 5, 23, 2, 0),
+                                attendance: 500,
+                                entsStatus: {
+                                    name: 'signup',
+                                },
+                            }}
+                            />
+                        </div>
+                        <div className="col-xs-4">
+                            <EventCard event={{
+                                name: 'Some random event',
+                                venue: '601',
+                                bookingStart: new Date(2020, 5, 22, 9, 0),
+                                bookingEnd: new Date(2020, 5, 23, 2, 0),
+                                attendance: 500,
+                                entsStatus: { name: 'signup' },
+                            }}
+                            />
+                        </div>
+                        <div className="col-xs-4">
+                            <EventCard event={{
+                                name: 'Some random event',
+                                venue: '601',
+                                bookingStart: new Date(2020, 5, 22, 9, 0),
+                                bookingEnd: new Date(2020, 5, 23, 2, 0),
+                                attendance: 500,
+                            }}
+                            />
+                        </div>
+                    </div>
+                    <div className="row" style={{ marginTop: '20px' }}>
+                        <div className="col-xs-3">
+                            <EventCard
+                                event={{
+                                    name: 'Some random event',
+                                    venue: '601',
+                                    bookingStart: new Date(2020, 5, 22, 22, 0),
+                                    bookingEnd: new Date(2020, 5, 23, 2, 0),
+                                    attendance: 500,
+                                    entsStatus: { name: 'signup' },
+                                }}
+                                collapsed
+                            />
+                        </div>
+                        <div className="col-xs-3">
+                            <EventCard
+                                event={{
+                                    name: 'Some random event',
+                                    venue: '601',
+                                    bookingStart: new Date(2020, 5, 22, 9, 0),
+                                    bookingEnd: new Date(2020, 5, 23, 2, 0),
+                                    attendance: 500,
+                                    entsStatus: { name: 'signup' },
+                                }}
+                                collapsed
+                            />
+                        </div>
+                        <div className="col-xs-3">
+                            <EventCard
+                                event={{
+                                    name: 'Some random event',
+                                    venue: '601',
+                                    bookingStart: new Date(2020, 5, 22, 9, 0),
+                                    bookingEnd: new Date(2020, 5, 23, 2, 0),
+                                    attendance: 500,
+                                    entsStatus: { name: 'ready' },
+                                }}
+                                collapsed
+                            />
+                        </div>
+                        <div className="col-xs-3">
+                            <EventCard
+                                event={{
+                                    name: 'Some random event',
+                                    venue: '601',
+                                    bookingStart: new Date(2020, 5, 22, 9, 0),
+                                    bookingEnd: new Date(2020, 5, 23, 2, 0),
+                                    attendance: 500,
+                                    entsStatus: { name: 'ready' },
+                                }}
+                                collapsed
+                            />
                         </div>
                     </div>
                 </div>
