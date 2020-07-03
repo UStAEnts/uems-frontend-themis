@@ -11,6 +11,14 @@
     width: 100%;
     box-sizing: border-box;
 
+    &:invalid{
+      border-color: #cf1515;
+
+      & ~ .bar:before, & ~ .bar:after{
+        background: #cf1515;
+      }
+    }
+
     &:focus {
       outline: none;
     }
