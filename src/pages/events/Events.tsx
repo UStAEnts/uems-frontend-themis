@@ -22,7 +22,7 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
     }
 
     componentDidMount() {
-        // this.loadComments();
+        this.loadComments();
     }
 
     private loadComments() {
