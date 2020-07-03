@@ -20,3 +20,22 @@ export type Event = {
     state?: EventState,
     entsStatus?: EntsStatus,
 }
+
+export type User = {
+    username: string,
+    name: string,
+    profile?: string,
+}
+
+export type ContentClass = {
+    name: string,
+    description?: string,
+    color?: string,
+}
+
+export type Comment = {
+    poster: User,
+    posted: Date,
+    content: string,
+    type: ContentClass,
+}
