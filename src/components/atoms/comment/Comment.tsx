@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import Markdown from 'markdown-to-jsx';
 import ReactTimeAgo from 'react-time-ago';
 import ReactTooltip from 'react-tooltip';
-import { Comment as CommentType } from '../../../types/Event';
 import { v4 } from 'uuid';
+import { Comment as CommentType } from '../../../types/Event';
 
 import './Comment.scss';
 

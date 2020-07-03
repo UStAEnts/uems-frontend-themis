@@ -47,10 +47,14 @@ export class CommentList extends React.Component<CommentListPropsType, CommentLi
                     poster={this.props.poster}
                     submitCommentHandler={this.handleSubmit}
                 />
-                {this.props.comments.concat(this.state.comments).sort((a, b) => b.posted.getTime() - a.posted.getTime()).map((e) => (<Comment comment={e} />))}
+                {this.props.comments
+                    .concat(this.state.comments)
+                    .sort((a, b) => b.posted.getTime() - a.posted.getTime())
+                    .map((e) => (
+                        <Comment comment={e} />
+                    ))}
             </div>
         );
     }
-
 
 }

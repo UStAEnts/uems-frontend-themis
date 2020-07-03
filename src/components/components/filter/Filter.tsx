@@ -20,7 +20,9 @@ export type FilterPropsType = {
     filters: {
         [key: string]: FilterConfiguration,
     },
-    onFilterChange?: (filters: { [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus }) => void,
+    onFilterChange?: (filters: {
+        [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus
+    }) => void,
 }
 
 export type DateFilterStatus = {

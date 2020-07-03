@@ -3,10 +3,10 @@ import { MutableRefObject } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from 'react-transition-group';
+import { v4 } from 'uuid';
 
 import './Select.scss';
 import InputUtilities from '../../../utilities/InputUtilities';
-import { v4 } from "uuid";
 
 type KeyValueOption = { key: string, value: string };
 
@@ -225,7 +225,8 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                         id={this.props.name}
                         name={this.props.name}
                         className="md-sl-inp"
-                        value={selectedKey}                    />
+                        value={selectedKey}
+                    />
                 </label>
                 {text}
                 <FontAwesomeIcon icon={faCaretDown} />

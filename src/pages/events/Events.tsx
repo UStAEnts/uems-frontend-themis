@@ -1,10 +1,10 @@
-import { default as Axios } from 'axios';
+import axios from 'axios';
 import * as React from 'react';
 import { Event } from '../../types/Event';
 import { Calendar as CalendarElement } from '../../components/components/calendar/Calendar';
 import { TabPane } from '../../components/components/tab-pane/TabPane';
-import { EventTable } from "../../components/components/event-table/EventTable";
-import { events } from "../style-demo/StyleDemo";
+import { EventTable } from '../../components/components/event-table/EventTable';
+import { events } from '../style-demo/StyleDemo';
 
 export type CalendarPropsType = {};
 
@@ -26,7 +26,7 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
     }
 
     private loadComments() {
-        Axios.get('/events', {
+        axios.get('/events', {
             headers: {
                 Authorization: 'Bearer hi',
             },

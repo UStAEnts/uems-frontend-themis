@@ -38,7 +38,9 @@ export class TabPane extends React.Component<TabPanePropsType, TabPaneStateType>
         super(props);
 
         this.state = {
-            activeTabKey: this.props.panes.length === 0 ? '' : (this.props.panes.find((e) => e.initial) || this.props.panes[0]).key,
+            activeTabKey: this.props.panes.length === 0
+                ? ''
+                : (this.props.panes.find((e) => e.initial) || this.props.panes[0]).key,
         };
 
         this.changeTab = this.changeTab.bind(this);

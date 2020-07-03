@@ -88,11 +88,16 @@ export class TextField extends React.Component<TextFieldPropsType, TextFieldStat
 
         const label = this.props.noLabel
             ? undefined
-            : (<label htmlFor={this.props.name} className={this.state.contents === '' ? '' : 'contains'}>
-                {this.props.placeholder || this.props.name}
-                {' '}
-                {sublabel}
-            </label>);
+            : (
+                <label
+                    htmlFor={this.props.name}
+                    className={this.state.contents === '' ? '' : 'contains'}
+                >
+                    {this.props.placeholder || this.props.name}
+                    {' '}
+                    {sublabel}
+                </label>
+            );
 
         return (
             <div className={`text-field${this.props.type === 'textarea' ? ' text-area' : ''}`}>

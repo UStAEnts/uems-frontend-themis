@@ -1,13 +1,6 @@
 import * as React from 'react';
-import {
-    faBolt,
-    faClock,
-    faExclamationCircle,
-    faQuestionCircle,
-    faTag,
-    faTicketAlt,
-    faUsers,
-} from '@fortawesome/free-solid-svg-icons';
+// eslint-disable-next-line max-len
+import { faBolt, faClock, faExclamationCircle, faQuestionCircle, faTag, faTicketAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './EventCard.scss';
