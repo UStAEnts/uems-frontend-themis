@@ -43,8 +43,8 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
      */
     private getTimeDifference() {
         const duration = moment.duration(moment(this.props.event.bookingEnd).diff(this.props.event.bookingStart));
-        const hours = duration.asHours();
-        const minutes = duration.asMinutes() - (hours * 60);
+        const hours = Math.round(Math.floor(duration.asHours()));
+        const minutes = Math.round(duration.asMinutes() - (hours * 60));
 
         if (minutes === 0) return `${hours} hours`;
 
@@ -58,7 +58,6 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
     private getDurationIcon() {
         const hours = Math.abs(this.props.event.bookingEnd.getTime() - this.props.event.bookingStart.getTime()) / 36e5;
         if (hours > 6) {
-
             return <FontAwesomeIcon icon={faExclamationCircle} className="warn" size="xs" />;
 
         }
