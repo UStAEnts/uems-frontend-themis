@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 });
 
 // App must be authenticated
-app.use(standardAuthMiddleware, express.static(path.join(__dirname, '..', 'public')));
+app.use(standardAuthMiddleware, express.static(path.join(__dirname, '..', 'build')));
 app.get('*', standardAuthMiddleware, (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, '..', 'build', 'index.html'));
 });
