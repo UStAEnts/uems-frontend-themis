@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBox, faCalendarTimes, faColumns, faPaperPlane, faWrench } from '@fortawesome/free-solid-svg-icons';
 import App from './pages/App';
 import { StyleDemo } from './pages/style-demo/StyleDemo';
-import { Events } from './pages/calendar/Calendar';
+import { Events } from './pages/events/Events';
 
 import 'react-dates/initialize';
 
