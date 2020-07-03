@@ -27,6 +27,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-time-ago": "^6.0.0",
     "react-tooltip": "^4.2.7",
     "react-transition-group": "^4.4.1",
     "typescript": "^3.7.5"
@@ -56,6 +57,7 @@
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.6",
     "@types/helmet": "0.0.47",
+    "@types/javascript-time-ago": "^2.0.1",
     "@types/passport-http-bearer": "^1.0.35",
     "@types/react-fontawesome": "^1.6.4",
     "@types/react-router": "^5.1.7",
