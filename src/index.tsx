@@ -15,6 +15,7 @@ import { StyleDemo } from './pages/style-demo/StyleDemo';
 import { Events } from './pages/events/Events';
 
 import 'react-dates/initialize';
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 
 JavascriptTimeAgo.addLocale(en);
 

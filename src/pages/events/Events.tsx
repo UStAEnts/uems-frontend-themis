@@ -7,11 +7,16 @@ import { EventTable } from '../../components/components/event-table/EventTable';
 import { events } from '../style-demo/StyleDemo';
 import Config from '../../config/Config';
 import url from 'url';
+import Loader from "react-loader-spinner";
+import { Theme } from "../../theme/Theme";
+
+import "./Events.scss";
 
 export type CalendarPropsType = {};
 
 export type CalendarStateType = {
-    events?: Event[]
+    events?: Event[],
+    error?: string,
 };
 
 export class Events extends React.Component<CalendarPropsType, CalendarStateType> {
@@ -42,16 +47,38 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
                     attendance: -1,
                 })) as unknown as Event[],
             });
+        }).catch((err: Error) => {
+            this.setState((oldState) => ({
+                ...oldState,
+                error: `Failed to load the events due to ${err.message}`,
+            }));
         });
     }
 
     render() {
+        const loadOrError = this.state.error
+            ? (
+                <div>
+                    {this.state.error}
+                </div>
+            )
+            : (
+                <div className="loading-pane">
+                    <Loader
+                        type="BallTriangle"
+                        color={Theme.NOTICE}
+                        height={100}
+                        width={100}
+                    />
+                </div>
+            );
 
         return (
             <div
                 style={{
                     padding: '20px',
                 }}
+                className="events-page"
             >
                 <TabPane
                     unmountHidden
@@ -59,11 +86,9 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
                         {
                             key: 'calendar',
                             content: (
-                                <div>
-                                    {this.state.events
-                                        ? <CalendarElement events={this.state.events} />
-                                        : <p>Loading...</p>}
-                                </div>
+                                this.state.events
+                                    ? <CalendarElement events={this.state.events} />
+                                    : loadOrError
                             ),
                             name: 'Calendar',
                         },
@@ -72,7 +97,7 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
                             content: (
                                 this.state.events
                                     ? <EventTable events={events} />
-                                    : <p>Loading...</p>
+                                    : loadOrError
                             ),
                             key: 'table',
                             initial: true,
