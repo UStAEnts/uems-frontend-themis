@@ -4,7 +4,6 @@ import { Event } from '../../types/Event';
 import { Calendar as CalendarElement } from '../../components/components/calendar/Calendar';
 import { TabPane } from '../../components/components/tab-pane/TabPane';
 import { EventTable } from '../../components/components/event-table/EventTable';
-import { events } from '../style-demo/StyleDemo';
 import Config from '../../config/Config';
 import url from 'url';
 import Loader from "react-loader-spinner";
@@ -96,7 +95,7 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
                             name: 'Table',
                             content: (
                                 this.state.events
-                                    ? <EventTable events={events} />
+                                    ? <EventTable events={this.state.events} />
                                     : loadOrError
                             ),
                             key: 'table',
