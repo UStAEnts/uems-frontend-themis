@@ -174,15 +174,30 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             }
         }
 
+        if ('venues' in this.state.filters) {
+            const filter = this.state.filters.venues as SelectFilterStatus;
+
+            if (filter.selectedOption !== 'any') {
+                if (typeof (filter.selectedOption) === 'string') {
+                    if (event.venue.toLowerCase() !== filter.selectedOption.toLowerCase()) return false;
+                } else {
+                    if (event.venue.toLowerCase() !== filter.selectedOption.value.toLowerCase()) return false;
+                }
+            }
+        }
+
         return true;
     }
 
     render() {
         const states = this.props.events.map((e) => e.state === undefined ? undefined : e.state.state).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
         const ents = this.props.events.map((e) => e.entsStatus === undefined ? undefined : e.entsStatus.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
+        const venues = this.props.events.map((e) => e.venue).filter((value, index, self) => self.indexOf(value) === index) as string[];
 
-        states.push('any');
-        ents.push('any');
+        // states.push('any');
+        // ents.push('any');
+        // venues.push('any');
+        [states, ents, venues].forEach(a => a.push('any'));
 
         return (
             <div className="events-table">
@@ -205,6 +220,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                             name: 'Ents Status',
                             type: 'option',
                             options: ents,
+                        },
+                        'venues': {
+                            name: 'Venue',
+                            type: 'option',
+                            options: venues,
                         }
                     }}
                     onFilterChange={
