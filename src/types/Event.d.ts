@@ -10,6 +10,7 @@ export type EntsStatus = {
 }
 
 export type Event = {
+    _id: string,
     name: string,
     venue: string,
     bookingStart: Date,
