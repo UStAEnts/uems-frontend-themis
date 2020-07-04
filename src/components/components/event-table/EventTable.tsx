@@ -109,7 +109,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
 
     private eventToRow(event: Event) {
         return (
-            <tr>
+            <tr key={event._id}>
                 <td>
                     {event.icon
                         ? <FontAwesomeIcon icon={event.icon} />
@@ -117,12 +117,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 </td>
 
                 <td>{event.name}</td>
-                <td>{event.attendance}</td>
+                <td>{event.venue}</td>
                 <td>
-                    From
-                    {event.bookingStart.toISOString()}
-                    to
-                    {event.bookingEnd.toISOString()}
+                    {moment(event.bookingStart).format(' dddd Do MMMM (YYYY), HH:mm ')}
+                    &#8594;
+                    {moment(event.bookingEnd).format(' dddd Do MMMM (YYYY), HH:mm ')}
                 </td>
                 <td>
                     <ReactTimeAgo date={event.bookingStart} />
@@ -239,13 +238,13 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 <table>
                     <thead>
                     <tr>
-                        <th />
-                        <th>Name</th>
-                        <th>Attendance</th>
-                        <th>Time</th>
-                        <th>Until</th>
-                        <th>Ents</th>
-                        <th>Building</th>
+                        <th className="icon-column" />
+                        <th className="name-column">Name</th>
+                        <th className="venue-column">Venue</th>
+                        <th className="time-column">Time</th>
+                        <th className="status-column">Until</th>
+                        <th className="status-column">Ents</th>
+                        <th className="status-column">Building</th>
                     </tr>
                     </thead>
                     <tbody>
