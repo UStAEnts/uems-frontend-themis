@@ -8,6 +8,8 @@ import { DateFilterStatus, Filter, NumberFilterStatus, SearchFilterStatus, Selec
 
 import './EventTable.scss';
 import moment from "moment";
+import { LinkedTD } from "../../atoms/LinkedTD";
+import { Redirect } from "react-router";
 
 export type EventTablePropsType = {
     events: Event[],
@@ -15,6 +17,7 @@ export type EventTablePropsType = {
 
 export type EventTableStateType = {
     filters: { [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus },
+    forcedRedirect?: string,
 };
 
 export class EventTable extends React.Component<EventTablePropsType, EventTableStateType> {
@@ -32,6 +35,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         this.makeEventState = this.makeEventState.bind(this);
         this.eventToRow = this.eventToRow.bind(this);
         this.filter = this.filter.bind(this);
+        this.redirect = this.redirect.bind(this);
     }
 
     /**
@@ -109,31 +113,42 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
 
     private eventToRow(event: Event) {
         return (
-            <tr key={event._id}>
-                <td>
+            <tr
+                key={event._id}
+                // @ts-ignore
+                onClick={() => this.redirect(`/events/${event._id}`)}
+            >
+                <LinkedTD to={`/events/${event._id}`}>
                     {event.icon
                         ? <FontAwesomeIcon icon={event.icon} />
                         : undefined}
-                </td>
+                </LinkedTD>
 
-                <td>{event.name}</td>
-                <td>{event.venue}</td>
-                <td>
+                <LinkedTD to={`/events/${event._id}`}>{event.name}</LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>{event.venue}</LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>
                     {moment(event.bookingStart).format(' dddd Do MMMM (YYYY), HH:mm ')}
                     &#8594;
                     {moment(event.bookingEnd).format(' dddd Do MMMM (YYYY), HH:mm ')}
-                </td>
-                <td>
+                </LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>
                     <ReactTimeAgo date={event.bookingStart} />
-                </td>
-                <td>
+                </LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>
                     {this.makeEntsStatus(event.entsStatus)}
-                </td>
-                <td>
+                </LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>
                     {this.makeEventState(event.state)}
-                </td>
+                </LinkedTD>
             </tr>
         );
+    }
+
+    private redirect(to: string){
+        this.setState((oldState) => ({
+            ...oldState,
+            forcedRedirect: to,
+        }));
     }
 
     private filter(event: Event) {
@@ -200,6 +215,9 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
 
         return (
             <div className="events-table">
+                {this.state.forcedRedirect
+                    ? <Redirect to={this.state.forcedRedirect} />
+                    : undefined}
                 <Filter
                     filters={{
                         'name': {
