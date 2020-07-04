@@ -5,6 +5,8 @@ import { Calendar as CalendarElement } from '../../components/components/calenda
 import { TabPane } from '../../components/components/tab-pane/TabPane';
 import { EventTable } from '../../components/components/event-table/EventTable';
 import { events } from '../style-demo/StyleDemo';
+import Config from '../../config/Config';
+import url from 'url';
 
 export type CalendarPropsType = {};
 
@@ -26,7 +28,7 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
     }
 
     private loadComments() {
-        axios.get('/events', {
+        axios.get(url.resolve(Config.BASE_GATEWAY_URI, 'events'), {
             headers: {
                 Authorization: 'Bearer hi',
             },
