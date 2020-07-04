@@ -256,7 +256,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
 
     render() {
         return (
-            <Link className="event-card" to="#">
+            <Link className="event-card" to={`/events/${this.props.event._id}`}>
                 {this.props.collapsed ? this.renderCollapsed() : this.renderExpanded()}
             </Link>
         );

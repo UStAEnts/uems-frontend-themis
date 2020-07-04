@@ -55,7 +55,7 @@ ReactDOM.render(
 
             <div className="content">
                 <Switch>
-                    <Route path="/events">
+                    <Route path="/events" exact>
                         <Events />
                     </Route>
                     <Route path="/" exact>
