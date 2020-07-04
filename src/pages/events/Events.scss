@@ -5,4 +5,30 @@
     text-align: center;
     margin-top: 7pc;
   }
+
+  table {
+    tr {
+      text-align: left;
+    }
+
+    .name-column{
+      width: 28%;
+    }
+
+    .time-column{
+      width: 37%;
+    }
+
+    .icon-column{
+      width: 2%;
+    }
+
+    .venue-column{
+      width: 9%;
+    }
+
+    .status-column{
+      width: 8%;
+    }
+  }
 }
