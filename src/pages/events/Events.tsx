@@ -39,6 +39,7 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
         }).then((data) => {
             this.setState({
                 events: data.data.map((e: any) => ({
+                    ...e,
                     name: e.name,
                     venue: 'not in data',
                     bookingStart: new Date(e.start_date),
