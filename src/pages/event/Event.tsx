@@ -1,4 +1,4 @@
-import { GatewayEvent } from "../../types/Event";
+import { EntsStatus, EventState, GatewayEvent } from "../../types/Event";
 import React from "react";
 import { RouteComponentProps, withRouter } from "react-router";
 import Loader from "react-loader-spinner";
@@ -7,14 +7,18 @@ import { Theme } from "../../theme/Theme";
 import './Event.scss';
 import moment from "moment";
 import { CommentBox } from "../../components/atoms/comment-box/CommentBox";
+import { EditableProperty } from "../../components/components/editable-property/EditableProperty";
 
 export type EventPropsType = {} & RouteComponentProps<{
-    id: string,
+    id: string
 }>
 
 export type EventStateType = {
     id?: string,
     event?: GatewayEvent,
+    entsStates?: EntsStatus[],
+    buildingStates?: EventState[],
+    venues?: string[],
 };
 
 class Event extends React.Component<EventPropsType, EventStateType> {
@@ -44,7 +48,49 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                     venue: 'StAge',
                 } as GatewayEvent,
             }))
+
+            setTimeout(() => {
+                this.setState((oldState) => ({
+                    ...oldState,
+                    venues: ['StAge', '601', 'Stage and 601'],
+                    entsStates: [
+                        {name: 'ready'},
+                        {name: 'signup'},
+                        {name: 'awaiting requirements'},
+                    ],
+                    buildingStates: [
+                        {state: 'ready'},
+                        {state: 'approved'},
+                        {state: 'cancelled'},
+                    ]
+                }));
+            }, 1000);
         }, 500);
+    }
+
+    private static generateEditableProperty(options: string[] | { key: string, value: string }[] | undefined, name: string, selected: string | undefined) {
+        return options
+            ? (
+                <EditableProperty
+                    name={name}
+                    options={options}
+                >
+                    <div className="value">{selected ? selected : 'Not set'}</div>
+                </EditableProperty>
+            ) : (
+                <div>
+                    <div className="value">{selected ? selected : 'Not set'}</div>
+                    <div className="loader">
+                        <Loader
+                            type="Grid"
+                            color={Theme.NOTICE}
+                            width={20}
+                            height={20}
+                        />
+                    </div>
+                </div>
+            )
+
     }
 
     render() {
@@ -65,15 +111,35 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                 <div className="rightbar-real">
                     <div className="entry">
                         <div className="title">Venue</div>
-                        <div className="value">{this.state.event.venue}</div>
+                        {Event.generateEditableProperty(
+                            this.state.venues,
+                            'Venue',
+                            this.state.event.venue,
+                        )}
                     </div>
                     <div className="entry">
                         <div className="title">Ents State</div>
-                        <div className="value">{String(this.state.event.entsStatus)}</div>
+                        {Event.generateEditableProperty(
+                            this.state.entsStates
+                                ? this.state.entsStates.map((e) => e.name)
+                                : undefined,
+                            'Ents State',
+                            this.state.event.entsStatus
+                                ? this.state.event.entsStatus.name
+                                : undefined,
+                        )}
                     </div>
                     <div className="entry">
                         <div className="title">Building Status</div>
-                        <div className="value">{String(this.state.event.state)}</div>
+                        {Event.generateEditableProperty(
+                            this.state.buildingStates
+                                ? this.state.buildingStates.map((e) => e.state)
+                                : undefined,
+                            'Building State',
+                            this.state.event.state
+                                ? this.state.event.state.state
+                                : undefined,
+                        )}
                     </div>
                     <div className="entry">
                         <div className="title">Timing</div>
