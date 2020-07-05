@@ -15,6 +15,7 @@ import { Events } from './pages/events/Events';
 
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import Event  from "./pages/event/Event";
 
 JavascriptTimeAgo.addLocale(en);
 
@@ -55,6 +56,9 @@ ReactDOM.render(
 
             <div className="content">
                 <Switch>
+                    <Route path="/events/:id" exact>
+                        <Event/>
+                    </Route>
                     <Route path="/events" exact>
                         <Events />
                     </Route>
