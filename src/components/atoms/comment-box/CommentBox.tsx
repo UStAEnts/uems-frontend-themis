@@ -104,12 +104,18 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                                 value: e.name,
                             }))}
                         />
+                        <div
+                            style={{
+                                marginTop: '20px'
+                            }}
+                        >
                         <Button
                             color="#0abde3"
                             text="Post"
                             icon={faComment}
                             onClick={this.handleSubmit}
                         />
+                        </div>
                     </div>
                 </div>
             </div>
