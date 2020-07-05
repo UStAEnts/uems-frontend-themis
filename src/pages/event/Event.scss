@@ -1,0 +1,59 @@
+$rightbarWidth: 15%;
+$rightbarMinWidth: 14pc;
+
+.event-view {
+  &.loading-pane {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.loaded {
+    display: flex;
+    flex-direction: row;
+
+    .real {
+      padding: 0 20px;
+      flex-grow: 1;
+    }
+
+    .rightbar-spacer {
+      flex-basis: $rightbarWidth;
+      min-width: $rightbarMinWidth;
+      flex-grow: 0;
+      flex-shrink: 0;
+      padding: 20px;
+    }
+
+    .rightbar-real {
+      background: #f6f6f6;
+      border-left: 1px solid gainsboro;
+
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: $rightbarWidth;
+      min-width: $rightbarMinWidth;
+      height: 100vh;
+      z-index: 50;
+      padding: 20px;
+      box-sizing: border-box;
+
+      .entry {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid gainsboro;
+        .title {
+          font-size: 1.2em;
+          font-weight: bold;
+          font-family: "MuseoModerno", cursive;
+        }
+
+        .time{
+          padding-left: 10px;
+        }
+      }
+    }
+  }
+}
