@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as React from 'react';
-import { Event } from '../../types/Event';
+import { GatewayEvent } from '../../types/Event';
 import { Calendar as CalendarElement } from '../../components/components/calendar/Calendar';
 import { TabPane } from '../../components/components/tab-pane/TabPane';
 import { EventTable } from '../../components/components/event-table/EventTable';
@@ -14,7 +14,7 @@ import "./Events.scss";
 export type CalendarPropsType = {};
 
 export type CalendarStateType = {
-    events?: Event[],
+    events?: GatewayEvent[],
     error?: string,
 };
 
@@ -45,7 +45,7 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
                     bookingStart: new Date(e.start_date),
                     bookingEnd: new Date(e.end_date),
                     attendance: -1,
-                })) as unknown as Event[],
+                })) as unknown as GatewayEvent[],
             });
         }).catch((err: Error) => {
             this.setState((oldState) => ({

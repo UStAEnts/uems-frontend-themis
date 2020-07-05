@@ -9,13 +9,14 @@ export type EntsStatus = {
     color?: string,
 }
 
-export type Event = {
+export type GatewayEvent = {
     _id: string,
     name: string,
     venue: string,
     bookingStart: Date,
     bookingEnd: Date,
     attendance: number,
+
     icon?: IconDefinition,
     color?: string,
     state?: EventState,

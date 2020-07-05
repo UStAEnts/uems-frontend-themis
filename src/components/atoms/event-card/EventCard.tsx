@@ -7,13 +7,13 @@ import './EventCard.scss';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { Event, EventState } from '../../../types/Event';
+import { GatewayEvent, EventState } from '../../../types/Event';
 
 export type EventCardPropsType = {
     /**
      * The event that this card should render
      */
-    event: Event,
+    event: GatewayEvent,
     /**
      * If this is a collapsed box (less direct detail, smaller profile)
      */

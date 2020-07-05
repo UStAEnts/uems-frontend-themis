@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React from 'react';
-import { EntsStatus, Event, EventState } from '../../../types/Event';
+import { EntsStatus, GatewayEvent, EventState } from '../../../types/Event';
 import ReactTimeAgo from "react-time-ago";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Theme } from "../../../theme/Theme";
@@ -12,7 +12,7 @@ import { LinkedTD } from "../../atoms/LinkedTD";
 import { Redirect } from "react-router";
 
 export type EventTablePropsType = {
-    events: Event[],
+    events: GatewayEvent[],
 }
 
 export type EventTableStateType = {
@@ -111,7 +111,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         );
     }
 
-    private eventToRow(event: Event) {
+    private eventToRow(event: GatewayEvent) {
         return (
             <tr
                 key={event._id}
@@ -151,7 +151,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         }));
     }
 
-    private filter(event: Event) {
+    private filter(event: GatewayEvent) {
         if ('name' in this.state.filters) {
             const filter = this.state.filters.name as SearchFilterStatus;
 
