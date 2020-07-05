@@ -46,7 +46,7 @@ export function Comment(props: CommentPropsType) {
                 <div className="top">
                     <Link className="poster" to={`/user/${props.comment.poster.username}`}>
                         <div className="name">{props.comment.poster.name}</div>
-                        <div className="username">{props.comment.poster.username}</div>
+                        <div className="username">@{props.comment.poster.username}</div>
                     </Link>
                     <div className="spacer" />
                     <div className="time">
