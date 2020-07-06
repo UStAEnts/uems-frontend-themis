@@ -74,7 +74,7 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                     <div className="top">
                         <Link className="poster" to={`/user/${this.props.poster.username}`}>
                             <div className="name">{this.props.poster.name}</div>
-                            <div className="username">{this.props.poster.username}</div>
+                            <div className="username">@{this.props.poster.username}</div>
                         </Link>
                     </div>
                     <div className="bottom content submit">
@@ -104,12 +104,18 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                                 value: e.name,
                             }))}
                         />
+                        <div
+                            style={{
+                                marginTop: '20px'
+                            }}
+                        >
                         <Button
                             color="#0abde3"
                             text="Post"
                             icon={faComment}
                             onClick={this.handleSubmit}
                         />
+                        </div>
                     </div>
                 </div>
             </div>

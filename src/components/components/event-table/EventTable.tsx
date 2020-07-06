@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React from 'react';
-import { EntsStatus, Event, EventState } from '../../../types/Event';
+import { EntsStatus, GatewayEvent, EventState } from '../../../types/Event';
 import ReactTimeAgo from "react-time-ago";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Theme } from "../../../theme/Theme";
@@ -8,13 +8,16 @@ import { DateFilterStatus, Filter, NumberFilterStatus, SearchFilterStatus, Selec
 
 import './EventTable.scss';
 import moment from "moment";
+import { LinkedTD } from "../../atoms/LinkedTD";
+import { Redirect } from "react-router";
 
 export type EventTablePropsType = {
-    events: Event[],
+    events: GatewayEvent[],
 }
 
 export type EventTableStateType = {
     filters: { [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus },
+    forcedRedirect?: string,
 };
 
 export class EventTable extends React.Component<EventTablePropsType, EventTableStateType> {
@@ -32,6 +35,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         this.makeEventState = this.makeEventState.bind(this);
         this.eventToRow = this.eventToRow.bind(this);
         this.filter = this.filter.bind(this);
+        this.redirect = this.redirect.bind(this);
     }
 
     /**
@@ -107,37 +111,47 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         );
     }
 
-    private eventToRow(event: Event) {
+    private eventToRow(event: GatewayEvent) {
         return (
-            <tr>
-                <td>
+            <tr
+                key={event._id}
+                // @ts-ignore
+                onClick={() => this.redirect(`/events/${event._id}`)}
+            >
+                <LinkedTD to={`/events/${event._id}`}>
                     {event.icon
                         ? <FontAwesomeIcon icon={event.icon} />
                         : undefined}
-                </td>
+                </LinkedTD>
 
-                <td>{event.name}</td>
-                <td>{event.attendance}</td>
-                <td>
-                    From
-                    {event.bookingStart.toISOString()}
-                    to
-                    {event.bookingEnd.toISOString()}
-                </td>
-                <td>
+                <LinkedTD to={`/events/${event._id}`}>{event.name}</LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>{event.venue}</LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>
+                    {moment(event.bookingStart).format(' dddd Do MMMM (YYYY), HH:mm ')}
+                    &#8594;
+                    {moment(event.bookingEnd).format(' dddd Do MMMM (YYYY), HH:mm ')}
+                </LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>
                     <ReactTimeAgo date={event.bookingStart} />
-                </td>
-                <td>
+                </LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>
                     {this.makeEntsStatus(event.entsStatus)}
-                </td>
-                <td>
+                </LinkedTD>
+                <LinkedTD to={`/events/${event._id}`}>
                     {this.makeEventState(event.state)}
-                </td>
+                </LinkedTD>
             </tr>
         );
     }
 
-    private filter(event: Event) {
+    private redirect(to: string){
+        this.setState((oldState) => ({
+            ...oldState,
+            forcedRedirect: to,
+        }));
+    }
+
+    private filter(event: GatewayEvent) {
         if ('name' in this.state.filters) {
             const filter = this.state.filters.name as SearchFilterStatus;
 
@@ -174,18 +188,36 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             }
         }
 
+        if ('venues' in this.state.filters) {
+            const filter = this.state.filters.venues as SelectFilterStatus;
+
+            if (filter.selectedOption !== 'any') {
+                if (typeof (filter.selectedOption) === 'string') {
+                    if (event.venue.toLowerCase() !== filter.selectedOption.toLowerCase()) return false;
+                } else {
+                    if (event.venue.toLowerCase() !== filter.selectedOption.value.toLowerCase()) return false;
+                }
+            }
+        }
+
         return true;
     }
 
     render() {
         const states = this.props.events.map((e) => e.state === undefined ? undefined : e.state.state).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
         const ents = this.props.events.map((e) => e.entsStatus === undefined ? undefined : e.entsStatus.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
+        const venues = this.props.events.map((e) => e.venue).filter((value, index, self) => self.indexOf(value) === index) as string[];
 
-        states.push('any');
-        ents.push('any');
+        // states.push('any');
+        // ents.push('any');
+        // venues.push('any');
+        [states, ents, venues].forEach(a => a.push('any'));
 
         return (
             <div className="events-table">
+                {this.state.forcedRedirect
+                    ? <Redirect to={this.state.forcedRedirect} />
+                    : undefined}
                 <Filter
                     filters={{
                         'name': {
@@ -205,6 +237,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                             name: 'Ents Status',
                             type: 'option',
                             options: ents,
+                        },
+                        'venues': {
+                            name: 'Venue',
+                            type: 'option',
+                            options: venues,
                         }
                     }}
                     onFilterChange={
@@ -219,13 +256,13 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 <table>
                     <thead>
                     <tr>
-                        <th />
-                        <th>Name</th>
-                        <th>Attendance</th>
-                        <th>Time</th>
-                        <th>Until</th>
-                        <th>Ents</th>
-                        <th>Building</th>
+                        <th className="icon-column" />
+                        <th className="name-column">Name</th>
+                        <th className="venue-column">Venue</th>
+                        <th className="time-column">Time</th>
+                        <th className="status-column">Until</th>
+                        <th className="status-column">Ents</th>
+                        <th className="status-column">Building</th>
                     </tr>
                     </thead>
                     <tbody>

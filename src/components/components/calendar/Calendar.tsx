@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment, { Moment } from 'moment';
-import { Event } from '../../../types/Event';
+import { GatewayEvent } from '../../../types/Event';
 
 import './Calendar.scss';
 import { EventCard } from '../../atoms/event-card/EventCard';
@@ -13,7 +13,7 @@ export type CalendarPropsType = {
     /**
      * This list of events to display in this event
      */
-    events: Event[],
+    events: GatewayEvent[],
 };
 
 export type CalendarStateType = {

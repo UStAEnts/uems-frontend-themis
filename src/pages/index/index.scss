@@ -18,7 +18,8 @@ body, html {
   padding: 0;
   margin: 0;
   min-width: 100%;
-  min-height: 100%;
+  height: 100%;
+  box-sizing: border-box;
 
   #root {
     display: flex;
@@ -26,6 +27,10 @@ body, html {
     min-width: 100%;
     min-height: 100%;
     justify-content: stretch;
+  }
+
+  #root,.content{
+    min-height: 100%;
   }
 
   $sidebarWidth: 13%;

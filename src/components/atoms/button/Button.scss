@@ -1,7 +1,6 @@
 .button{
   display: inline-flex;
   padding: 12px 20px;
-  margin: 0 10px;
   border-radius: 100px;
   align-items: center;
   box-shadow: 2px 2px 8px -4px #d9d9d9;
@@ -9,6 +8,7 @@
   border: none;
   background-color: #2196f3;
   justify-content: center;
+  margin: 10px 10px 0;
 
   filter: brightness(100%);
   background-position: center;
