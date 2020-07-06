@@ -44,7 +44,7 @@ export class VenueSquare extends React.Component<VenueSquareProps> {
         return (
             <div className={this.getStatusCssClass()}>
                 <h1 className="venue_square_title">{this.props.venue.name}</h1>
-                <IconBox icon={faBuilding} color={VenueSquare.statusToColor(this.props.venue.status)} />
+                <IconBox icon={faBuilding} /*color={VenueSquare.statusToColor(this.props.venue.status)}*/ />
             </div>
         )
     }
