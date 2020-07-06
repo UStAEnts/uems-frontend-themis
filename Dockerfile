@@ -12,6 +12,6 @@ RUN npm install -g serve
 
 COPY . .
 
-RUN npm run build:docker
+RUN npm run build
 
 CMD ["serve", "-s", "build", "-l", "15300"]

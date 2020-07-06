@@ -9,9 +9,10 @@ import './pages/index/index.scss';
 import './pages/index/flexboxgrid.css';
 import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBox, faCalendarTimes, faColumns, faPaperPlane, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faCalendarTimes, faColumns, faPaperPlane, faWrench, faBuilding } from '@fortawesome/free-solid-svg-icons';
 import App from './pages/App';
 import { Events } from './pages/events/Events';
+import { Venues } from './pages/venues/Venues';
 
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
@@ -41,6 +42,10 @@ ReactDOM.render(
                         <FontAwesomeIcon icon={faBox} />
                         <span>Equipment</span>
                     </NavLink>
+                    <NavLink to="/venues" className="entry">
+                        <FontAwesomeIcon icon={faBuilding} />
+                        <span>Venues</span>
+                    </NavLink>
                     <NavLink to="/ents" className="entry">
                         <FontAwesomeIcon icon={faWrench} />
                         <span>Ents</span>
@@ -56,6 +61,9 @@ ReactDOM.render(
 
             <div className="content">
                 <Switch>
+                    <Route path="/venues" exact>
+                        <Venues />
+                    </Route>
                     <Route path="/events/:id" exact>
                         <Event/>
                     </Route>
