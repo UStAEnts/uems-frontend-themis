@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { VenuesLayout } from '../../components/components/venues-layout/VenuesLayout';
 import { Venue, VenueStatus } from '../../types/Venue';
+import './Venues.scss';
 
 const TEMP_GENERATED_VENUES: Venue[] = [
     {
