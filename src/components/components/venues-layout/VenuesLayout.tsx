@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './VenuesLayout.scss';
 import {Venue} from '../../../types/Venue';
 import { VenueSquare } from '../../atoms/venue-square/VenueSquare';
 

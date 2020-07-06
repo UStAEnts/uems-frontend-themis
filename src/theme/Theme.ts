@@ -48,4 +48,11 @@ export class Theme {
 
     static readonly NOTICE: string = Theme.CYAN;
 
+    static readonly OK: string = Theme.GREEN_LIGHT;
+
+    static readonly MAINTENANCE: string = Theme.YELLOW;
+
+    static readonly UNKNOWN: string = Theme.GRAY_LIGHT;
+
+    static readonly UNAVAILABLE: string = Theme.RED_LIGHT;
 }

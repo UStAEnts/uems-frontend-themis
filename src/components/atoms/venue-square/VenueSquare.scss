@@ -1,3 +1,39 @@
-.venue_square {
-    background: #f4f4f4;
+@import '../../../theme/Theme.scss';
+
+%venue-square {
+    width: 128px;
+    height: 256px;
+    border-width: 1px;
+    border-style: solid;
+    padding: 2px;
 }
+
+.icon-box {
+    width: 64px;
+    height: 64px;
+}
+
+.venue_square_title {
+    font-family: $SUBTITLE-FONT-FAMILY;
+}
+
+.venue-ok {
+    @extend %venue-square;
+    background: $OK;
+}
+
+.venue-closed {
+    @extend %venue-square;
+    background: $FINISHED;
+}
+
+.venue-maintenance {
+    @extend %venue-square;
+    background: $MAINTENANCE;
+}
+
+.venue-unknown {
+    @extend %venue-square;
+    background: $UNKNOWN;
+}
+
