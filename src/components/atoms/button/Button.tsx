@@ -22,11 +22,15 @@ export type ButtonPropsType = {
     /**
      * If the arrow on the right hand side of the text should be displayed in this button
      */
-    includeArrow: boolean,
+    includeArrow?: boolean,
     /**
      * If this button should span the full width of its container
      */
-    fullWidth: boolean,
+    fullWidth?: boolean,
+    /**
+     * Click listener
+     */
+    onClick?: () => void;
 };
 
 export function Button(props: ButtonPropsType) {
@@ -49,6 +53,7 @@ export function Button(props: ButtonPropsType) {
             className="button"
             type="button"
             style={buttonStyle}
+            onClick={props.onClick}
         >
             {icon}
             <div className="text">{props.text}</div>

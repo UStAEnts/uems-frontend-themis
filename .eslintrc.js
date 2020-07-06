@@ -22,9 +22,14 @@ module.exports = {
         '@typescript-eslint',
     ],
     rules: {
-        indent: ['error', 4],
+        indent: ['error', 4, {
+        	'SwitchCase': 1,
+        }],
         'max-len': ['error', 120],
         'padded-blocks': 'off',
+        'object-curly-newline': ['error', {
+        	'ImportDeclaration': 'never',
+        }],
 
         'no-unused-vars': 'off',
         'no-restricted-syntax': 'off',

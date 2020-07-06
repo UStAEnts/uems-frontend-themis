@@ -1,10 +1,11 @@
 import * as React from 'react';
+import { MutableRefObject } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from 'react-transition-group';
+import { v4 } from 'uuid';
 
 import './Select.scss';
-import { MutableRefObject } from 'react';
 import InputUtilities from '../../../utilities/InputUtilities';
 
 type KeyValueOption = { key: string, value: string };
@@ -22,6 +23,15 @@ export type SelectPropsType = {
      * The possible options in the select
      */
     options: string[] | KeyValueOption[],
+    /**
+     * The initially selected option
+     */
+    initialOption?: string | KeyValueOption
+    /**
+     * Listener to be called when the option is changed
+     * @param option the option which is now selected
+     */
+    onSelectListener?: (option: string | KeyValueOption) => void,
 };
 
 export type SelectStateType = {
@@ -33,9 +43,24 @@ export type SelectStateType = {
      * If the menu is currently open for this select
      */
     active: boolean,
+    /**
+     * UUID for prepending to keys
+     */
+    uuid: string,
 };
 
 export class Select extends React.Component<SelectPropsType, SelectStateType> {
+
+    static getDerivedStateFromProps(props: SelectPropsType, state: SelectStateType) {
+        if (props.initialOption !== undefined && props.initialOption !== state.selected) {
+            return {
+                ...state,
+                selected: props.initialOption,
+            } as SelectStateType;
+        }
+
+        return null;
+    }
 
     static displayName = 'Select';
 
@@ -53,8 +78,9 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
         super(props);
 
         this.state = {
-            selected: undefined,
+            selected: (this.props.initialOption || undefined),
             active: false,
+            uuid: v4(),
         };
 
         this.wrapperRef = React.createRef();
@@ -92,6 +118,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
      * @param option the option to select as the active entry
      */
     private handleEntryClick(option: string | KeyValueOption) {
+        if (this.props.onSelectListener) this.props.onSelectListener(option);
         this.setState((oldState) => ({
             ...oldState,
             selected: option,
@@ -139,7 +166,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                         onClick={() => this.handleEntryClick(option)}
                         className={`md-sl-li${this.state.selected === option ? ' md-sl-active' : ''}`}
                         value={option}
-                        key={option}
+                        key={`${this.state.uuid}.${option}`}
                     >
                         {option}
                     </li>,
@@ -148,7 +175,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                 list.push(
                     <li
                         onKeyPress={(e) => InputUtilities.bindKeyPress(e, 32, this.handleEntryClick, this, option)}
-                        key={option.value}
+                        key={`${this.state.uuid}.${option.value}`}
                         className={`md-sl-li${this.state.selected === option ? ' md-sl-active' : ''}`}
                         value={option.value}
                         onClick={() => this.handleEntryClick(option)}
@@ -174,7 +201,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     className="md-sl-text"
                     onClick={() => this.activateList()}
                 >
-                    {this.state.selected}
+                    {typeof (this.state.selected) === 'string' ? this.state.selected : this.state.selected.key}
                 </div>
             ) : (
                 <div
@@ -191,7 +218,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
         return (
             <div ref={this.wrapperRef} className="select">
                 <label htmlFor={this.props.name} className={this.state.selected ? 'moved' : 'neutral'}>
-                    Some Description
+                    {this.props.placeholder}
 
                     <input
                         type="hidden"
