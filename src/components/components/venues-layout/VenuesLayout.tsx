@@ -16,7 +16,7 @@ export class VenuesLayout extends React.Component<VenuesLayoutProps, VenueLayout
     constructor(props: VenuesLayoutProps) {
         super(props);
         this.state = {
-            collapsed: false
+            collapsed: true
         }
     }
 

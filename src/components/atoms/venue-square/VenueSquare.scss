@@ -1,28 +1,5 @@
 @import '../../../theme/Theme.scss';
 
-%venue-square {
-    width: 90%;
-    height: 128px;
-    border-width: 1px;
-    box-shadow: lightness($color: #000000);
-    border-style: solid;
-    // padding: 10px;
-    display: grid;
-    grid-template-rows: 25% 60%;
-    row-gap: 10px;
-}
-
-.icon-box { 
-    height: 60%;
-    display: block;
-    margin-top: 20px;
-    margin-left: auto !important; // Using !important to allow the icon box to be centered.
-    margin-right: auto !important;
-    width: 50%;
-    padding: 50px;
-    text-align: center;
-}
-
 .venue_square_title {
     position: relative;
     margin: auto;
@@ -32,29 +9,59 @@
 
     font-family: $SUBTITLE-FONT-FAMILY;
     text-align: center;
-    
 }
 
 .venue-ok {
-    @extend %venue-square;
     background: $OK;
 }
 
 .venue-closed {
-    @extend %venue-square;
     background: $FINISHED;
 }
 
 .venue-maintenance {
-    @extend %venue-square;
     background: $MAINTENANCE;
 }
 
 .venue-unknown {
-    @extend %venue-square;
     background: $UNKNOWN;
 }
 
-.venue_square_collapsed {
+%venue-square {
+    border-width: 1px;
+    box-shadow: lightness($color: #000000);
+    border-style: solid;
+}
 
+.venue_square_collapsed {
+    @extend %venue-square;
+    width: 100%;
+    height: 100%;
+}
+
+.venue_square_expanded {
+    @extend %venue-square;
+    width: 90%;
+    height: 128px;
+    display: grid;
+    grid-template-rows: 25% 60%;
+    row-gap: 10px;
+}
+
+.icon_box_collapsed {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    margin-top: auto;
+}
+
+.icon_box_expanded {
+    height: 60%;
+    display: block;
+    margin-top: 20px;
+    margin-left: auto !important; // Using !important to allow the icon box to be centered.
+    margin-right: auto !important;
+    width: 50%;
+    padding: 50px;
+    text-align: center;
 }

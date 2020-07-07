@@ -15,13 +15,20 @@ export type IconBoxPropsType = {
      * The color of this icon box. When not provided, it will default to #787878 (medium gray)
      */
     color: string,
+
+    /**
+     * If provided the className used for the icon box are overwritten.
+     */
+    // The need for this might indicate that this component isn't atomic 
+    // enough / is too specific and might need refractor or a new component to be made.
+    classNameOverride?: string 
 };
 
 export function IconBox(props: IconBoxPropsType) {
 
     return (
         <div
-            className="icon-box"
+            className={(props.classNameOverride == undefined)? "icon-box": props.classNameOverride}
             style={{
                 backgroundColor: props.color,
                 color: ColorUtilities.determineForegroundColor(props.color),

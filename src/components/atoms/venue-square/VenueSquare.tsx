@@ -42,16 +42,26 @@ export class VenueSquare extends React.Component<VenueSquareProps> {
         }
     }
 
-    getCssClasses() {
-        return ;
+    render_collapsed() {
+        return (
+            <div className={`${this.getStatusCssClass()} venue_square_collapsed`}>
+                <IconBox icon={faBuilding} classNameOverride={`icon_box_collapsed`}/>
+            </div>
+        )
+    }
+
+    render_expanded() {
+        return (
+            <div className={`${this.getStatusCssClass()} venue_square_expanded`}>
+                <h1 className="venue_square_title">{this.props.venue.name}</h1>
+                <IconBox icon={faBuilding} classNameOverride={`icon_box_expanded`}/>
+            </div>
+        )
     }
     
     render() {
         return (
-            <div className={`${this.getStatusCssClass()} ${this.props.collapsed ? 'venue_square_collapsed' : ''}`}>
-                <h1 className="venue_square_title">{this.props.venue.name}</h1>
-                <IconBox icon={faBuilding} />
-            </div>
-        )
+            this.props.collapsed ? this.render_collapsed(): this.render_expanded()
+        );
     }
 }
