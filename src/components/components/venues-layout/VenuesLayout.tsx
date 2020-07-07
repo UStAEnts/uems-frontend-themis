@@ -7,18 +7,44 @@ type VenuesLayoutProps = {
     venues: Venue[]
 }
 
-export class VenuesLayout extends React.Component<VenuesLayoutProps> {
-    venueToSquare(venue: Venue) {
+type VenueLayoutState = {
+    collapsed: boolean
+}
+
+export class VenuesLayout extends React.Component<VenuesLayoutProps, VenueLayoutState> {
+
+    constructor(props: VenuesLayoutProps) {
+        super(props);
+        this.state = {
+            collapsed: false
+        }
+    }
+
+    collapsed_render() {
         return (
-            <VenueSquare venue={venue}/>
+            <div className="venues_layout_collapsed">
+                {this.props.venues.map((v) => VenuesLayout.venueToSquare(v, true))}
+            </div>
+        )
+    }
+
+    expanded_render() {
+        return (
+            <div className="venues_layout_expanded">
+                {this.props.venues.map((v) => VenuesLayout.venueToSquare(v, false))}
+            </div>
         )
     }
 
     render() {
         return (
-            <div className="venues_layout">
-                {this.props.venues.map(this.venueToSquare)}
-            </div>
+            this.state.collapsed ? this.collapsed_render(): this.expanded_render()
+        );
+    }
+
+    static venueToSquare(venue: Venue, collapsed: boolean) {
+        return (
+            <VenueSquare venue={venue} collapsed={collapsed}/>
         )
     }
 }

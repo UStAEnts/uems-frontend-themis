@@ -6,10 +6,12 @@ import { Theme } from '../../../theme/Theme';
 import {faBuilding} from '@fortawesome/free-solid-svg-icons';
 
 export type VenueSquareProps = {
-    venue: Venue
+    venue: Venue,
+    collapsed: boolean
 }
 
 export class VenueSquare extends React.Component<VenueSquareProps> {
+
     constructor(props: VenueSquareProps) {
         super(props);
     }
@@ -39,12 +41,16 @@ export class VenueSquare extends React.Component<VenueSquareProps> {
                 return "venue-unknown"
         }
     }
+
+    getCssClasses() {
+        return ;
+    }
     
     render() {
         return (
-            <div className={this.getStatusCssClass()}>
+            <div className={`${this.getStatusCssClass()} ${this.props.collapsed ? 'venue_square_collapsed' : ''}`}>
                 <h1 className="venue_square_title">{this.props.venue.name}</h1>
-                <IconBox icon={faBuilding} /*color={VenueSquare.statusToColor(this.props.venue.status)}*/ />
+                <IconBox icon={faBuilding} />
             </div>
         )
     }
