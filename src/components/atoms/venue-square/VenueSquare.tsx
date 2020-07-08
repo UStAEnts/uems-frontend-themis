@@ -7,15 +7,11 @@ import {faBuilding} from '@fortawesome/free-solid-svg-icons';
 
 export type VenueSquareProps = {
     venue: Venue,
-    collapsed: boolean
+    collapsed: boolean,
+    onClick: Function,
 }
 
 export class VenueSquare extends React.Component<VenueSquareProps> {
-
-    constructor(props: VenueSquareProps) {
-        super(props);
-    }
-
     static statusToColor(status: VenueStatus) {
         switch (status) {
             case VenueStatus.Open:
@@ -44,8 +40,8 @@ export class VenueSquare extends React.Component<VenueSquareProps> {
 
     render_collapsed() {
         return (
-            <div className={`${this.getStatusCssClass()} venue_square_collapsed`}>
-                <IconBox icon={faBuilding} classNameOverride={`icon_box_collapsed`}/>
+            <div className={`${this.getStatusCssClass()} venue_square_collapsed`} onClick={() => this.props.onClick(this.props.venue)}>
+                <IconBox icon={faBuilding} classNameOverride={`icon_box_collapsed`} color="#000000"/>
             </div>
         )
     }
@@ -54,7 +50,7 @@ export class VenueSquare extends React.Component<VenueSquareProps> {
         return (
             <div className={`${this.getStatusCssClass()} venue_square_expanded`}>
                 <h1 className="venue_square_title">{this.props.venue.name}</h1>
-                <IconBox icon={faBuilding} classNameOverride={`icon_box_expanded`}/>
+                <IconBox icon={faBuilding} classNameOverride={`icon_box_expanded`} color="#ffffff"/>
             </div>
         )
     }

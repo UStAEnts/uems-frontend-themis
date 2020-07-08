@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { VenuesLayout } from '../../components/components/venues-layout/VenuesLayout';
+import { VenueDetailDisplay } from '../../components/components/venues-details/VenueDetailDisplay';
 import { Venue, VenueStatus } from '../../types/Venue';
 import './Venues.scss';
 
@@ -51,13 +52,45 @@ const TEMP_GENERATED_VENUES: Venue[] = [
     }
 ];
 
-export class Venues extends React.Component {
+type VenuesState = {
+    venue?: Venue
+}
 
-    render() {
+type VenuesProps = {
+
+}
+
+export class Venues extends React.Component<VenuesProps, VenuesState> {
+
+    constructor(props: VenuesProps) {
+        super(props);
+        this.state = {
+            venue: undefined
+        }
+    }
+
+    onClick(venue: Venue) {
+        console.log("Venue clicked: " + venue.name);
+    }
+
+    render_no_venue_selected() {
         return (
             <div className={`main-tab venues-page`}>
-                <VenuesLayout venues={TEMP_GENERATED_VENUES}/>
+                <VenuesLayout venues={TEMP_GENERATED_VENUES} onClick = {this.onClick}/>
             </div>
         )
+    }
+
+    render_venue_selected() {
+        return (
+            <div className={`main-tab venues-page-selected`}>
+                <VenuesLayout venues={TEMP_GENERATED_VENUES} onClick = {this.onClick}/>
+                <VenueDetailDisplay venue={this.state.venue}/>
+            </div>
+        )
+    }
+
+    render() {
+        return (this.state.venue === undefined) ? this.render_no_venue_selected() : this.render_venue_selected();
     }
 }

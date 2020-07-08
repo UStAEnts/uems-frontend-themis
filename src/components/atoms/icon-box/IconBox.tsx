@@ -28,7 +28,7 @@ export function IconBox(props: IconBoxPropsType) {
 
     return (
         <div
-            className={(props.classNameOverride == undefined)? "icon-box": props.classNameOverride}
+            className={(props.classNameOverride === undefined)? "icon-box": props.classNameOverride}
             style={{
                 backgroundColor: props.color,
                 color: ColorUtilities.determineForegroundColor(props.color),

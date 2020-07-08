@@ -1,10 +1,11 @@
 import * as React from 'react';
 import './VenuesLayout.scss';
-import {Venue} from '../../../types/Venue';
+import { Venue } from '../../../types/Venue';
 import { VenueSquare } from '../../atoms/venue-square/VenueSquare';
 
 type VenuesLayoutProps = {
-    venues: Venue[]
+    venues: Venue[],
+    onClick: Function,
 }
 
 type VenueLayoutState = {
@@ -23,7 +24,7 @@ export class VenuesLayout extends React.Component<VenuesLayoutProps, VenueLayout
     collapsed_render() {
         return (
             <div className="venues_layout_collapsed">
-                {this.props.venues.map((v) => VenuesLayout.venueToSquare(v, true))}
+                {this.props.venues.map((v) => VenuesLayout.venueToSquare(v, true, this.props.onClick))}
             </div>
         )
     }
@@ -31,7 +32,7 @@ export class VenuesLayout extends React.Component<VenuesLayoutProps, VenueLayout
     expanded_render() {
         return (
             <div className="venues_layout_expanded">
-                {this.props.venues.map((v) => VenuesLayout.venueToSquare(v, false))}
+                {this.props.venues.map((v) => VenuesLayout.venueToSquare(v, false, this.props.onClick))}
             </div>
         )
     }
@@ -42,9 +43,9 @@ export class VenuesLayout extends React.Component<VenuesLayoutProps, VenueLayout
         );
     }
 
-    static venueToSquare(venue: Venue, collapsed: boolean) {
+    static venueToSquare(venue: Venue, collapsed: boolean, onClick: Function) {
         return (
-            <VenueSquare venue={venue} collapsed={collapsed}/>
+            <VenueSquare venue={venue} collapsed={collapsed} onClick={onClick}/>
         )
     }
 }
