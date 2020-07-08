@@ -40,6 +40,8 @@ $rightbarMinWidth: 14pc;
       padding: 20px;
       box-sizing: border-box;
 
+      overflow-y: auto;
+
       .entry {
         margin-bottom: 15px;
         padding-bottom: 15px;
@@ -48,14 +50,41 @@ $rightbarMinWidth: 14pc;
         .title {
           font-family: "MuseoModerno", cursive;
         }
-        .loader{
+
+        .loader {
           margin-top: 7px;
           margin-left: 7px;
         }
 
-        .time {
-          padding-left: 10px;
+        .flow {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+
+          .bar {
+            width: 1px;
+            flex-grow: 0;
+            flex-shrink: 0;
+            background: gainsboro;
+            height: 10px;
+          }
+
+          .time, .label, .duration {
+            padding: 5px;
+            box-sizing: border-box;
+
+            &.duration{
+              font-style: italic;
+            }
+
+            &.label {
+              border-radius: 100px;
+              font-weight: 500;
+            }
+          }
         }
+
       }
     }
   }

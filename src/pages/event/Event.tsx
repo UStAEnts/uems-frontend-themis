@@ -54,14 +54,14 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                     ...oldState,
                     venues: ['StAge', '601', 'Stage and 601'],
                     entsStates: [
-                        {name: 'ready'},
-                        {name: 'signup'},
-                        {name: 'awaiting requirements'},
+                        { name: 'ready' },
+                        { name: 'signup' },
+                        { name: 'awaiting requirements' },
                     ],
                     buildingStates: [
-                        {state: 'ready'},
-                        {state: 'approved'},
-                        {state: 'cancelled'},
+                        { state: 'ready' },
+                        { state: 'approved' },
+                        { state: 'cancelled' },
                     ]
                 }));
             }, 1000);
@@ -143,24 +143,36 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                     </div>
                     <div className="entry">
                         <div className="title">Timing</div>
-                        <div className="value">
-                            <div className="begin">Begin:</div>
-
-                            <div
-                                className="time"
-                            >
+                        <div className="value flow">
+                            <div className="label">
+                                Booking Start
+                            </div>
+                            <div className="time">
                                 {moment(this.state.event.bookingStart).format('dddd Do MMMM (YYYY), HH:mm')}
                             </div>
-
-                            <div
-                                className="begin"
-                            >
-                                Ends:
+                            <div className="bar" />
+                            <div className="label">
+                                Event Start
                             </div>
-
-                            <div
-                                className="time"
-                            >
+                            <div className="time">
+                                {moment(this.state.event.bookingStart).format('dddd Do MMMM (YYYY), HH:mm')}
+                            </div>
+                            <div className="bar" />
+                            <div className="duration">
+                                {moment.duration(moment(this.state.event.bookingStart).diff(moment(this.state.event.bookingEnd))).humanize()}
+                            </div>
+                            <div className="bar" />
+                            <div className="label">
+                                Event End
+                            </div>
+                            <div className="time">
+                                {moment(this.state.event.bookingStart).format('dddd Do MMMM (YYYY), HH:mm')}
+                            </div>
+                            <div className="bar" />
+                            <div className="label">
+                                Booking End
+                            </div>
+                            <div className="time">
                                 {moment(this.state.event.bookingEnd).format('dddd Do MMMM (YYYY), HH:mm')}
                             </div>
                         </div>
