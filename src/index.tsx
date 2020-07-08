@@ -16,8 +16,18 @@ import { Events } from './pages/events/Events';
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import Event  from "./pages/event/Event";
+import moment from "moment";
 
+// Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
+
+// Set moment rounding thresholds to get more useful relative times
+moment.relativeTimeThreshold('s', 60);
+moment.relativeTimeThreshold('m', 60);
+moment.relativeTimeThreshold('h', 24);
+moment.relativeTimeThreshold('d', 31);
+moment.relativeTimeThreshold('M', 12);
+moment.relativeTimeThreshold('y', 365);
 
 ReactDOM.render(
     <React.StrictMode>
