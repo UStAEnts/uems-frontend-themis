@@ -12,12 +12,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBox, faCalendarTimes, faColumns, faPaperPlane, faWrench } from '@fortawesome/free-solid-svg-icons';
 import App from './pages/App';
 import { Events } from './pages/events/Events';
-import Event  from "./pages/event/Event";
+import Event from "./pages/event/Event";
 import moment from "moment";
 
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import 'flatpickr/dist/themes/material_green.css'
+import { User } from "./types/Event";
+import { GlobalContext, GlobalContextType, ReadableContextType } from "./context/GlobalContext";
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
@@ -30,56 +32,87 @@ moment.relativeTimeThreshold('d', 31);
 moment.relativeTimeThreshold('M', 12);
 moment.relativeTimeThreshold('y', 365);
 
+class RootSite extends React.Component<{}, ReadableContextType> {
+
+    constructor(props: Readonly<{}>) {
+        super(props);
+
+        this.state = {}
+    }
+
+    private setUser = (user?: User) => {
+        this.setState((oldState) => ({
+            ...oldState,
+            user,
+        }))
+    }
+
+    render() {
+        const providedContext = {
+            user: {
+                value: this.state.user,
+                set: this.setUser,
+            }
+        } as GlobalContextType;
+
+        return (
+            <React.StrictMode>
+                <GlobalContext.Provider value={providedContext}>
+                    <BrowserRouter>
+                        <div className="sidebar-real">
+                            <img
+                                src="/ents-crew-white.png"
+                                className="header-image"
+                                alt="UEMS Logo: The text UEMS in a bold geometric font surrounded by a white outlined rectangle."
+                            />
+                            <div className="sidebar-content">
+                                <NavLink exact to="/" className="entry">
+                                    <FontAwesomeIcon icon={faColumns} />
+                                    <span>Dashboard</span>
+                                </NavLink>
+                                <NavLink to="/events" className="entry">
+                                    <FontAwesomeIcon icon={faCalendarTimes} />
+                                    <span>Events</span>
+                                </NavLink>
+                                <NavLink to="/equipment" className="entry">
+                                    <FontAwesomeIcon icon={faBox} />
+                                    <span>Equipment</span>
+                                </NavLink>
+                                <NavLink to="/ents" className="entry">
+                                    <FontAwesomeIcon icon={faWrench} />
+                                    <span>Ents</span>
+                                </NavLink>
+                                <NavLink to="/ops-planning" className="entry">
+                                    <FontAwesomeIcon icon={faPaperPlane} />
+                                    <span>Ops Planning</span>
+                                </NavLink>
+                            </div>
+                        </div>
+
+                        <div className="sidebar-spacer" />
+
+                        <div className="content">
+                            <Switch>
+                                <Route path="/events/:id" exact>
+                                    <Event />
+                                </Route>
+                                <Route path="/events" exact>
+                                    <Events />
+                                </Route>
+                                <Route path="/" exact>
+                                    <App />
+                                </Route>
+                            </Switch>
+                        </div>
+                    </BrowserRouter>
+                </GlobalContext.Provider>
+            </React.StrictMode>
+        );
+    }
+}
+
 ReactDOM.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <div className="sidebar-real">
-                <img
-                    src="/ents-crew-white.png"
-                    className="header-image"
-                    alt="UEMS Logo: The text UEMS in a bold geometric font surrounded by a white outlined rectangle."
-                />
-                <div className="sidebar-content">
-                    <NavLink exact to="/" className="entry">
-                        <FontAwesomeIcon icon={faColumns} />
-                        <span>Dashboard</span>
-                    </NavLink>
-                    <NavLink to="/events" className="entry">
-                        <FontAwesomeIcon icon={faCalendarTimes} />
-                        <span>Events</span>
-                    </NavLink>
-                    <NavLink to="/equipment" className="entry">
-                        <FontAwesomeIcon icon={faBox} />
-                        <span>Equipment</span>
-                    </NavLink>
-                    <NavLink to="/ents" className="entry">
-                        <FontAwesomeIcon icon={faWrench} />
-                        <span>Ents</span>
-                    </NavLink>
-                    <NavLink to="/ops-planning" className="entry">
-                        <FontAwesomeIcon icon={faPaperPlane} />
-                        <span>Ops Planning</span>
-                    </NavLink>
-                </div>
-            </div>
-
-            <div className="sidebar-spacer" />
-
-            <div className="content">
-                <Switch>
-                    <Route path="/events/:id" exact>
-                        <Event/>
-                    </Route>
-                    <Route path="/events" exact>
-                        <Events />
-                    </Route>
-                    <Route path="/" exact>
-                        <App />
-                    </Route>
-                </Switch>
-            </div>
-        </BrowserRouter>
-    </React.StrictMode>,
+    <RootSite/>,
     document.getElementById('root'),
 );
 
