@@ -8,6 +8,9 @@ import './Event.scss';
 import moment from "moment";
 import { CommentBox } from "../../components/atoms/comment-box/CommentBox";
 import { EditableProperty } from "../../components/components/editable-property/EditableProperty";
+import Axios from "axios";
+import Config from "../../config/Config";
+import * as url from "url";
 
 export type EventPropsType = {} & RouteComponentProps<{
     id: string
@@ -68,7 +71,66 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         }, 500);
     }
 
-    private static generateEditableProperty(options: string[] | { key: string, value: string }[] | undefined, name: string, selected: string | undefined) {
+    private patchEvent = (changeProps: Partial<GatewayEvent>) => {
+        if (!this.state.event) return;
+
+        const changed:any = {
+            ...changeProps,
+        };
+
+        // TODO: provide transform functions for turning partial events into patch instructions
+        if (changeProps.bookingStart instanceof Date) changed.bookingStart = changeProps.bookingStart.getTime();
+        if (changeProps.bookingEnd instanceof Date) changed.bookingEnd = changeProps.bookingEnd.getTime();
+
+        Axios.patch(
+            url.resolve(
+                Config.BASE_GATEWAY_URI,
+                '/event/' + encodeURIComponent(this.state.event._id)
+            ),
+            changed,
+            {
+                headers: {
+                    Accepts: 'application/json'
+                }
+            }
+        ).then((data) => {
+            this.setState((oldState) => ({
+                ...oldState,
+                event: data.data
+            }));
+        }).catch((err) => {
+            // TODO: figure out how to raise errors!
+            console.error(err);
+        })
+    }
+
+    private changeStartTime = (date: Date) => {
+        this.patchEvent({
+            bookingStart: date,
+        });
+    }
+
+    private changeEndTime = (date: Date) => {
+        this.patchEvent({
+            bookingEnd: date,
+        });
+    }
+
+    private changeProperty(property: keyof GatewayEvent){
+        return (e: any) => {
+            const changes: Partial<GatewayEvent> = {};
+
+            changes[property] = e;
+
+            this.patchEvent(changes);
+        }
+    }
+
+    private generateEditableProperty = (
+        options: string[] | { key: string, value: string }[] | undefined,
+        name: string, selected: string | undefined,
+        property: keyof GatewayEvent,
+    ) => {
         return options
             ? (
                 <EditableProperty
@@ -76,6 +138,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                     config={{
                         options,
                         type: 'select',
+                        onChange: this.changeProperty(property),
                     }}
                 >
                     <div className="value">{selected ? selected : 'Not set'}</div>
@@ -114,15 +177,16 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                 <div className="rightbar-real">
                     <div className="entry">
                         <div className="title">Venue</div>
-                        {Event.generateEditableProperty(
+                        {this.generateEditableProperty(
                             this.state.venues,
                             'Venue',
                             this.state.event.venue,
+                            'venue'
                         )}
                     </div>
                     <div className="entry">
                         <div className="title">Ents State</div>
-                        {Event.generateEditableProperty(
+                        {this.generateEditableProperty(
                             this.state.entsStates
                                 ? this.state.entsStates.map((e) => e.name)
                                 : undefined,
@@ -130,11 +194,12 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             this.state.event.entsStatus
                                 ? this.state.event.entsStatus.name
                                 : undefined,
+                            'entsStatus'
                         )}
                     </div>
                     <div className="entry">
                         <div className="title">Building Status</div>
-                        {Event.generateEditableProperty(
+                        {this.generateEditableProperty(
                             this.state.buildingStates
                                 ? this.state.buildingStates.map((e) => e.state)
                                 : undefined,
@@ -142,6 +207,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             this.state.event.state
                                 ? this.state.event.state.state
                                 : undefined,
+                            'state'
                         )}
                     </div>
                     <div className="entry">
@@ -156,7 +222,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                     config={{
                                         type: 'date',
                                         value: this.state.event.bookingStart,
-                                        onChange: (date) => console.log(date),
+                                        onChange: this.changeProperty('bookingStart'),
                                     }}
                                 >
                                     {moment(this.state.event.bookingStart).format('dddd Do MMMM (YYYY), HH:mm')}
@@ -176,6 +242,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                     config={{
                                         type: 'date',
                                         value: this.state.event.bookingEnd,
+                                        onChange: this.changeProperty('bookingEnd'),
                                     }}
                                 >
                                     {moment(this.state.event.bookingEnd).format('dddd Do MMMM (YYYY), HH:mm')}
