@@ -8,51 +8,108 @@ import { Select } from '../../atoms/select/Select';
 import './Filter.scss';
 
 export type FilterConfiguration = {
+    /**
+     * The name of this filter
+     */
     name: string,
+    /**
+     * The type of filter to be applied. Number and search map to input fields, option maps to a select box and date
+     * maps to an AirBnb date range selector
+     */
     type: 'number' | 'option' | 'date' | 'search',
+    /**
+     * The initial value with which to populate the field
+     */
     initial?: number | string | Date,
-    options?: string[] | { key: string, value: string }[]
+    /**
+     * The options to be displayed in  the options menu if relevant
+     */
+    options?: string[] | { key: string, value: string }[],
+    /**
+     * The maximum value allowed where relevant
+     */
     max?: number | Date,
+    /**
+     * The minimum value allowed where relevant
+     */
     min?: number | Date,
 };
 
 export type FilterPropsType = {
+    /**
+     * The set of possible filters to be displayed in this bar
+     */
     filters: {
         [key: string]: FilterConfiguration,
     },
+    /**
+     * The optional function to be called when a filter is changed. It contains all the filters currently in use if
+     * they have had a value provided
+     * @param filters all filters currently in use with their current state
+     */
     onFilterChange?: (filters: {
         [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus
     }) => void,
 }
 
 export type DateFilterStatus = {
+    /**
+     * The start date of the filter range. If null the user has not selected a date
+     */
     startDate: Moment | null,
+    /**
+     * The end date of the filter range. If null the user has not selected a date
+     */
     endDate: Moment | null,
+    /**
+     * If set it holds the currently focused field of the date range selector
+     */
     focusedInput?: 'startDate' | 'endDate' | null,
 };
 
 export type NumberFilterStatus = {
+    /**
+     * The current value in the input field if one has been specified
+     */
     value?: number,
 }
 
 export type SelectFilterStatus = {
+    /**
+     * The currently selected option from the select input
+     */
     selectedOption: string | { key: string, value: string },
 };
 
 export type SearchFilterStatus = {
+    /**
+     * The current value in the search field
+     */
     content: string,
 };
 
 export type FilterStateType = {
+    /**
+     * Contains the current state of all date filters in use
+     */
     dateFilterStates: {
         [key: string]: DateFilterStatus
     },
+    /**
+     * Contains the current state of all the number filters in use
+     */
     numberFilterStates: {
         [key: string]: NumberFilterStatus
     },
+    /**
+     * Contains the current state of all the select filters in use
+     */
     selectFilterStates: {
         [key: string]: SelectFilterStatus,
     },
+    /**
+     * Contains the current state of all the search filters in use
+     */
     searchFilterStates: {
         [key: string]: SearchFilterStatus
     }
@@ -89,6 +146,9 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         }
     }
 
+    /**
+     * Notifies the handler function if one has been specified by merging together all the active states
+     */
     private notify() {
         if (this.props.onFilterChange) {
             this.props.onFilterChange({
@@ -100,6 +160,12 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         }
     }
 
+    /**
+     * Updates the select input by placing it into the active state if it is the first time it is being updated or
+     * just updated if it is already specified
+     * @param key the key of the select filter
+     * @param option the value that has been selected
+     */
     private updateSelectInput(key: string, option: string | { key: string, value: string }) {
         this.setState((oldState) => {
             const s = { ...oldState };
@@ -118,6 +184,12 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         });
     }
 
+    /**
+     * Updates the search input by placing it into the active state if it is the first time it is being updated or
+     * just updated if it is already specified
+     * @param key the key of the search filter
+     * @param value the value that has been entered
+     */
     private updateSearchInput(key: string, value: string) {
         this.setState((oldState) => {
             const s = { ...oldState };
@@ -136,6 +208,12 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         });
     }
 
+    /**
+     * Produces a {@link Select} component containing the name of this filter as the placeholder, the options provided
+     * and a select listener which updates the state.
+     * @param key the key of this filter to be used as the select name
+     * @param select the select filter configuration
+     */
     private makeSelectInput(key: string, select: FilterConfiguration) {
         return (
             <div className="indv-filter">
@@ -154,6 +232,12 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         );
     }
 
+    /**
+     * Updates the number input by placing it into the active state if it is the first time it is being updated or
+     * just updated if it is already specified
+     * @param key the key of the number filter
+     * @param value the value that has been entered
+     */
     private updateNumberInput(key: string, value: string) {
         try {
             const newVal = parseInt(value, 10);
@@ -179,6 +263,12 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         }
     }
 
+    /**
+     * Produces a number input copying in the state if present and the min and max values if provided. This will return
+     * a {@link TextField} with the set properties and a listener which will update the state
+     * @param key the key of this filter to be used as the name for the text and to update the state
+     * @param number the number filter configuration
+     */
     private makeNumberInput(key: string, number: FilterConfiguration) {
         const spreadProps: any = {
             ...(Object.prototype.hasOwnProperty.call(this.state.numberFilterStates, key)
@@ -203,6 +293,12 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         );
     }
 
+    /**
+     * Updates the date input focus by placing it into the active state if it is the first time it is being updated or
+     * just updated if it is already specified
+     * @param key the key of the date filter
+     * @param focus the currently focused element
+     */
     private updateDateFocus(key: string, focus: 'startDate' | 'endDate' | null) {
         this.setState((oldState) => {
             const s = { ...oldState };
@@ -223,6 +319,13 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         });
     }
 
+    /**
+     * Updates the date input by placing it into the active state if it is the first time it is being updated or
+     * just updated if it is already specified
+     * @param key the key of the date filter
+     * @param start the select start time or null if one is not set
+     * @param end the select end time or null if one is not set
+     */
     private updateDateInput(key: string, start: Moment | null, end: Moment | null) {
         this.setState((oldState) => {
             const s = { ...oldState };
@@ -245,6 +348,12 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         });
     }
 
+    /**
+     * Produces a date input respecting the min and max values provided if relevant and returns an airbnb date range
+     * picker
+     * @param key the key of this filter to update the state
+     * @param date the date configuration currently in use
+     */
     private makeDateInput(key: string, date: FilterConfiguration) {
         let spreadProperties: any = {};
 
@@ -274,6 +383,11 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         );
     }
 
+    /**
+     * Makes a search input which is a {@link TextField} which updates the state on entry
+     * @param key the key of this filter which will be used to update the state
+     * @param search the search configuration
+     */
     private makeSearchInput(key: string, search: FilterConfiguration) {
         const initialContent = Object.prototype.hasOwnProperty.call(this.state.searchFilterStates, key)
             ? this.state.searchFilterStates[key].content
