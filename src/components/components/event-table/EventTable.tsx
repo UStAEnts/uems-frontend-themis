@@ -12,11 +12,21 @@ import { LinkedTD } from "../../atoms/LinkedTD";
 import { Redirect } from "react-router";
 
 export type EventTablePropsType = {
+    /**
+     * The list of events to display in this table
+     */
     events: GatewayEvent[],
 }
 
 export type EventTableStateType = {
+    /**
+     * A set of filters to apply to the table
+     */
     filters: { [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus },
+    /**
+     * If set the {@link Redirect} element will be rendered which will force the page to redirect to the path set here.
+     * This makes it easy to trigger a redirect without having to be in the render function
+     */
     forcedRedirect?: string,
 };
 
@@ -111,6 +121,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         );
     }
 
+    /**
+     * Converts an event to a row in the table. This returns a TR element which redirects to the event page. Each
+     * box in the table is rendered with {@link LinkedTD} which will allow it to be supported by screen readers.
+     * @param event the event to render.
+     */
     private eventToRow(event: GatewayEvent) {
         return (
             <tr
@@ -144,6 +159,10 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         );
     }
 
+    /**
+     * Updates the state to set the forced redirect value
+     * @param to the url to which we should redirect
+     */
     private redirect(to: string){
         this.setState((oldState) => ({
             ...oldState,
@@ -151,6 +170,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         }));
     }
 
+    /**
+     * Runs the set of filters against this event and returns whether it matches. This will verify names, dates, states,
+     * ents states and venues. If it returns false it means the event does not match the filters.
+     * @param event the event to test
+     */
     private filter(event: GatewayEvent) {
         if ('name' in this.state.filters) {
             const filter = this.state.filters.name as SearchFilterStatus;
@@ -203,14 +227,14 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         return true;
     }
 
+    /**
+     * Renders the table with filters for name, date, state, ents and venues.
+     */
     render() {
         const states = this.props.events.map((e) => e.state === undefined ? undefined : e.state.state).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
         const ents = this.props.events.map((e) => e.entsStatus === undefined ? undefined : e.entsStatus.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
         const venues = this.props.events.map((e) => e.venue).filter((value, index, self) => self.indexOf(value) === index) as string[];
 
-        // states.push('any');
-        // ents.push('any');
-        // venues.push('any');
         [states, ents, venues].forEach(a => a.push('any'));
 
         return (
