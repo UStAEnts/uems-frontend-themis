@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
-import { ContentClass, User } from '../../../types/Event';
+import { ContentClass } from '../../../types/Event';
 
 import { TextField } from '../text-field/TextField';
 import { Button } from '../button/Button';
 
 import '../comment/Comment.scss';
 import { Select } from '../select/Select';
+import { GlobalContext } from "../../../context/GlobalContext";
 
 export type CommentBoxPropsType = {
-    poster: User,
     contentClasses: ContentClass[],
     submitCommentHandler: (content: string, type?: ContentClass) => void;
 }
@@ -24,6 +24,7 @@ export type CommentBoxStateType = {
 export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxStateType> {
 
     static displayName = 'CommentBox';
+    static contextType = GlobalContext;
 
     constructor(props: Readonly<CommentBoxPropsType>) {
         super(props);
@@ -64,18 +65,43 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
             <div className="comment">
                 <div className="left">
                     <div className="image">
-                        <img
-                            alt={`Profile for ${this.props.poster.name}`}
-                            src={this.props.poster.profile || 'https://placehold.it/200x200'}
-                        />
+                        {
+                            this.context.user.value
+                                ? (
+                                    <img
+                                        alt={`Profile for ${this.context.user.value.name}`}
+                                        src={this.context.user.value.profile || 'https://placehold.it/200x200'}
+                                    />
+                                )
+                                :
+                                (
+                                    <img
+                                        alt={`Profile for unknown user`}
+                                        src={'https://placehold.it/200x200?text=Broken%3F'}
+                                    />
+                                )
+                        }
+
                     </div>
                 </div>
                 <div className="right">
                     <div className="top">
-                        <Link className="poster" to={`/user/${this.props.poster.username}`}>
-                            <div className="name">{this.props.poster.name}</div>
-                            <div className="username">@{this.props.poster.username}</div>
-                        </Link>
+                        {
+                            this.context.user.value
+                                ? (
+                                    <Link className="poster" to={`/user/${this.context.user.value.username}`}>
+                                        <div className="name">{this.context.user.value.name}</div>
+                                        <div className="username">@{this.context.user.value.username}</div>
+                                    </Link>
+                                )
+                                :
+                                (
+                                    <div className="poster">
+                                        <div className="name">Error: No User Defined</div>
+                                    </div>
+                                )
+                        }
+
                     </div>
                     <div className="bottom content submit">
                         {
@@ -109,12 +135,12 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                                 marginTop: '20px'
                             }}
                         >
-                        <Button
-                            color="#0abde3"
-                            text="Post"
-                            icon={faComment}
-                            onClick={this.handleSubmit}
-                        />
+                            <Button
+                                color="#0abde3"
+                                text="Post"
+                                icon={faComment}
+                                onClick={this.handleSubmit}
+                            />
                         </div>
                     </div>
                 </div>
@@ -123,3 +149,6 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
     }
 
 }
+
+// @ts-ignore
+Event.contextType = GlobalContext;
