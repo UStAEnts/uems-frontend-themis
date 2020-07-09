@@ -14,7 +14,13 @@ import "./Events.scss";
 export type CalendarPropsType = {};
 
 export type CalendarStateType = {
+    /**
+     * The list of events loaded from the gateway
+     */
     events?: GatewayEvent[],
+    /**
+     * the error to be displayed if one has been provided
+     */
     error?: string,
 };
 
@@ -31,6 +37,9 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
         this.loadComments();
     }
 
+    /**
+     * Load the events from the API endpoint and update the state with the properties or populate the error state
+     */
     private loadComments() {
         axios.get(url.resolve(Config.BASE_GATEWAY_URI, 'events'), {
             headers: {
