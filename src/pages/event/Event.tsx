@@ -73,7 +73,10 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             ? (
                 <EditableProperty
                     name={name}
-                    options={options}
+                    config={{
+                        options,
+                        type: 'select',
+                    }}
                 >
                     <div className="value">{selected ? selected : 'Not set'}</div>
                 </EditableProperty>
@@ -148,14 +151,16 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                 Booking Start
                             </div>
                             <div className="time">
-                                {moment(this.state.event.bookingStart).format('dddd Do MMMM (YYYY), HH:mm')}
-                            </div>
-                            <div className="bar" />
-                            <div className="label">
-                                Event Start
-                            </div>
-                            <div className="time">
-                                {moment(this.state.event.bookingStart).format('dddd Do MMMM (YYYY), HH:mm')}
+                                <EditableProperty
+                                    name={'Booking Start'}
+                                    config={{
+                                        type: 'date',
+                                        value: this.state.event.bookingStart,
+                                        onChange: (date) => console.log(date),
+                                    }}
+                                >
+                                    {moment(this.state.event.bookingStart).format('dddd Do MMMM (YYYY), HH:mm')}
+                                </EditableProperty>
                             </div>
                             <div className="bar" />
                             <div className="duration">
@@ -163,17 +168,18 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             </div>
                             <div className="bar" />
                             <div className="label">
-                                Event End
-                            </div>
-                            <div className="time">
-                                {moment(this.state.event.bookingStart).format('dddd Do MMMM (YYYY), HH:mm')}
-                            </div>
-                            <div className="bar" />
-                            <div className="label">
                                 Booking End
                             </div>
                             <div className="time">
-                                {moment(this.state.event.bookingEnd).format('dddd Do MMMM (YYYY), HH:mm')}
+                                <EditableProperty
+                                    name={'Booking End'}
+                                    config={{
+                                        type: 'date',
+                                        value: this.state.event.bookingEnd,
+                                    }}
+                                >
+                                    {moment(this.state.event.bookingEnd).format('dddd Do MMMM (YYYY), HH:mm')}
+                                </EditableProperty>
                             </div>
                         </div>
                     </div>
