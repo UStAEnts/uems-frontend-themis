@@ -9,9 +9,19 @@ import { Comment as CommentType } from '../../../types/Event';
 import './Comment.scss';
 
 export type CommentPropsType = {
+    /**
+     * The comment that this block will be representing
+     */
     comment: CommentType,
 }
 
+/**
+ * Generates a comment block containing a profile image, name, content and type with tooltip. The tooltip is uniquely
+ * identified with a UUID to prevent it interfering with another tooltip on the page. User pages are linked to
+ * `/user/`
+ * @param props the properties containing the comment which should be used to render this block
+ * @constructor
+ */
 export function Comment(props: CommentPropsType) {
     const [id] = React.useState(v4().toString());
 

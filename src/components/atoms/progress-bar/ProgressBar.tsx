@@ -17,6 +17,12 @@ export type ProgressBarPropsType = {
     color: string,
 };
 
+/**
+ * Represents a single progress bar with statistics or measures. The bar will be scaled to the input total and value
+ * with the bar itself being displayed in the colour if provided
+ * @param props the properties as described by {@link ProgressBarPropsType}
+ * @constructor
+ */
 export function ProgressBar(props: ProgressBarPropsType) {
     const percent = (props.value / props.total) * 100;
     return (

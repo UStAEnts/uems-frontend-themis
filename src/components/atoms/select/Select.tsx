@@ -51,6 +51,13 @@ export type SelectStateType = {
 
 export class Select extends React.Component<SelectPropsType, SelectStateType> {
 
+    /**
+     * When the props change we may need to update the state to allow this component to be controlled and managed from
+     * its parents instead of being managed internally. When the initialOption property changes, a new derived state
+     * will be returned, otherwise null will be returned to represent that no changes are required
+     * @param props the new properties as described by {@link SelectPropsType}
+     * @param state the existing state as described by {@link SelectStateType}
+     */
     static getDerivedStateFromProps(props: SelectPropsType, state: SelectStateType) {
         if (props.initialOption !== undefined && props.initialOption !== state.selected) {
             return {
@@ -159,6 +166,9 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
     render() {
         const list: any[] = [];
         for (const option of this.props.options) {
+            // Generate a list entry option for every option. They must support a key press to comply with accessibility
+            // options so they are bound to space. Their key is produced from this classes UUID and the option name
+            // to ensure multiple selects of the same type can exist without any key overlap.
             if (typeof (option) === 'string') {
                 list.push(
                     <li
@@ -186,6 +196,8 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
             }
         }
 
+        // If there is a selected element we need to extract its key if it is an object or just the selected value if
+        // not so we can apply the right value
         let selectedKey;
         if (this.state.selected) {
             if (typeof (this.state.selected) === 'string') selectedKey = this.state.selected;
@@ -193,6 +205,10 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
         }
 
         const text = this.state.selected
+            // Because the generated divs for this select are meant to represent an input, we need to make them comply
+            // with the accessibility options. Therefore they need to be marked as a button because the user can click
+            // it and from before because they have an on click handler they also need a key listener and to ensure they
+            // fit into the natural flow of the page, they need to have a tab index.
             ? (
                 <div
                     onKeyPress={InputUtilities.higherOrderPress(32, this.activateList, this)}
@@ -220,6 +236,9 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                 <label htmlFor={this.props.name} className={this.state.selected ? 'moved' : 'neutral'}>
                     {this.props.placeholder}
 
+                    {/* Warning: This input will raise a warning with React because it is a hidden but controlled
+                    input which are not recommended for use. */}
+
                     <input
                         type="hidden"
                         id={this.props.name}
@@ -230,6 +249,10 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                 </label>
                 {text}
                 <FontAwesomeIcon icon={faCaretDown} />
+
+                {/* A transition is included for the opening and closing of the menu. This is handled through the SCSS
+                file for the properties but the menu is controlled from here. */}
+
                 <Transition
                     in={this.state.active}
                     timeout={300}

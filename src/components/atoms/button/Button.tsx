@@ -33,6 +33,12 @@ export type ButtonPropsType = {
     onClick?: () => void;
 };
 
+/**
+ * Represents a HTML Button instance with additional properties. Renders down to a HTML button so can still be used in
+ * forms but a distinct onClick handler is also provided
+ * @param props the props as defined in {@link ButtonPropsType}
+ * @constructor
+ */
 export function Button(props: ButtonPropsType) {
     const arrow = props.includeArrow ? <FontAwesomeIcon className="arrow" icon={faArrowRight} /> : null;
     const icon = props.icon === undefined
