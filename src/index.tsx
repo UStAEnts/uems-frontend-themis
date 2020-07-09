@@ -12,11 +12,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBox, faCalendarTimes, faColumns, faPaperPlane, faWrench } from '@fortawesome/free-solid-svg-icons';
 import App from './pages/App';
 import { Events } from './pages/events/Events';
+import Event  from "./pages/event/Event";
+import moment from "moment";
 
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-import Event  from "./pages/event/Event";
-import moment from "moment";
+import 'flatpickr/dist/themes/material_green.css'
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);

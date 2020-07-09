@@ -6,17 +6,30 @@ import { Theme } from "../../../theme/Theme";
 import "./EditableProperty.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import DatePicker from "react-flatpickr";
+
+export type SelectType = {
+    type: 'select',
+    options: string[] | { key: string, value: string }[],
+    onChange?: (newValue: string | { key: string, value: string }) => void,
+};
+
+export type DateType = {
+    type: 'date',
+    value?: Date,
+    onChange?: (newValue: Date) => void,
+}
 
 export type EditablePropertyPropsType = {
     name: string,
     children: React.ReactNode | React.ReactNode[],
-    options: string[] | { key: string, value: string }[],
-    onChange?: (newValue: string | { key: string, value: string }) => void,
+    config: SelectType | DateType,
 }
 
 export type EditablePropertyStateType = {
     editMode: boolean,
     selectProperty?: string | { key: string, value: string },
+    selectedTime?: Date,
 };
 
 export class EditableProperty extends React.Component<EditablePropertyPropsType, EditablePropertyStateType> {
@@ -30,38 +43,49 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
             editMode: false,
         };
 
-        this.enableEditing = this.enableEditing.bind(this);
-        this.disableEditing = this.disableEditing.bind(this);
-        this.onSelectChange = this.onSelectChange.bind(this);
-        this.saveProperty = this.saveProperty.bind(this);
     }
 
-    private enableEditing() {
+    private enableEditing = () => {
         this.setState((oldState) => ({
             ...oldState,
             editMode: true,
         }));
     }
 
-    private disableEditing() {
+    private disableEditing = () => {
         this.setState((oldState) => ({
             ...oldState,
             editMode: false,
         }));
     }
 
-    private onSelectChange(option: string | { key: string, value: string }) {
+    private onSelectChange = (option: string | { key: string, value: string }) => {
         this.setState((oldState) => ({
             ...oldState,
             selectProperty: option,
         }));
     }
 
-    private saveProperty() {
-        if (this.state.selectProperty === undefined) return;
+    private onTimeChange = (date: Date[]) => {
+        if (date.length > 0 && date[0]) {
+            this.setState((oldState) => ({
+                ...oldState,
+                selectedTime: date[0],
+            }));
+        }
+    }
+
+    private saveProperty = () => {
+        if (this.state.selectProperty === undefined && this.state.selectedTime === undefined) return;
 
         this.disableEditing();
-        if (this.props.onChange) this.props.onChange(this.state.selectProperty);
+
+        if (this.props.config.type === 'select' && this.state.selectProperty) {
+            if (this.props.config.onChange) this.props.config.onChange(this.state.selectProperty);
+        }
+        if (this.props.config.type === 'date' && this.state.selectedTime) {
+            if (this.props.config.onChange) this.props.config.onChange(this.state.selectedTime);
+        }
     }
 
     private renderEdit() {
@@ -70,13 +94,23 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                 className="editable-property"
             >
                 <p>Please select a new value for this property</p>
-                <Select
-                    placeholder={this.props.name}
-                    name={this.props.name}
-                    options={this.props.options}
-                    onSelectListener={this.onSelectChange}
-                    initialOption={this.state.selectProperty}
-                />
+                {this.props.config.type === 'select'
+                    ? (
+                        <Select
+                            placeholder={this.props.name}
+                            name={this.props.name}
+                            options={this.props.config.options}
+                            onSelectListener={this.onSelectChange}
+                            initialOption={this.state.selectProperty}
+                        />
+                    )
+                    : (
+                        <DatePicker
+                            data-enable-time
+                            onChange={this.onTimeChange}
+                            value={this.props.config.value}
+                        />
+                    )}
                 <div className="buttons">
                     <Button
                         color={Theme.SUCCESS}
@@ -101,7 +135,7 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                     className="edit"
                     onClick={this.enableEditing}
                 >
-                    <FontAwesomeIcon icon={faEdit}/>
+                    <FontAwesomeIcon icon={faEdit} />
                     (Edit...)
                 </span>
             </div>

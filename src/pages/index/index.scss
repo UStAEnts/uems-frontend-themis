@@ -19,7 +19,13 @@ body, html {
   margin: 0;
   min-width: 100%;
   height: 100%;
-  box-sizing: border-box;
+  box-sizing: border-box !important;
+
+  .flatpickr-input{
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
 
   #root {
     display: flex;
