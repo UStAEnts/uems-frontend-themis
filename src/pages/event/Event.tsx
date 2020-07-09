@@ -160,16 +160,11 @@ class Event extends React.Component<EventPropsType, EventStateType> {
     }
 
     render() {
-        console.log(this.props.match.params);
         return this.state.event ? (
             <div className="event-view loaded">
                 <div className="real">
                     <h1>{this.state.event.name}</h1>
                     <CommentBox
-                        poster={{
-                            name: 'idk',
-                            username: 'state_management_is_hard',
-                        }}
                         submitCommentHandler={() => false}
                         contentClasses={[]}
                     />
