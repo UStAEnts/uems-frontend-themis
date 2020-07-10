@@ -48,7 +48,7 @@ export class NotificationRenderer extends React.Component<NotificationRendererPr
     private makeNotification = (notification: Notification) => {
         if (notification.icon === undefined) {
             return (
-                <div className={`notification ${notification.state || ''}`}>
+                <div className={`notification ${notification.state || ''}`} key={notification.id}>
                     <div className="content">
                         <div className="rest">
                             <div className="title">{notification.title}</div>
@@ -69,7 +69,7 @@ export class NotificationRenderer extends React.Component<NotificationRendererPr
             )
         } else {
             return (
-                <div className={`notification with-icon ${notification.state || ''}`}>
+                <div className={`notification with-icon ${notification.state || ''}`} key={notification.id}>
                     <div className="content">
                         <div className="rest">
                             <div className="left">
