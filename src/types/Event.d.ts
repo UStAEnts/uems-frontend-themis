@@ -41,3 +41,17 @@ export type Comment = {
     content: string,
     type: ContentClass,
 }
+
+/**
+ * Source: https://xiomi.stoplight.io/docs/uems-gateway-api/reference/kill-me.yaml/components/schemas/FileResponse
+ */
+export type GatewayFile = {
+    id: string,
+    filename: string,
+    created: number,
+    author: User,
+    size: number,
+    downloadURL: string,
+    name: string,
+    private: boolean,
+}
