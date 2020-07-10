@@ -99,34 +99,38 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
     private showNotification = (title: string, content?: string, icon?: IconDefinition, color?: string) => {
         const id = v4();
 
-        this.setState((oldState) => ({
-            ...oldState,
-            notifications: oldState.notifications.concat([{
-                id,
-                title,
-                content,
-                icon,
-                color
-            }]),
-        }));
+        this.setState((oldState) => {
+            const newState = {
+                ...oldState,
+                notifications: oldState.notifications.concat([{
+                    id,
+                    title,
+                    content,
+                    icon,
+                    color
+                }]),
+            };
 
-        // @ts-ignore
-        this.state.timeouts[id] = setTimeout(() => {
-            this.setState((oldState) => {
-                const newStates = { ...oldState };
+            // @ts-ignore
+            newState.timeouts[id] = setTimeout(() => {
+                this.setState((oldState) => {
+                    const newStates = { ...oldState };
 
-                // Add the leaving state
-                newStates.animationStates[id] = 'leaving';
+                    // Add the leaving state
+                    newStates.animationStates[id] = 'leaving';
 
-                // Schedule it to be removed in 1 1/2 second once the animation is done
-                // @ts-ignore
-                this.state.timeouts[id] = setTimeout(() => {
-                    this.clearNotification(id, true);
-                }, 1500);
+                    // Schedule it to be removed in 1 1/2 second once the animation is done
+                    // @ts-ignore
+                    newStates.timeouts[id] = setTimeout(() => {
+                        this.clearNotification(id, true);
+                    }, 1500);
 
-                return newStates;
-            });
-        }, 5000);
+                    return newStates;
+                });
+            }, 5000);
+
+            return newState;
+        });
 
         return id;
     }
