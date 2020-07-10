@@ -19,6 +19,7 @@
     "eslint": "^6.6.0",
     "express": "^4.17.1",
     "helmet": "^3.23.3",
+    "include-media": "^1.4.9",
     "markdown-to-jsx": "^6.11.4",
     "moment": "^2.27.0",
     "node-sass": "^4.14.1",
