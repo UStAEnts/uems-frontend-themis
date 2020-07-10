@@ -6,11 +6,12 @@ import { Theme } from "../../theme/Theme";
 
 import './Event.scss';
 import moment from "moment";
-import { CommentBox } from "../../components/atoms/comment-box/CommentBox";
 import { EditableProperty } from "../../components/components/editable-property/EditableProperty";
 import Axios from "axios";
 import Config from "../../config/Config";
 import * as url from "url";
+import { CommentList } from "../../components/components/comment-list/CommentList";
+import { FileList } from "../../components/atoms/file-bar/FileBar";
 
 export type EventPropsType = {} & RouteComponentProps<{
     id: string
@@ -74,7 +75,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
     private patchEvent = (changeProps: Partial<GatewayEvent>) => {
         if (!this.state.event) return;
 
-        const changed:any = {
+        const changed: any = {
             ...changeProps,
         };
 
@@ -116,7 +117,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         });
     }
 
-    private changeProperty(property: keyof GatewayEvent){
+    private changeProperty(property: keyof GatewayEvent) {
         return (e: any) => {
             const changes: Partial<GatewayEvent> = {};
 
@@ -164,10 +165,37 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             <div className="event-view loaded">
                 <div className="real">
                     <h1>{this.state.event.name}</h1>
-                    <CommentBox
-                        submitCommentHandler={() => false}
-                        contentClasses={[]}
-                    />
+                    {/*TODO: add file loading*/}
+                    <FileList files={[
+                        {
+                            private: false,
+                            size: 1000,
+                            filename: 'Some file.txt',
+                            name: 'Rider',
+                            author: {
+                                username: 'ryan',
+                                name: 'Ryan Delaney',
+                            },
+                            created: new Date().getTime(),
+                            downloadURL: '/files/x',
+                            id: 'abcd'
+                        },
+                        {
+                            private: true,
+                            size: 1000,
+                            filename: 'Some file.txt',
+                            name: 'Rider',
+                            author: {
+                                username: 'ryan',
+                                name: 'Ryan Delaney',
+                            },
+                            created: new Date().getTime(),
+                            downloadURL: '/files/x',
+                            id: 'abcd'
+                        },
+                    ]} />
+                    {/*TODO: add comment loading and handling*/}
+                    <CommentList comments={[]} />
                 </div>
                 <div className="rightbar-real">
                     <div className="entry">
