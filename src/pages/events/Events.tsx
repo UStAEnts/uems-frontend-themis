@@ -38,14 +38,22 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
             },
         }).then((data) => {
             this.setState({
-                events: data.data.map((e: any) => ({
-                    ...e,
-                    name: e.name,
-                    venue: 'not in data',
-                    bookingStart: new Date(e.start_date),
-                    bookingEnd: new Date(e.end_date),
-                    attendance: -1,
-                })) as unknown as GatewayEvent[],
+                events: data.data.map((e: any) => {
+                    let start_date = new Date(0);
+                    start_date.setUTCSeconds(parseInt(e.event_start_date, 10));
+
+                    let end_date = new Date(0);
+                    end_date.setUTCSeconds(parseInt(e.event_end_date, 10));
+
+                    return {
+                        ...e,
+                        name: e.event_name,
+                        venue: 'not in data',
+                        bookingStart: start_date,
+                        bookingEnd: end_date,
+                        attendance: -1,
+                    };
+                }) as unknown as GatewayEvent[],
             });
         }).catch((err: Error) => {
             this.setState((oldState) => ({
