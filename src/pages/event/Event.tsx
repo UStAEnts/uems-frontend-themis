@@ -12,6 +12,7 @@ import Config from "../../config/Config";
 import * as url from "url";
 import { CommentList } from "../../components/components/comment-list/CommentList";
 import { FileList } from "../../components/atoms/file-bar/FileBar";
+import ReactTimeAgo from "react-time-ago";
 
 export type EventPropsType = {} & RouteComponentProps<{
     id: string
@@ -165,6 +166,22 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             <div className="event-view loaded">
                 <div className="real">
                     <h1>{this.state.event.name}</h1>
+                    <div className="properties-bar">
+                        <div className="property author">
+                            <span className="label">Created By</span>
+                            <span className="value">Unknown</span>
+                        </div>
+                        <div className="property creation">
+                            <span className="label">Created</span>
+                            <span className="value">
+                            <ReactTimeAgo date={this.state.event.bookingStart} />
+                            </span>
+                        </div>
+                        <div className="property updates">
+                            <span className="label">Updates</span>
+                            <span className="value">20</span>
+                        </div>
+                    </div>
                     {/*TODO: add file loading*/}
                     <FileList files={[
                         {

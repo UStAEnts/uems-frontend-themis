@@ -16,8 +16,8 @@ $rightbarMinWidth: 14pc;
     flex-direction: row;
 
 
-    @include media('<=1400px'){
-      .real{
+    @include media('<=1400px') {
+      .real {
         padding: 0 0 0 30px !important;
       }
     }
@@ -83,7 +83,7 @@ $rightbarMinWidth: 14pc;
             padding: 5px;
             box-sizing: border-box;
 
-            &.duration{
+            &.duration {
               font-style: italic;
             }
 
@@ -94,6 +94,24 @@ $rightbarMinWidth: 14pc;
           }
         }
 
+      }
+    }
+
+    .properties-bar {
+      color: gray;
+      display: flex;
+      border-bottom: 1px solid gainsboro;
+      padding: 0 0 10px;
+      margin-bottom: 30px;
+      margin-top: -10px;
+
+      .property {
+        flex-grow: 1;
+
+        .label{
+          margin-right: 10px;
+          font-weight: bold;
+        }
       }
     }
   }
