@@ -7,7 +7,7 @@ import './EventCard.scss';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { GatewayEvent, EventState } from '../../../types/Event';
+import { EventState, GatewayEvent } from '../../../types/Event';
 
 export type EventCardPropsType = {
     /**
@@ -22,6 +22,11 @@ export type EventCardPropsType = {
 
 export type EventCardStateType = {};
 
+/**
+ * Represents a single card displaying an event either in collapsed or expanded mode. In collapsed mode the content is
+ * reduced and shown more vertically to reduce the width required for the card. The card will link itself to the event
+ * URL for the specified event.
+ */
 export class EventCard extends React.Component<EventCardPropsType, EventCardStateType> {
 
     static iconColor = '#b7b7b7';
@@ -140,6 +145,11 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
         return <FontAwesomeIcon icon={this.props.event.icon} color={EventCard.iconColor} size="lg" />;
     }
 
+    /**
+     * Render the collapsed version of the card. In this form only the name, venue, icon, duration and attendance are
+     * fully displayed with the building and ents state being represented by two coloured bars which will display the
+     * type when hovered over. The tooltips should be unique to the event so they will not overlap.
+     */
     private renderCollapsed() {
         return (
             <div className="event-card collapsed">
@@ -199,6 +209,10 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
 
     }
 
+    /**
+     * Render the expanded form of the event card which displays the events name, venue, attendance, booking start, end,
+     * icon, duration, building state and ents state in full.
+     */
     private renderExpanded() {
         return (
             <div className="event-card">

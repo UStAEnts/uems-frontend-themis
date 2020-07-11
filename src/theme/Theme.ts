@@ -1,3 +1,6 @@
+/**
+ * Contains colours sourced from the flat UI CA palette.
+ */
 export class Theme {
 
     static readonly PINK_LIGHT: string = '#ff9ff3';

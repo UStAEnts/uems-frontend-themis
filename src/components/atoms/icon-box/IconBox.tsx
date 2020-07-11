@@ -24,6 +24,11 @@ export type IconBoxPropsType = {
     classNameOverride?: string 
 };
 
+/**
+ * Represents a rounded rectangle box which contains a single font awesome icon as provided
+ * @param props the properties as described by {@link IconBoxPropsType}
+ * @constructor
+ */
 export function IconBox(props: IconBoxPropsType) {
 
     return (
