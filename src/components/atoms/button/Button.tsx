@@ -30,7 +30,11 @@ export type ButtonPropsType = {
     /**
      * Click listener
      */
-    onClick?: () => void;
+    onClick?: () => void,
+    /**
+     * An optional name to apply to the button
+     */
+    name?: string;
 };
 
 /**
@@ -60,6 +64,8 @@ export function Button(props: ButtonPropsType) {
             type="button"
             style={buttonStyle}
             onClick={props.onClick}
+            name={props.name}
+            aria-label={props.name}
         >
             {icon}
             <div className="text">{props.text}</div>
