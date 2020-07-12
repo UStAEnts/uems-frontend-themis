@@ -29,14 +29,16 @@ export class CommentList extends React.Component<CommentListPropsType, CommentLi
     private handleSubmit(content: string) {
         this.setState((oldState) => ({
             comments: oldState.comments.concat({
+                id: '',
                 content,
-                type: {
+                topic: {
                     name: '?',
                 },
                 poster: this.context.user,
-                posted: new Date(),
-            }),
+                posted: new Date().getTime(),
+            } as CommentType),
         }));
+        // TODO: update parent etc - general net things
     }
 
     render() {
@@ -48,7 +50,7 @@ export class CommentList extends React.Component<CommentListPropsType, CommentLi
                 />
                 {this.props.comments
                     .concat(this.state.comments)
-                    .sort((a, b) => b.posted.getTime() - a.posted.getTime())
+                    .sort((a, b) => b.posted - a.posted)
                     .map((e) => (
                         <Comment comment={e} />
                     ))}

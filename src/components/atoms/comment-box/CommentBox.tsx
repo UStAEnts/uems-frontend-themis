@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
-import { ContentClass } from '../../../types/Event';
+import { GatewayTopic } from '../../../types/Event';
 
 import { TextField } from '../text-field/TextField';
 import { Button } from '../button/Button';
@@ -11,14 +11,14 @@ import { Select } from '../select/Select';
 import { GlobalContext } from "../../../context/GlobalContext";
 
 export type CommentBoxPropsType = {
-    contentClasses: ContentClass[],
-    submitCommentHandler: (content: string, type?: ContentClass) => void;
+    contentClasses: GatewayTopic[],
+    submitCommentHandler: (content: string, type?: GatewayTopic) => void;
 }
 
 export type CommentBoxStateType = {
     error?: string
     content: string,
-    type?: ContentClass,
+    type?: GatewayTopic,
 }
 
 export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxStateType> {

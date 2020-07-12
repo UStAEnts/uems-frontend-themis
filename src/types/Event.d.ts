@@ -29,17 +29,20 @@ export type User = {
     profile?: string,
 }
 
-export type ContentClass = {
+export type GatewayTopic = {
+    id: string,
     name: string,
     description?: string,
     color?: string,
+    icon?: string,
 }
 
 export type Comment = {
+    id: string,
+    posted: number,
     poster: User,
-    posted: Date,
+    topic: GatewayTopic,
     content: string,
-    type: ContentClass,
 }
 
 /**

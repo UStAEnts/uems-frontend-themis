@@ -25,14 +25,14 @@ export function Comment(props: CommentPropsType) {
                     id={`cb-${id}`}
                 >
                     <strong>Category: </strong>
-                    <span>{props.comment.type.name}</span>
+                    <span>{props.comment.topic.name}</span>
                 </ReactTooltip>
                 <div
                     data-tip
                     data-for={`cb-${id}`}
                     className="bar"
                     style={{
-                        backgroundColor: props.comment.type.color || '#8395a7',
+                        backgroundColor: props.comment.topic.color || '#8395a7',
                     }}
                 />
                 <div className="image">
