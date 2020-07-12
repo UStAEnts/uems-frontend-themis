@@ -262,7 +262,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                     config={{
                                         type: 'date',
                                         value: this.state.event.bookingStart,
-                                        onChange: this.changeProperty('bookingStart'),
+                                        onChange: this.changeStartTime,
                                     }}
                                 >
                                     {moment(this.state.event.bookingStart).format('dddd Do MMMM (YYYY), HH:mm')}
@@ -282,7 +282,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                     config={{
                                         type: 'date',
                                         value: this.state.event.bookingEnd,
-                                        onChange: this.changeProperty('bookingEnd'),
+                                        onChange: this.changeEndTime,
                                     }}
                                 >
                                     {moment(this.state.event.bookingEnd).format('dddd Do MMMM (YYYY), HH:mm')}
