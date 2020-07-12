@@ -67,7 +67,14 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
      * state to clear the text box. If the calling function raises an error, the message will be displayed to the user
      * without clearing the text field
      */
-    private handleSubmit() {
+    private handleSubmit = () => {
+        if (this.state.content === '' || this.state.type === undefined) {
+            this.setState((oldState) => ({
+                ...oldState,
+                error: 'Cannot submit an empty comment or a comment without a type!',
+            }));
+            return;
+        }
         try {
             this.props.submitCommentHandler(this.state.content);
 
@@ -92,6 +99,18 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
         this.setState((oldState) => ({
             ...oldState,
             content: value,
+        }));
+    }
+
+    /**
+     * Handles the changing of the select by finding the content class with the given ID (value if an object). This
+     * updates the value in the state.
+     * @param option the option selected by the user
+     */
+    private handleSelect = (option: string | {key:string, value:string}) => {
+        this.setState((oldState) => ({
+            ...oldState,
+            type: this.props.contentClasses.find((e) => typeof(option) === "string" ? e.id === option : e.id === option.value),
         }));
     }
 
@@ -164,8 +183,13 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                             name="type"
                             options={this.props.contentClasses.map((e) => ({
                                 key: e.name + (e.description ? ` (${e.description})` : ''),
-                                value: e.name,
+                                value: e.id,
                             }))}
+                            initialOption={this.state.type ? {
+                                key: this.state.type.name + (this.state.type.description ? ` (${this.state.type.description})` : ''),
+                                value: this.state.type.id,
+                            } : undefined}
+                            onSelectListener={this.handleSelect}
                         />
                         <div
                             style={{
@@ -177,6 +201,7 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                                 text="Post"
                                 icon={faComment}
                                 onClick={this.handleSubmit}
+                                name="submit"
                             />
                         </div>
                     </div>
