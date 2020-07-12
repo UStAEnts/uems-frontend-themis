@@ -1,4 +1,4 @@
-import { EntsStatus, EventChange, EventState, GatewayEvent, GatewayFile } from "../../types/Event";
+import { Comment, EntsStatus, EventChange, EventState, GatewayEvent, GatewayFile } from "../../types/Event";
 import React from "react";
 import { RouteComponentProps, withRouter } from "react-router";
 import Loader from "react-loader-spinner";
@@ -31,6 +31,7 @@ export type EventStateType = {
     entsStates?: EntsStatus[],
     buildingStates?: EventState[],
     files?: GatewayFile[],
+    comments?: Comment[],
     venues?: string[],
 };
 
@@ -74,10 +75,10 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
                 ...oldState,
-                event: data.data.event,
+                event: data.data.result.event,
 
                 // Changelog is provided on the /event/{id} endpoint but no where else (not on patch)
-                changelog: data.data.changelog,
+                changelog: data.data.result.changelog,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -91,13 +92,33 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                 Config.BASE_GATEWAY_URI,
                 'events',
                 encodeURIComponent(this.props.match.params.id),
+                'comments'
+            )
+        ).then((data) => {
+            // TODO: add schema validation for data returned by the server
+            this.setState((oldState) => ({
+                ...oldState,
+                comments: data.data.result,
+            }));
+        }).catch((err: Error) => {
+            console.error('Failed to load event data');
+            console.error(err);
+
+            this.failedLoad(`Could not load comments: ${err.message}`);
+        });
+
+        Axios.get(
+            urljoin(
+                Config.BASE_GATEWAY_URI,
+                'events',
+                encodeURIComponent(this.props.match.params.id),
                 'files',
             )
         ).then((data) => {
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
                 ...oldState,
-                files: data.data.files,
+                files: data.data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -113,7 +134,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
                 ...oldState,
-                venues: data.data,
+                venues: data.data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -129,7 +150,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
                 ...oldState,
-                entsStates: data.data,
+                entsStates: data.data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -145,7 +166,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
                 ...oldState,
-                buildingStates: data.data,
+                buildingStates: data.data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -212,7 +233,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         ).then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                event: data.data
+                event: data.data.result
             }));
         }).catch((err) => {
             // TODO: figure out how to raise errors!
@@ -330,7 +351,11 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                     {/*        id: 'abcd'*/}
                     {/*    },*/}
                     {/*]} />*/}
-                    <CommentList comments={[]} />
+                    {
+                        this.state.comments
+                        ? <CommentList comments={this.state.comments} />
+                        : undefined
+                    }
                 </div>
                 <div className="rightbar-real">
                     <div className="entry">
