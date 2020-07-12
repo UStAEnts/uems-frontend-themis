@@ -96,7 +96,7 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
         return true;
     }
 
-    private showNotification = (title: string, content?: string, icon?: IconDefinition, color?: string) => {
+    private showNotification = (title: string, content?: string, icon?: IconDefinition, color?: string, action?: Notification['action']) => {
         const id = v4();
 
         this.setState((oldState) => {
@@ -107,7 +107,8 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                     title,
                     content,
                     icon,
-                    color
+                    color,
+                    action,
                 }]),
             };
 

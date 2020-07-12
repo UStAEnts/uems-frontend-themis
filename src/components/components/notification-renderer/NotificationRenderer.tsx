@@ -13,6 +13,11 @@ export type Notification = {
     icon?: IconDefinition,
     color?: string,
     state?: string,
+    action?: {
+        name: string,
+        link?: string,
+        onClick?: () => void,
+    }
 }
 
 export type NotificationRendererPropsType = {
@@ -25,11 +30,11 @@ export type NotificationRendererPropsType = {
  * @param notifications the array of notifications to process
  * @param animationStates a set of states to apply to the notification by ID
  */
-export function processNotifications(notifications: Notification[], animationStates?: {[key: string]: string}) {
+export function processNotifications(notifications: Notification[], animationStates?: { [key: string]: string }) {
     for (let notification of notifications) {
         if (notification.id === undefined) notification.id = v4();
 
-        if (animationStates && Object.prototype.hasOwnProperty.call(animationStates, notification.id)){
+        if (animationStates && Object.prototype.hasOwnProperty.call(animationStates, notification.id)) {
             notification.state = animationStates[notification.id];
         }
     }
@@ -65,6 +70,19 @@ export class NotificationRenderer extends React.Component<NotificationRendererPr
                             }}
                         />
                     </div>
+                    {
+                        notification.action
+                            ? (
+                                <div className="action" onClick={notification.action.onClick}>
+                                    {
+                                        notification.action.link
+                                            ? <Link to={"/"}>{notification.action.name}</Link>
+                                            : <span>{notification.action.name}</span>
+                                    }
+                                </div>
+                            )
+                            : undefined
+                    }
                 </div>
             )
         } else {
@@ -92,9 +110,19 @@ export class NotificationRenderer extends React.Component<NotificationRendererPr
                             }}
                         />
                     </div>
-                    <div className="action">
-                        <Link to={"/"}>Visit...</Link>
-                    </div>
+                    {
+                        notification.action
+                            ? (
+                                <div className="action" onClick={notification.action.onClick}>
+                                    {
+                                        notification.action.link
+                                        ? <Link to={"/"}>{notification.action.name}</Link>
+                                        : <span>{notification.action.name}</span>
+                                    }
+                                </div>
+                            )
+                            : undefined
+                    }
                 </div>
             )
         }
