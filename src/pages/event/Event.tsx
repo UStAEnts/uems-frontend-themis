@@ -21,17 +21,35 @@ import { faSkullCrossbones } from "@fortawesome/free-solid-svg-icons";
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
 } & RouteComponentProps<{
+    /**
+     * The ID of the event to be rendered. This will be looked up from the API endpoint
+     */
     id: string
 }>
 
 export type EventStateType = {
+    /**
+     * The ID of this event
+     */
     id?: string,
+    /**
+     * The retrieved event properties
+     */
     event?: GatewayEvent,
     changelog?: EventChange,
+    /**
+     * The list of possible ents states to which this event can be updated
+     */
     entsStates?: EntsStatus[],
+    /**
+     * The list of possible building states to which this event can be updated
+     */
     buildingStates?: EventState[],
     files?: GatewayFile[],
     comments?: Comment[],
+    /**
+     * The venues that this event could take place in
+     */
     venues?: string[],
 };
 
@@ -64,6 +82,9 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         }
     }
 
+    /**
+     * When the components mount, we need to query the API for the actual properties we need
+     */
     componentDidMount() {
         Axios.get(
             urljoin(
@@ -263,6 +284,12 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         }
     }
 
+    /**
+     * Generates a select editable property with the values provided. This currently does not support an udpate handler
+     * @param options the options which the user should be able to select
+     * @param name the name of the property which could be changed
+     * @param selected the currently selected value
+     */
     private generateEditableProperty = (
         options: string[] | { key: string, value: string }[] | undefined,
         name: string, selected: string | undefined,
@@ -450,5 +477,8 @@ class Event extends React.Component<EventPropsType, EventStateType> {
 
 };
 
+/**
+ * Bind the event page with the router so we can access the ID if the path
+ */
 // @ts-ignore
 export default withRouter(withNotificationContext(Event));

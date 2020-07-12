@@ -21,13 +21,25 @@ export type DateType = {
 }
 
 export type EditablePropertyPropsType = {
+    /**
+     * The name of the property which should be edited. This will be passed to the control where elevant
+     */
     name: string,
+    /**
+     * An editable property must contain one or more children which are rendered by default when not in edit mode
+     */
     children: React.ReactNode | React.ReactNode[],
     config: SelectType | DateType,
 }
 
 export type EditablePropertyStateType = {
+    /**
+     * If the field is currently being edited
+     */
     editMode: boolean,
+    /**
+     * The currently selected property from the select box
+     */
     selectProperty?: string | { key: string, value: string },
     selectedTime?: Date,
 };
@@ -45,6 +57,9 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
 
     }
 
+    /**
+     * Updates the state to enable the edit mode
+     */
     private enableEditing = () => {
         this.setState((oldState) => ({
             ...oldState,
@@ -52,6 +67,9 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
         }));
     }
 
+    /**
+     * Updates the state to disable the edit mode
+     */
     private disableEditing = () => {
         this.setState((oldState) => ({
             ...oldState,
@@ -59,6 +77,10 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
         }));
     }
 
+    /**
+     * Updates the state when a new value is provided. To be called when the select has a new value
+     * @param option the newly selected option
+     */
     private onSelectChange = (option: string | { key: string, value: string }) => {
         this.setState((oldState) => ({
             ...oldState,
@@ -74,6 +96,10 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
             }));
         }
     }
+    /**
+     * If the selected property has been updated, it will disable editing and then call the onChange listener if one
+     * has been provided
+     */
 
     private saveProperty = () => {
         if (this.state.selectProperty === undefined && this.state.selectedTime === undefined) return;
@@ -88,6 +114,10 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
         }
     }
 
+    /**
+     * Renders the edit field which has a header and a select field with a save and cancel for the user to pick their
+     * choice
+     */
     private renderEdit() {
         return (
             <div
@@ -127,6 +157,9 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
         )
     }
 
+    /**
+     * Renders the default property which contains the children passed and a font awesome icon box and the text 'edit'
+     */
     private renderDefault() {
         return (
             <div className="editable-property">
