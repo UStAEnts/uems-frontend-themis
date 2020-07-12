@@ -55,3 +55,13 @@ export type GatewayFile = {
     name: string,
     private: boolean,
 }
+
+/**
+ * Source: https://xiomi.stoplight.io/docs/uems-gateway-api/reference/kill-me.yaml/components/schemas/ActionResponse
+ */
+export type EventChange = {
+    id: string,
+    occurred: number,
+    change: string,
+    user?: User,
+}
