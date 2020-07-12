@@ -13,8 +13,12 @@ import * as url from "url";
 import { CommentList } from "../../components/components/comment-list/CommentList";
 import { FileList } from "../../components/atoms/file-bar/FileBar";
 import ReactTimeAgo from "react-time-ago";
+import { NotificationContextType } from "../../context/NotificationContext";
+import { withNotificationContext } from "../../components/WithNotificationContext";
 
-export type EventPropsType = {} & RouteComponentProps<{
+export type EventPropsType = {
+    notificationContext?: NotificationContextType,
+} & RouteComponentProps<{
     id: string
 }>
 
@@ -307,4 +311,5 @@ class Event extends React.Component<EventPropsType, EventStateType> {
 
 };
 
-export default withRouter(Event);
+// @ts-ignore
+export default withRouter(withNotificationContext(Event));
