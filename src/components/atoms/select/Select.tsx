@@ -214,6 +214,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     onKeyPress={InputUtilities.higherOrderPress(32, this.activateList, this)}
                     tabIndex={0}
                     role="button"
+                    aria-label="launch-menu"
                     className="md-sl-text"
                     onClick={() => this.activateList()}
                 >
@@ -224,6 +225,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     onKeyPress={InputUtilities.higherOrderPress(32, this.activateList, this)}
                     tabIndex={0}
                     role="button"
+                    aria-label="launch-menu"
                     className="md-sl-text inactive"
                     onClick={() => this.activateList()}
                 >
