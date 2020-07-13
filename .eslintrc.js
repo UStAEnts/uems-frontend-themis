@@ -30,6 +30,7 @@ module.exports = {
         'object-curly-newline': ['error', {
         	'ImportDeclaration': 'never',
         }],
+        'linebreak-style': 'off',
 
         'no-unused-vars': 'off',
         'no-restricted-syntax': 'off',
