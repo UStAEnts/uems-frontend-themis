@@ -7,7 +7,7 @@ on:
   push:
     branches:
     - master
-    - '*testing*'
+    - '**testing**'
   pull_request:
     branches: [ master ]
 
