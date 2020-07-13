@@ -173,6 +173,8 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                 list.push(
                     <li
                         onKeyPress={(e) => InputUtilities.bindKeyPress(e, 32, this.handleEntryClick, this, option)}
+                        role="option"
+                        aria-selected={this.state.selected === option}
                         onClick={() => this.handleEntryClick(option)}
                         className={`md-sl-li${this.state.selected === option ? ' md-sl-active' : ''}`}
                         value={option}
@@ -185,6 +187,8 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                 list.push(
                     <li
                         onKeyPress={(e) => InputUtilities.bindKeyPress(e, 32, this.handleEntryClick, this, option)}
+                        role="option"
+                        aria-selected={this.state.selected === option}
                         key={`${this.state.uuid}.${option.value}`}
                         className={`md-sl-li${this.state.selected === option ? ' md-sl-active' : ''}`}
                         value={option.value}
@@ -265,6 +269,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     {(state) => (
                         <ul
                             ref={this.ulRef}
+                            role="listbox"
                             key="loo"
                             className={`md-sl-ul ${state}`}
                         >
