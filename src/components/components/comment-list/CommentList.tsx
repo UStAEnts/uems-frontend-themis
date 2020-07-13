@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Comment as CommentType, User } from '../../../types/Event';
+import { Comment as CommentType } from '../../../types/Event';
 import { CommentBox } from '../../atoms/comment-box/CommentBox';
 import { Comment } from '../../atoms/comment/Comment';
 import { GlobalContext } from "../../../context/GlobalContext";
