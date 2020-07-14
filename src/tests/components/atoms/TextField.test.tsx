@@ -12,7 +12,7 @@ import { cleanDOMTest } from '../../TestUtils';
 // Functionality checks
 // - onchange listener is executed
 
-describe('textfield', () => {
+describe('<TextField />', () => {
 
     describe('rendering', () => {
 

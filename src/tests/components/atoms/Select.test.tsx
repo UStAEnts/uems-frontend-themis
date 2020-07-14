@@ -4,7 +4,7 @@ import React from 'react';
 import { Select } from '../../../components/atoms/select/Select';
 import { mockDocumentEvents, promiseTimeout } from '../../TestUtils';
 
-describe('select', () => {
+describe('<Select />', () => {
     it('pressing select opens menu', () => {
         const { getByRole } = render(<Select placeholder="Something" name="xinput" options={['a', 'b', 'c']} />);
 
