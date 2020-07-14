@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { Select } from '../../../components/atoms/select/Select';
-import { mockDocumentEvents, promiseTimeout } from "../../TestUtils";
+import { mockDocumentEvents, promiseTimeout } from '../../TestUtils';
 
 describe('select', () => {
     it('pressing select opens menu', () => {
