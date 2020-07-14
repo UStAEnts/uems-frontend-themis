@@ -1,3 +1,5 @@
+import { cleanup } from '@testing-library/react';
+
 export function promiseTimeout(func: Function, time: number) {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -29,4 +31,9 @@ export function mockDocumentEvents(
 
     document.addEventListener = oldAdd;
     document.removeEventListener = oldRemove;
+}
+
+export async function cleanDOMTest(action: () => void) {
+    await action();
+    return cleanup();
 }
