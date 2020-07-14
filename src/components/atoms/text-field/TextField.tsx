@@ -134,8 +134,10 @@ export class TextField extends React.Component<TextFieldPropsType, TextFieldStat
             : undefined;
 
         // Only render the label if we have opted to include the label
+        // Include required even if we've opted to not have the label. If they are that concerned
+        // they can hide it with CSS
         const label = this.props.noLabel
-            ? undefined
+            ? sublabel
             : (
                 <label
                     htmlFor={this.props.name}
