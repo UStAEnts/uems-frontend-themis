@@ -7,6 +7,7 @@ import "./EditableProperty.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-flatpickr";
+import InputUtilities from "../../../utilities/InputUtilities";
 
 export type SelectType = {
     type: 'select',
@@ -166,6 +167,9 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                 {this.props.children}
                 <span
                     className="edit"
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={InputUtilities.higherOrderPress(InputUtilities.SPACE, this.enableEditing, this)}
                     onClick={this.enableEditing}
                 >
                     <FontAwesomeIcon icon={faEdit} />
