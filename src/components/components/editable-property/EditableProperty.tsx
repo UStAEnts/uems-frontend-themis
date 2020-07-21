@@ -47,7 +47,7 @@ export type EditablePropertyStateType = {
 
 export class EditableProperty extends React.Component<EditablePropertyPropsType, EditablePropertyStateType> {
 
-    static displayName = "EditableProperty";
+    static displayName = 'EditableProperty';
 
     constructor(props: Readonly<EditablePropertyPropsType>) {
         super(props);
@@ -155,7 +155,7 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                     />
                 </div>
             </div>
-        )
+        );
     }
 
     /**
@@ -176,7 +176,7 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                     (Edit...)
                 </span>
             </div>
-        )
+        );
     }
 
     render() {
@@ -186,4 +186,4 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
 
     }
 
-};
+}

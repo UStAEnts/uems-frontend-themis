@@ -1,6 +1,6 @@
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
-import { Notification } from "../components/components/notification-renderer/NotificationRenderer";
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
+import { Notification } from '../components/components/notification-renderer/NotificationRenderer';
 
 export type NotificationContextType = {
     /**
@@ -11,7 +11,13 @@ export type NotificationContextType = {
      * @param color the emphasis color of the notification
      * @return the ID of the notification which can be used to cancel it
      */
-    showNotification: (title: string, content?: string, icon?: IconDefinition, color?: string, action?: Notification['action']) => string,
+    showNotification: (
+        title: string,
+        content?: string,
+        icon?: IconDefinition,
+        color?: string,
+        action?: Notification['action']
+    ) => string,
     /**
      * Clears all notifications currently being displayed. Returns the number of notifications that
      * were removed from the screen
@@ -37,7 +43,7 @@ const defaultValue: NotificationContextType = {
     },
     clearNotifications: () => {
         throw new Error('Context is not initialised');
-    }
-}
+    },
+};
 
 export const NotificationContext = React.createContext(defaultValue);

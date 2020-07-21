@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Comment as CommentType } from '../../../types/Event';
 import { CommentBox } from '../../atoms/comment-box/CommentBox';
 import { Comment } from '../../atoms/comment/Comment';
-import { GlobalContext } from "../../../context/GlobalContext";
+import { GlobalContext } from '../../../context/GlobalContext';
 
 export type CommentListPropsType = {
     /**
@@ -21,6 +21,8 @@ export type CommentListStateType = {
 export class CommentList extends React.Component<CommentListPropsType, CommentListStateType> {
 
     static displayName = 'CommentList';
+
+    static contextType = GlobalContext;
 
     constructor(props: Readonly<CommentListPropsType>) {
         super(props);
@@ -72,5 +74,3 @@ export class CommentList extends React.Component<CommentListPropsType, CommentLi
     }
 
 }
-CommentList.contextType = GlobalContext;
-

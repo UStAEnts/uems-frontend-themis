@@ -8,7 +8,7 @@ import { Button } from '../button/Button';
 
 import '../comment/Comment.scss';
 import { Select } from '../select/Select';
-import { GlobalContext } from "../../../context/GlobalContext";
+import { GlobalContext } from '../../../context/GlobalContext';
 
 export type CommentBoxPropsType = {
     /**
@@ -46,6 +46,7 @@ export type CommentBoxStateType = {
 export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxStateType> {
 
     static displayName = 'CommentBox';
+
     static contextType = GlobalContext;
 
     /**
@@ -92,6 +93,20 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
     }
 
     /**
+     * Handles the changing of the select by finding the content class with the given ID (value if an object). This
+     * updates the value in the state.
+     * @param option the option selected by the user
+     */
+    private handleSelect = (option: string | { key: string, value: string }) => {
+        this.setState((oldState) => ({
+            ...oldState,
+            type: this.props.contentClasses.find(
+                (e) => (typeof (option) === 'string' ? e.id === option : e.id === option.value),
+            ),
+        }));
+    }
+
+    /**
      * Updates the state with the given value for {@link CommentBoxStateType#content} which will trigger a render
      * @param value the new content of the text field
      */
@@ -99,18 +114,6 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
         this.setState((oldState) => ({
             ...oldState,
             content: value,
-        }));
-    }
-
-    /**
-     * Handles the changing of the select by finding the content class with the given ID (value if an object). This
-     * updates the value in the state.
-     * @param option the option selected by the user
-     */
-    private handleSelect = (option: string | {key:string, value:string}) => {
-        this.setState((oldState) => ({
-            ...oldState,
-            type: this.props.contentClasses.find((e) => typeof(option) === "string" ? e.id === option : e.id === option.value),
         }));
     }
 
@@ -127,11 +130,10 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                                         src={this.context.user.value.profile || 'https://placehold.it/200x200'}
                                     />
                                 )
-                                :
-                                (
+                                : (
                                     <img
-                                        alt={`Profile for unknown user`}
-                                        src={'https://placehold.it/200x200?text=Broken%3F'}
+                                        alt="Profile for unknown user"
+                                        src="https://placehold.it/200x200?text=Broken%3F"
                                     />
                                 )
                         }
@@ -145,11 +147,13 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                                 ? (
                                     <Link className="poster" to={`/user/${this.context.user.value.username}`}>
                                         <div className="name">{this.context.user.value.name}</div>
-                                        <div className="username">@{this.context.user.value.username}</div>
+                                        <div className="username">
+                                            @
+                                            {this.context.user.value.username}
+                                        </div>
                                     </Link>
                                 )
-                                :
-                                (
+                                : (
                                     <div className="poster">
                                         <div className="name">Error: No User Defined</div>
                                     </div>
@@ -186,14 +190,15 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                                 value: e.id,
                             }))}
                             initialOption={this.state.type ? {
-                                key: this.state.type.name + (this.state.type.description ? ` (${this.state.type.description})` : ''),
+                                key: this.state.type.name
+                                    + (this.state.type.description ? ` (${this.state.type.description})` : ''),
                                 value: this.state.type.id,
                             } : undefined}
                             onSelectListener={this.handleSelect}
                         />
                         <div
                             style={{
-                                marginTop: '20px'
+                                marginTop: '20px',
                             }}
                         >
                             <Button

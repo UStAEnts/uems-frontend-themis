@@ -9,20 +9,31 @@ import './pages/index/index.scss';
 import './pages/index/flexboxgrid.css';
 import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBox, faCalendarTimes, faColumns, faPaperPlane, faWrench, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import {
+    faBox,
+    faCalendarTimes,
+    faColumns,
+    faPaperPlane,
+    faWrench,
+    IconDefinition
+} from '@fortawesome/free-solid-svg-icons';
+import moment from 'moment';
 import App from './pages/App';
 import { Events } from './pages/events/Events';
-import Event from "./pages/event/Event";
-import moment from "moment";
+import Event from './pages/event/Event';
 
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-import 'flatpickr/dist/themes/material_green.css'
-import { User } from "./types/Event";
-import { GlobalContext, GlobalContextType, ReadableContextType } from "./context/GlobalContext";
-import { Notification, NotificationRenderer, processNotifications } from "./components/components/notification-renderer/NotificationRenderer";
-import { NotificationContext } from "./context/NotificationContext";
-import { v4 } from "uuid";
+import 'flatpickr/dist/themes/material_green.css';
+import { User } from './types/Event';
+import { GlobalContext, GlobalContextType, ReadableContextType } from './context/GlobalContext';
+import {
+    Notification,
+    NotificationRenderer,
+    processNotifications
+} from './components/components/notification-renderer/NotificationRenderer';
+import { NotificationContext } from './context/NotificationContext';
+import { v4 } from 'uuid';
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
@@ -50,7 +61,7 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
             notifications: [],
             timeouts: {},
             animationStates: {},
-        }
+        };
     }
 
     componentWillUnmount() {
@@ -61,7 +72,7 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
         this.setState((oldState) => ({
             ...oldState,
             user,
-        }))
+        }));
     }
 
     private clearNotifications = () => {
@@ -69,7 +80,7 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
 
         this.setState((oldState) => ({
             ...oldState,
-            notifications: []
+            notifications: [],
         }));
 
         Object.values(this.state.timeouts).map(clearTimeout);
@@ -90,13 +101,19 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
 
         this.setState((oldState) => ({
             ...oldState,
-            notifications: [...newNotifications]
+            notifications: [...newNotifications],
         }));
 
         return true;
     }
 
-    private showNotification = (title: string, content?: string, icon?: IconDefinition, color?: string, action?: Notification['action']) => {
+    private showNotification = (
+        title: string,
+        content?: string,
+        icon?: IconDefinition,
+        color?: string,
+        action?: Notification['action'],
+    ) => {
         const id = v4();
 
         this.setState((oldState) => {
@@ -114,8 +131,8 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
 
             // @ts-ignore
             newState.timeouts[id] = setTimeout(() => {
-                this.setState((oldState) => {
-                    const newStates = { ...oldState };
+                this.setState((prevState) => {
+                    const newStates = { ...prevState };
 
                     // Add the leaving state
                     newStates.animationStates[id] = 'leaving';
@@ -141,7 +158,7 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
             user: {
                 value: this.state.user,
                 set: this.setUser,
-            }
+            },
         } as GlobalContextType;
 
         return (
@@ -151,15 +168,21 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                         clearNotifications: this.clearNotifications,
                         clearNotification: this.clearNotification,
                         showNotification: this.showNotification,
-                    }}>
+                    }}
+                    >
                         <BrowserRouter>
-                            <NotificationRenderer position={'top-right'}
-                                                  notifications={processNotifications(this.state.notifications, this.state.animationStates)} />
+                            <NotificationRenderer
+                                position="top-right"
+                                notifications={
+                                    processNotifications(this.state.notifications, this.state.animationStates)
+                                }
+                            />
                             <div className="sidebar-real">
                                 <img
                                     src="/ents-crew-white.png"
                                     className="header-image"
-                                    alt="UEMS Logo: The text UEMS in a bold geometric font surrounded by a white outlined rectangle."
+                                    alt="UEMS Logo:
+                                    The text UEMS in a bold geometric font surrounded by a white outlined rectangle."
                                 />
                                 <div className="sidebar-content">
                                     <NavLink exact to="/" className="entry">

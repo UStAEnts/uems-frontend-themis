@@ -15,8 +15,6 @@ import { cleanDOMTest, makeEvent } from '../../TestUtils';
 
 const hrToMs = (hour: number) => hour * 60 * 60 * 1000;
 
-
-
 describe('<Calendar />', () => {
     const start = 1594745361886;
 
@@ -169,6 +167,6 @@ describe('<Calendar />', () => {
             expect(queryByText('10th event')).toBeNull();
         });
 
-    })
+    });
 
 });

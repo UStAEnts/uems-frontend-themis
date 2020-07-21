@@ -121,7 +121,6 @@ describe('<TabPane />', () => {
             expect(getByText(/content three/ig).parentElement).toHaveClass('active');
         });
 
-
         it('tab switching works when unmounting', async () => {
             const { queryByText, getByText } = render(
                 <TabPane
@@ -150,7 +149,6 @@ describe('<TabPane />', () => {
             expect(queryByText(/content two/ig)).toBeNull();
             expect(queryByText(/content three/ig)).not.toBeNull();
         });
-
 
         it('tab switching calls listener', async () => {
             const fn = jest.fn();

@@ -1,6 +1,6 @@
 import { cleanup } from '@testing-library/react';
-import { v4 } from "uuid";
-import { EntsStatus, EventState, GatewayEvent } from "../types/Event";
+import { v4 } from 'uuid';
+import { EntsStatus, EventState, GatewayEvent } from '../types/Event';
 
 export function promiseTimeout(func: Function, time: number) {
     return new Promise((resolve) => {
@@ -14,7 +14,7 @@ export function promiseTimeout(func: Function, time: number) {
 export function mockDocumentEvents(
     config: { [key: string]: Function },
     onRemove: Function | undefined,
-    actions: Function
+    actions: Function,
 ) {
     const oldAdd = document.addEventListener;
     const oldRemove = document.removeEventListener;

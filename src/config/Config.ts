@@ -9,28 +9,28 @@ export type ConfigType = {
  * The configuration overrides to be applied when in a production environment
  */
 const production: Partial<ConfigType> = {
-    BASE_GATEWAY_URI: 'http://gateway.uems.entscrew.net/'
-}
+    BASE_GATEWAY_URI: 'http://gateway.uems.entscrew.net/',
+};
 
 /**
  * The configuration overrides to be applied when we are in a development-docker environment (when access to local
  * docker networking is available)
  */
 const docker: Partial<ConfigType> = {
-    BASE_GATEWAY_URI: 'http://uems-gateway:15450/'
-}
+    BASE_GATEWAY_URI: 'http://uems-gateway:15450/',
+};
 
 /**
  * The configuration overrides to be applied when we are in a complete development environment
  */
 const development: Partial<ConfigType> = {
-    BASE_GATEWAY_URI: 'http://localhost:15450/'
-}
+    BASE_GATEWAY_URI: 'http://localhost:15450/',
+};
 
 /**
  * A set of default configuration options which can be overwritten but provide the base to the config
  */
-const defaults: Partial<ConfigType> = {}
+const defaults: Partial<ConfigType> = {};
 
 /**
  * One of {@link development}, {@link docker}, or {@link production} depending on the REACT_APP_STAGE, default to

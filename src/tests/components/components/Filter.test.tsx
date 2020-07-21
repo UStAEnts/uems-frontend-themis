@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { cleanDOMTest } from "../../TestUtils";
-import { Filter } from "../../../components/components/filter/Filter";
+import { cleanDOMTest } from '../../TestUtils';
+import { Filter } from '../../../components/components/filter/Filter';
 // Rendering
 // - fields match configuration
 // Functional

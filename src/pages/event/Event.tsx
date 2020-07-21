@@ -1,22 +1,22 @@
-import { Comment, EntsStatus, EventChange, EventState, GatewayEvent, GatewayFile } from "../../types/Event";
-import React from "react";
-import { RouteComponentProps, withRouter } from "react-router";
-import Loader from "react-loader-spinner";
-import { Theme } from "../../theme/Theme";
+import React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
+import Loader from 'react-loader-spinner';
 
 import './Event.scss';
-import moment from "moment";
-import { EditableProperty } from "../../components/components/editable-property/EditableProperty";
-import Axios from "axios";
-import Config from "../../config/Config";
-import * as url from "url";
-import { CommentList } from "../../components/components/comment-list/CommentList";
-import { FileList } from "../../components/atoms/file-bar/FileBar";
-import ReactTimeAgo from "react-time-ago";
-import urljoin from "url-join";
-import { NotificationContextType } from "../../context/NotificationContext";
-import { withNotificationContext } from "../../components/WithNotificationContext";
-import { faSkullCrossbones } from "@fortawesome/free-solid-svg-icons";
+import moment from 'moment';
+import Axios from 'axios';
+import * as url from 'url';
+import ReactTimeAgo from 'react-time-ago';
+import urljoin from 'url-join';
+import { faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
+import { withNotificationContext } from '../../components/WithNotificationContext';
+import { NotificationContextType } from '../../context/NotificationContext';
+import { FileList } from '../../components/atoms/file-bar/FileBar';
+import { CommentList } from '../../components/components/comment-list/CommentList';
+import Config from '../../config/Config';
+import { EditableProperty } from '../../components/components/editable-property/EditableProperty';
+import { Theme } from '../../theme/Theme';
+import { Comment, EntsStatus, EventChange, EventState, GatewayEvent, GatewayFile } from '../../types/Event';
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
@@ -55,31 +55,14 @@ export type EventStateType = {
 
 class Event extends React.Component<EventPropsType, EventStateType> {
 
-    static displayName = "Event";
-
+    static displayName = 'Event';
 
     constructor(props: Readonly<EventPropsType>) {
         super(props);
 
         this.state = {
             id: this.props.match.params.id,
-        }
-    }
-
-    private failedLoad = (reason: string) => {
-        if (this.props.notificationContext) {
-            try {
-                this.props.notificationContext.showNotification(
-                    'Failed to Load',
-                    `There was an error: ${reason}`,
-                    faSkullCrossbones,
-                    Theme.FAILURE
-                )
-                console.log('Notification shown');
-            } catch (e) {
-                console.error('Notification system failed to send');
-            }
-        }
+        };
     }
 
     /**
@@ -91,7 +74,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                 Config.BASE_GATEWAY_URI,
                 'events',
                 encodeURIComponent(this.props.match.params.id),
-            )
+            ),
         ).then((data) => {
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
@@ -113,8 +96,8 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                 Config.BASE_GATEWAY_URI,
                 'events',
                 encodeURIComponent(this.props.match.params.id),
-                'comments'
-            )
+                'comments',
+            ),
         ).then((data) => {
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
@@ -134,7 +117,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                 'events',
                 encodeURIComponent(this.props.match.params.id),
                 'files',
-            )
+            ),
         ).then((data) => {
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
@@ -229,6 +212,22 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         // }, 500);
     }
 
+    private failedLoad = (reason: string) => {
+        if (this.props.notificationContext) {
+            try {
+                this.props.notificationContext.showNotification(
+                    'Failed to Load',
+                    `There was an error: ${reason}`,
+                    faSkullCrossbones,
+                    Theme.FAILURE,
+                );
+                console.log('Notification shown');
+            } catch (e) {
+                console.error('Notification system failed to send');
+            }
+        }
+    }
+
     private patchEvent = (changeProps: Partial<GatewayEvent>) => {
         if (!this.state.event) return;
 
@@ -243,23 +242,23 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         Axios.patch(
             url.resolve(
                 Config.BASE_GATEWAY_URI,
-                '/event/' + encodeURIComponent(this.state.event._id)
+                `/event/${encodeURIComponent(this.state.event._id)}`,
             ),
             changed,
             {
                 headers: {
-                    Accepts: 'application/json'
-                }
-            }
+                    Accepts: 'application/json',
+                },
+            },
         ).then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                event: data.data.result
+                event: data.data.result,
             }));
         }).catch((err) => {
             // TODO: figure out how to raise errors!
             console.error(err);
-        })
+        });
     }
 
     private changeStartTime = (date: Date) => {
@@ -274,16 +273,6 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         });
     }
 
-    private changeProperty(property: keyof GatewayEvent) {
-        return (e: any) => {
-            const changes: Partial<GatewayEvent> = {};
-
-            changes[property] = e;
-
-            this.patchEvent(changes);
-        }
-    }
-
     /**
      * Generates a select editable property with the values provided. This currently does not support an udpate handler
      * @param options the options which the user should be able to select
@@ -294,33 +283,41 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         options: string[] | { key: string, value: string }[] | undefined,
         name: string, selected: string | undefined,
         property: keyof GatewayEvent,
-    ) => {
-        return options
-            ? (
-                <EditableProperty
-                    name={name}
-                    config={{
-                        options,
-                        type: 'select',
-                        onChange: this.changeProperty(property),
-                    }}
-                >
-                    <div className="value">{selected ? selected : 'Not set'}</div>
-                </EditableProperty>
-            ) : (
-                <div>
-                    <div className="value">{selected ? selected : 'Not set'}</div>
-                    <div className="loader">
-                        <Loader
-                            type="Grid"
-                            color={Theme.NOTICE}
-                            width={20}
-                            height={20}
-                        />
-                    </div>
+    ) => (
+        options ? (
+            <EditableProperty
+                name={name}
+                config={{
+                    options,
+                    type: 'select',
+                    onChange: this.changeProperty(property),
+                }}
+            >
+                <div className="value">{selected || 'Not set'}</div>
+            </EditableProperty>
+        ) : (
+            <div>
+                <div className="value">{selected || 'Not set'}</div>
+                <div className="loader">
+                    <Loader
+                        type="Grid"
+                        color={Theme.NOTICE}
+                        width={20}
+                        height={20}
+                    />
                 </div>
-            )
+            </div>
+        )
+    )
 
+    private changeProperty(property: keyof GatewayEvent) {
+        return (e: any) => {
+            const changes: Partial<GatewayEvent> = {};
+
+            changes[property] = e;
+
+            this.patchEvent(changes);
+        };
     }
 
     render() {
@@ -336,7 +333,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                         <div className="property creation">
                             <span className="label">Created</span>
                             <span className="value">
-                            <ReactTimeAgo date={this.state.event.bookingStart} />
+                                <ReactTimeAgo date={this.state.event.bookingStart} />
                             </span>
                         </div>
                         <div className="property updates">
@@ -344,44 +341,44 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             <span className="value">20</span>
                         </div>
                     </div>
-                    {/*TODO: add file loading*/}
+                    {/* TODO: add file loading */}
                     {
                         this.state.files
                             ? (<FileList files={this.state.files} />)
                             : undefined
                     }
-                    {/*<FileList files={[*/}
-                    {/*    {*/}
-                    {/*        private: false,*/}
-                    {/*        size: 1000,*/}
-                    {/*        filename: 'Some file.txt',*/}
-                    {/*        name: 'Rider',*/}
-                    {/*        author: {*/}
-                    {/*            username: 'ryan',*/}
-                    {/*            name: 'Ryan Delaney',*/}
-                    {/*        },*/}
-                    {/*        created: new Date().getTime(),*/}
-                    {/*        downloadURL: '/files/x',*/}
-                    {/*        id: 'abcd'*/}
-                    {/*    },*/}
-                    {/*    {*/}
-                    {/*        private: true,*/}
-                    {/*        size: 1000,*/}
-                    {/*        filename: 'Some file.txt',*/}
-                    {/*        name: 'Rider',*/}
-                    {/*        author: {*/}
-                    {/*            username: 'ryan',*/}
-                    {/*            name: 'Ryan Delaney',*/}
-                    {/*        },*/}
-                    {/*        created: new Date().getTime(),*/}
-                    {/*        downloadURL: '/files/x',*/}
-                    {/*        id: 'abcd'*/}
-                    {/*    },*/}
-                    {/*]} />*/}
+                    {/* <FileList files={[ */}
+                    {/*    { */}
+                    {/*        private: false, */}
+                    {/*        size: 1000, */}
+                    {/*        filename: 'Some file.txt', */}
+                    {/*        name: 'Rider', */}
+                    {/*        author: { */}
+                    {/*            username: 'ryan', */}
+                    {/*            name: 'Ryan Delaney', */}
+                    {/*        }, */}
+                    {/*        created: new Date().getTime(), */}
+                    {/*        downloadURL: '/files/x', */}
+                    {/*        id: 'abcd' */}
+                    {/*    }, */}
+                    {/*    { */}
+                    {/*        private: true, */}
+                    {/*        size: 1000, */}
+                    {/*        filename: 'Some file.txt', */}
+                    {/*        name: 'Rider', */}
+                    {/*        author: { */}
+                    {/*            username: 'ryan', */}
+                    {/*            name: 'Ryan Delaney', */}
+                    {/*        }, */}
+                    {/*        created: new Date().getTime(), */}
+                    {/*        downloadURL: '/files/x', */}
+                    {/*        id: 'abcd' */}
+                    {/*    }, */}
+                    {/* ]} /> */}
                     {
                         this.state.comments
-                        ? <CommentList comments={this.state.comments} />
-                        : undefined
+                            ? <CommentList comments={this.state.comments} />
+                            : undefined
                     }
                 </div>
                 <div className="rightbar-real">
@@ -391,7 +388,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             this.state.venues,
                             'Venue',
                             this.state.event.venue,
-                            'venue'
+                            'venue',
                         )}
                     </div>
                     <div className="entry">
@@ -404,7 +401,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             this.state.event.entsStatus
                                 ? this.state.event.entsStatus.name
                                 : undefined,
-                            'entsStatus'
+                            'entsStatus',
                         )}
                     </div>
                     <div className="entry">
@@ -417,7 +414,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             this.state.event.state
                                 ? this.state.event.state.state
                                 : undefined,
-                            'state'
+                            'state',
                         )}
                     </div>
                     <div className="entry">
@@ -428,7 +425,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             </div>
                             <div className="time">
                                 <EditableProperty
-                                    name={'Booking Start'}
+                                    name="Booking Start"
                                     config={{
                                         type: 'date',
                                         value: this.state.event.bookingStart,
@@ -440,7 +437,9 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             </div>
                             <div className="bar" />
                             <div className="duration">
-                                {moment.duration(moment(this.state.event.bookingStart).diff(moment(this.state.event.bookingEnd))).humanize()}
+                                {moment.duration(
+                                    moment(this.state.event.bookingStart).diff(moment(this.state.event.bookingEnd)),
+                                ).humanize()}
                             </div>
                             <div className="bar" />
                             <div className="label">
@@ -448,7 +447,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             </div>
                             <div className="time">
                                 <EditableProperty
-                                    name={'Booking End'}
+                                    name="Booking End"
                                     config={{
                                         type: 'date',
                                         value: this.state.event.bookingEnd,
@@ -475,7 +474,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         );
     }
 
-};
+}
 
 /**
  * Bind the event page with the router so we can access the ID if the path

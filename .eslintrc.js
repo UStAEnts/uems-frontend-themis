@@ -38,6 +38,7 @@ module.exports = {
         'no-plusplus': ['error', {
             allowForLoopAfterthoughts: true,
         }],
+        'no-underscore-dangle': 'off',
 
         'react/destructuring-assignment': 0,
         'react/jsx-indent-props': ['error', 4],
@@ -46,6 +47,7 @@ module.exports = {
         'react/jsx-filename-extension': ['error', {
             extensions: ['.jsx', '.tsx'],
         }],
+        'react/prop-types': 'off',
 
         'import/extensions': 0,
         'import/no-unresolved': 0,

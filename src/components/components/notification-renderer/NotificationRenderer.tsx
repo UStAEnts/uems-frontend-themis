@@ -1,10 +1,11 @@
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import React from "react";
-import { v4 } from "uuid";
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import React from 'react';
+import { v4 } from 'uuid';
 
-import "./NotificationRenderer.scss"
-import { IconBox } from "../../atoms/icon-box/IconBox";
-import { Link } from "react-router-dom";
+import './NotificationRenderer.scss';
+import { Link } from 'react-router-dom';
+import { IconBox } from '../../atoms/icon-box/IconBox';
+import InputUtilities from "../../../utilities/InputUtilities";
 
 export type Notification = {
     id?: string,
@@ -31,7 +32,7 @@ export type NotificationRendererPropsType = {
  * @param animationStates a set of states to apply to the notification by ID
  */
 export function processNotifications(notifications: Notification[], animationStates?: { [key: string]: string }) {
-    for (let notification of notifications) {
+    for (const notification of notifications) {
         if (notification.id === undefined) notification.id = v4();
 
         if (animationStates && Object.prototype.hasOwnProperty.call(animationStates, notification.id)) {
@@ -44,7 +45,7 @@ export function processNotifications(notifications: Notification[], animationSta
 
 export class NotificationRenderer extends React.Component<NotificationRendererPropsType, {}> {
 
-    static displayName = "NotificationRenderer";
+    static displayName = 'NotificationRenderer';
 
     /**
      * Renders a notification object with
@@ -66,17 +67,29 @@ export class NotificationRenderer extends React.Component<NotificationRendererPr
                         <div
                             className="accent"
                             style={{
-                                backgroundColor: notification.color ? notification.color : undefined
+                                backgroundColor: notification.color ? notification.color : undefined,
                             }}
                         />
                     </div>
                     {
                         notification.action
                             ? (
-                                <div className="action" onClick={notification.action.onClick}>
+                                <div
+                                    className="action"
+                                    onClick={notification.action.onClick}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyPress={
+                                        InputUtilities.higherOrderPress(
+                                            InputUtilities.SPACE,
+                                            notification.action.onClick ?? (() => false),
+                                            this,
+                                        )
+                                    }
+                                >
                                     {
                                         notification.action.link
-                                            ? <Link to={"/"}>{notification.action.name}</Link>
+                                            ? <Link to="/">{notification.action.name}</Link>
                                             : <span>{notification.action.name}</span>
                                     }
                                 </div>
@@ -84,48 +97,60 @@ export class NotificationRenderer extends React.Component<NotificationRendererPr
                             : undefined
                     }
                 </div>
-            )
-        } else {
-            return (
-                <div className={`notification with-icon ${notification.state || ''}`} key={notification.id}>
-                    <div className="content">
-                        <div className="rest">
-                            <div className="left">
+            );
+        }
+        return (
+            <div className={`notification with-icon ${notification.state || ''}`} key={notification.id}>
+                <div className="content">
+                    <div className="rest">
+                        <div className="left">
 
-                                <div className="title">{notification.title}</div>
+                            <div className="title">{notification.title}</div>
+                            {
+                                notification.content
+                                    ? <div className="content">{notification.content}</div>
+                                    : undefined
+                            }
+                        </div>
+                        <div className="right">
+                            <IconBox icon={notification.icon} color={notification.color || '#000000'} />
+                        </div>
+                    </div>
+                    <div
+                        className="accent"
+                        style={{
+                            backgroundColor: notification.color ? notification.color : undefined,
+                        }}
+                    />
+                </div>
+                {
+                    notification.action
+                        ? (
+                            <div
+                                className="action"
+                                onClick={notification.action.onClick}
+                                role="button"
+                                tabIndex={0}
+                                onKeyPress={
+                                    InputUtilities.higherOrderPress(
+                                        InputUtilities.SPACE,
+                                        notification.action.onClick ?? (() => false),
+                                        this,
+                                    )
+                                }
+                            >
                                 {
-                                    notification.content
-                                        ? <div className="content">{notification.content}</div>
-                                        : undefined
+                                    notification.action.link
+                                        ? <Link to="/">{notification.action.name}</Link>
+                                        : <span>{notification.action.name}</span>
                                 }
                             </div>
-                            <div className="right">
-                                <IconBox icon={notification.icon} color={notification.color || '#000000'} />
-                            </div>
-                        </div>
-                        <div
-                            className="accent"
-                            style={{
-                                backgroundColor: notification.color ? notification.color : undefined
-                            }}
-                        />
-                    </div>
-                    {
-                        notification.action
-                            ? (
-                                <div className="action" onClick={notification.action.onClick}>
-                                    {
-                                        notification.action.link
-                                        ? <Link to={"/"}>{notification.action.name}</Link>
-                                        : <span>{notification.action.name}</span>
-                                    }
-                                </div>
-                            )
-                            : undefined
-                    }
-                </div>
-            )
-        }
+                        )
+                        : undefined
+                }
+            </div>
+        );
+
     }
 
     render() {
@@ -136,4 +161,4 @@ export class NotificationRenderer extends React.Component<NotificationRendererPr
         );
     }
 
-};
+}
