@@ -174,6 +174,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     <li
                         onKeyPress={(e) => InputUtilities.bindKeyPress(e, 32, this.handleEntryClick, this, option)}
                         role="option"
+                        aria-label={option}
                         aria-selected={this.state.selected === option}
                         onClick={() => this.handleEntryClick(option)}
                         className={`md-sl-li${this.state.selected === option ? ' md-sl-active' : ''}`}
@@ -188,6 +189,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     <li
                         onKeyPress={(e) => InputUtilities.bindKeyPress(e, 32, this.handleEntryClick, this, option)}
                         role="option"
+                        aria-label={option.key}
                         aria-selected={this.state.selected === option}
                         key={`${this.state.uuid}.${option.value}`}
                         className={`md-sl-li${this.state.selected === option ? ' md-sl-active' : ''}`}
@@ -218,6 +220,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     onKeyPress={InputUtilities.higherOrderPress(32, this.activateList, this)}
                     tabIndex={0}
                     role="button"
+                    data-testid={`launch-menu-${this.props.name}`}
                     aria-label="launch-menu"
                     className="md-sl-text"
                     onClick={() => this.activateList()}
@@ -229,6 +232,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     onKeyPress={InputUtilities.higherOrderPress(32, this.activateList, this)}
                     tabIndex={0}
                     role="button"
+                    data-testid={`launch-menu-${this.props.name}`}
                     aria-label="launch-menu"
                     className="md-sl-text inactive"
                     onClick={() => this.activateList()}
