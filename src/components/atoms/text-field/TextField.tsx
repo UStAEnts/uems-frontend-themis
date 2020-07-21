@@ -121,6 +121,7 @@ export class TextField extends React.Component<TextFieldPropsType, TextFieldStat
                 <input
                     id={this.props.name}
                     type={this.props.type}
+                    alt={this.props.name}
                     value={this.state.contents}
                     onChange={this.handleChange.bind(this)}
                     min={this.props.min}
