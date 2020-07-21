@@ -130,6 +130,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         return (
             <tr
                 key={event._id}
+                data-testid={`et-row-${event._id}`}
                 // @ts-ignore
                 onClick={() => this.redirect(`/events/${event._id}`)}
             >
