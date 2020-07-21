@@ -1,11 +1,9 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { v4 } from 'uuid';
 import { MemoryRouter } from 'react-router';
 import { Calendar } from '../../../components/components/calendar/Calendar';
-import { GatewayEvent } from '../../../types/Event';
-import { cleanDOMTest } from '../../TestUtils';
+import { cleanDOMTest, makeEvent } from '../../TestUtils';
 
 // Render tests
 // - events are rendered
@@ -17,14 +15,7 @@ import { cleanDOMTest } from '../../TestUtils';
 
 const hrToMs = (hour: number) => hour * 60 * 60 * 1000;
 
-const makeEvent = (name: string, start: number, hourDuration: number, attendance?: number, venue?: string) => ({
-    name,
-    _id: v4(),
-    bookingStart: new Date(start),
-    bookingEnd: new Date(start + (hourDuration * 60 * 60 * 1000)),
-    attendance: attendance ?? 0,
-    venue: venue ?? 'venue',
-} as GatewayEvent);
+
 
 describe('<Calendar />', () => {
     const start = 1594745361886;

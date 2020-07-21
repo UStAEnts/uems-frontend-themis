@@ -1,4 +1,6 @@
 import { cleanup } from '@testing-library/react';
+import { v4 } from "uuid";
+import { GatewayEvent } from "../types/Event";
 
 export function promiseTimeout(func: Function, time: number) {
     return new Promise((resolve) => {
@@ -37,3 +39,19 @@ export async function cleanDOMTest(action: () => void) {
     await action();
     return cleanup();
 }
+
+export const makeEvent = (
+    name: string,
+    start: number,
+    hourDuration: number,
+    attendance?: number,
+    venue?: string,
+    id?: string,
+) => ({
+    name,
+    _id: id ?? v4(),
+    bookingStart: new Date(start),
+    bookingEnd: new Date(start + (hourDuration * 60 * 60 * 1000)),
+    attendance: attendance ?? 0,
+    venue: venue ?? 'venue',
+} as GatewayEvent);
