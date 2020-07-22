@@ -238,9 +238,9 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
      * @param key the key of the number filter
      * @param value the value that has been entered
      */
-    private updateNumberInput(key: string, value: string) {
+    private updateNumberInput(key: string, value: string | number) {
         try {
-            const newVal = parseInt(value, 10);
+            const newVal = typeof (value) === 'number' ? value : parseInt(value, 10);
 
             this.setState((oldState) => {
                 const s = { ...oldState };
@@ -285,7 +285,7 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
                     name={key}
                     type="number"
                     placeholder={number.name}
-                    onChange={(val) => this.updateNumberInput(key, val)}
+                    onChange={(val: number) => this.updateNumberInput(key, val)}
                     /* eslint-disable-next-line react/jsx-props-no-spreading */
                     {...spreadProps}
                 />
