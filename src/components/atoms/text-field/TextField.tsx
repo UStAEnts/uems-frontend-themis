@@ -144,12 +144,12 @@ export class TextField extends React.Component<TextFieldPropsType, TextFieldStat
         }
     }
 
-    private handleDateChange = (date: Date) => {
+    private handleBasicChange = (value: string | Date | number) => {
         this.setState({
-            contents: date,
+            contents: value,
         });
         if (this.props.onChange) { // @ts-ignore
-            this.props.onChange(date);
+            this.props.onChange(value);
         }
     }
 
@@ -192,7 +192,7 @@ export class TextField extends React.Component<TextFieldPropsType, TextFieldStat
             options={{
                 dateFormat: 'D J M Y @ H:i',
             }}
-            onChange={(change) => this.handleDateChange(change[0])}
+            onChange={(change) => this.handleBasicChange(change[0])}
             min={config.min}
             max={config.max}
             alt={config.placeholder ?? config.name}
