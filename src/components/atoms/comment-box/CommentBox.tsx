@@ -7,7 +7,7 @@ import { TextField } from '../text-field/TextField';
 import { Button } from '../button/Button';
 
 import '../comment/Comment.scss';
-import { Select } from '../select/Select';
+import { KeyValueOption, Select } from '../select/Select';
 import { GlobalContext } from '../../../context/GlobalContext';
 
 export type CommentBoxPropsType = {
@@ -97,7 +97,7 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
      * updates the value in the state.
      * @param option the option selected by the user
      */
-    private handleSelect = (option: string | { key: string, value: string }) => {
+    private handleSelect = (option: string | KeyValueOption) => {
         this.setState((oldState) => ({
             ...oldState,
             type: this.props.contentClasses.find(
@@ -186,11 +186,11 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                             placeholder="Type"
                             name="type"
                             options={this.props.contentClasses.map((e) => ({
-                                key: e.name + (e.description ? ` (${e.description})` : ''),
+                                text: e.name + (e.description ? ` (${e.description})` : ''),
                                 value: e.id,
                             }))}
                             initialOption={this.state.type ? {
-                                key: this.state.type.name
+                                text: this.state.type.name
                                     + (this.state.type.description ? ` (${this.state.type.description})` : ''),
                                 value: this.state.type.id,
                             } : undefined}

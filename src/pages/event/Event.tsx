@@ -17,6 +17,7 @@ import Config from '../../config/Config';
 import { EditableProperty } from '../../components/components/editable-property/EditableProperty';
 import { Theme } from '../../theme/Theme';
 import { Comment, EntsStatus, EventChange, EventState, GatewayEvent, GatewayFile } from '../../types/Event';
+import { KeyValueOption } from "../../components/atoms/select/Select";
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
@@ -280,7 +281,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
      * @param selected the currently selected value
      */
     private generateEditableProperty = (
-        options: string[] | { key: string, value: string }[] | undefined,
+        options: string[] | KeyValueOption[] | undefined,
         name: string, selected: string | undefined,
         property: keyof GatewayEvent,
     ) => (

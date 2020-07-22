@@ -3,7 +3,7 @@ import { DateRangePicker } from 'react-dates';
 import moment, { Moment } from 'moment';
 import { TextField } from '../../atoms/text-field/TextField';
 import 'react-dates/lib/css/_datepicker.css';
-import { Select } from '../../atoms/select/Select';
+import { KeyValueOption, Select } from '../../atoms/select/Select';
 
 import './Filter.scss';
 
@@ -24,7 +24,7 @@ export type FilterConfiguration = {
     /**
      * The options to be displayed in  the options menu if relevant
      */
-    options?: string[] | { key: string, value: string }[],
+    options?: string[] | KeyValueOption[],
     /**
      * The maximum value allowed where relevant
      */
@@ -78,7 +78,7 @@ export type SelectFilterStatus = {
     /**
      * The currently selected option from the select input
      */
-    selectedOption: string | { key: string, value: string },
+    selectedOption: string | KeyValueOption,
 };
 
 export type SearchFilterStatus = {
@@ -166,7 +166,7 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
      * @param key the key of the select filter
      * @param option the value that has been selected
      */
-    private updateSelectInput(key: string, option: string | { key: string, value: string }) {
+    private updateSelectInput(key: string, option: string | KeyValueOption) {
         this.setState((oldState) => {
             const s = { ...oldState };
 
@@ -215,16 +215,33 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
      * @param select the select filter configuration
      */
     private makeSelectInput(key: string, select: FilterConfiguration) {
+        if (select.options && select.options.length > 0 && typeof (select.options[0]) === 'string') {
+            return (
+                <div className="indv-filter">
+                    <Select
+                        placeholder={select.name}
+                        name={key}
+                        options={(select.options || []) as string[]}
+                        onSelectListener={(option: string) => this.updateSelectInput(key, option)}
+                        initialOption={
+                            Object.prototype.hasOwnProperty.call(this.state.selectFilterStates, key)
+                                ? this.state.selectFilterStates[key].selectedOption as string
+                                : undefined
+                        }
+                    />
+                </div>
+            );
+        }
         return (
             <div className="indv-filter">
                 <Select
                     placeholder={select.name}
                     name={key}
-                    options={select.options || []}
-                    onSelectListener={(option) => this.updateSelectInput(key, option)}
+                    options={(select.options || []) as KeyValueOption[]}
+                    onSelectListener={(option: string | KeyValueOption) => this.updateSelectInput(key, option)}
                     initialOption={
                         Object.prototype.hasOwnProperty.call(this.state.selectFilterStates, key)
-                            ? this.state.selectFilterStates[key].selectedOption
+                            ? this.state.selectFilterStates[key].selectedOption as KeyValueOption
                             : undefined
                     }
                 />

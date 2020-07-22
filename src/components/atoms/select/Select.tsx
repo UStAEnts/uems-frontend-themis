@@ -8,7 +8,19 @@ import { v4 } from 'uuid';
 import './Select.scss';
 import InputUtilities from '../../../utilities/InputUtilities';
 
-type KeyValueOption = { key: string, value: string };
+export type KeyValueOption = { text: string, value: string, additional?: any };
+
+export type KeyValueConfiguration = {
+    options: KeyValueOption[],
+    initialOption?: KeyValueOption,
+    onSelectListener?: (option: KeyValueOption) => void,
+};
+
+export type StringConfiguration = {
+    options: string[],
+    initialOption?: string,
+    onSelectListener?: (option: string) => void,
+};
 
 export type SelectPropsType = {
     /**
@@ -23,16 +35,16 @@ export type SelectPropsType = {
      * The possible options in the select
      */
     options: string[] | KeyValueOption[],
-    /**
-     * The initially selected option
-     */
-    initialOption?: string | KeyValueOption
-    /**
-     * Listener to be called when the option is changed
-     * @param option the option which is now selected
-     */
-    onSelectListener?: (option: string | KeyValueOption) => void,
-};
+    // /**
+    //  * The initially selected option
+    //  */
+    // initialOption?: string | KeyValueOption
+    // /**
+    //  * Listener to be called when the option is changed
+    //  * @param option the option which is now selected
+    //  */
+    // onSelectListener?: (option: string | KeyValueOption) => void,
+} & (KeyValueConfiguration | StringConfiguration);
 
 export type SelectStateType = {
     /**
@@ -125,7 +137,9 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
      * @param option the option to select as the active entry
      */
     private handleEntryClick(option: string | KeyValueOption) {
-        if (this.props.onSelectListener) this.props.onSelectListener(option);
+        if (this.props.onSelectListener) { // @ts-ignore
+            this.props.onSelectListener(option);
+        }
         this.setState((oldState) => ({
             ...oldState,
             selected: option,
@@ -189,14 +203,14 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     <li
                         onKeyPress={(e) => InputUtilities.bindKeyPress(e, 32, this.handleEntryClick, this, option)}
                         role="option"
-                        aria-label={option.key}
+                        aria-label={option.text}
                         aria-selected={this.state.selected === option}
                         key={`${this.state.uuid}.${option.value}`}
                         className={`md-sl-li${this.state.selected === option ? ' md-sl-active' : ''}`}
                         value={option.value}
                         onClick={() => this.handleEntryClick(option)}
                     >
-                        {option.key}
+                        {option.text}
                     </li>,
                 );
             }
@@ -207,7 +221,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
         let selectedKey;
         if (this.state.selected) {
             if (typeof (this.state.selected) === 'string') selectedKey = this.state.selected;
-            else selectedKey = this.state.selected.key;
+            else selectedKey = this.state.selected.text;
         }
 
         const text = this.state.selected
@@ -225,7 +239,7 @@ export class Select extends React.Component<SelectPropsType, SelectStateType> {
                     className="md-sl-text"
                     onClick={() => this.activateList()}
                 >
-                    {typeof (this.state.selected) === 'string' ? this.state.selected : this.state.selected.key}
+                    {typeof (this.state.selected) === 'string' ? this.state.selected : this.state.selected.text}
                 </div>
             ) : (
                 <div

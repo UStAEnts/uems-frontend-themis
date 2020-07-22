@@ -1,5 +1,5 @@
 import React from "react";
-import { Select } from "../../atoms/select/Select";
+import { KeyValueOption, Select } from "../../atoms/select/Select";
 import { Button } from "../../atoms/button/Button";
 import { Theme } from "../../../theme/Theme";
 
@@ -11,8 +11,8 @@ import InputUtilities from "../../../utilities/InputUtilities";
 
 export type SelectType = {
     type: 'select',
-    options: string[] | { key: string, value: string }[],
-    onChange?: (newValue: string | { key: string, value: string }) => void,
+    options: string[] | KeyValueOption[],
+    onChange?: (newValue: string | KeyValueOption) => void,
 };
 
 export type DateType = {
@@ -41,7 +41,7 @@ export type EditablePropertyStateType = {
     /**
      * The currently selected property from the select box
      */
-    selectProperty?: string | { key: string, value: string },
+    selectProperty?: string | KeyValueOption,
     selectedTime?: Date,
 };
 
@@ -82,7 +82,7 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
      * Updates the state when a new value is provided. To be called when the select has a new value
      * @param option the newly selected option
      */
-    private onSelectChange = (option: string | { key: string, value: string }) => {
+    private onSelectChange = (option: string | KeyValueOption) => {
         this.setState((oldState) => ({
             ...oldState,
             selectProperty: option,
@@ -115,6 +115,30 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
         }
     }
 
+    private renderSelect = (select: SelectType) => {
+        if (select.options.length > 0 && typeof (select.options[0]) === 'string') {
+            return (
+                <Select
+                    placeholder={this.props.name}
+                    name={this.props.name}
+                    options={select.options as string[]}
+                    onSelectListener={this.onSelectChange}
+                    initialOption={this.state.selectProperty as string}
+                />
+            );
+        }
+
+        return (
+            <Select
+                placeholder={this.props.name}
+                name={this.props.name}
+                options={select.options as KeyValueOption[]}
+                onSelectListener={this.onSelectChange}
+                initialOption={this.state.selectProperty as KeyValueOption}
+            />
+        );
+    }
+
     /**
      * Renders the edit field which has a header and a select field with a save and cancel for the user to pick their
      * choice
@@ -127,13 +151,7 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                 <p>Please select a new value for this property</p>
                 {this.props.config.type === 'select'
                     ? (
-                        <Select
-                            placeholder={this.props.name}
-                            name={this.props.name}
-                            options={this.props.config.options}
-                            onSelectListener={this.onSelectChange}
-                            initialOption={this.state.selectProperty}
-                        />
+                        this.renderSelect(this.props.config)
                     )
                     : (
                         <DatePicker
