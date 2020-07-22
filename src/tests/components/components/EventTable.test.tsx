@@ -83,7 +83,7 @@ describe('<EventTable />', () => {
                 </MemoryRouter>,
             );
 
-            fireEvent.input(getByAltText('name'), { target: { value: 'two' } });
+            fireEvent.input(getByAltText('Event Name'), { target: { value: 'two' } });
             expect(queryByText(/event one/ig)).toBeNull();
             expect(queryByText(/event two/ig)).not.toBeNull();
             expect(queryByText(/event three/ig)).toBeNull();
