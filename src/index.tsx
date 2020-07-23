@@ -34,6 +34,7 @@ import {
 } from './components/components/notification-renderer/NotificationRenderer';
 import { NotificationContext } from './context/NotificationContext';
 import { v4 } from 'uuid';
+import { CreateEvent } from "./pages/event/create/CreateEvent";
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
@@ -212,6 +213,9 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
 
                             <div className="content">
                                 <Switch>
+                                    <Route path="/event/create" exact>
+                                        <CreateEvent isPage />
+                                    </Route>
                                     <Route path="/events/:id" exact>
                                         <Event />
                                     </Route>
