@@ -11,6 +11,7 @@ import { LinkedTD } from "../../atoms/LinkedTD";
 import { Redirect } from "react-router";
 import { EntsStateResponse, EventResponse, StateResponse } from "../../../utilities/APITypes";
 import { IconName } from '@fortawesome/free-solid-svg-icons';
+import { ColorUtilities } from "../../../utilities/ColorUtilities";
 
 export type EventTablePropsType = {
     /**
@@ -60,7 +61,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 status = (
                     <div
                         className="ents-state unknown"
-                        style={{ backgroundColor: entsStatus.color }}
+                        style={{ backgroundColor: entsStatus.color, color: ColorUtilities.determineForegroundColor(entsStatus.color) }}
                     >
                         {entsStatus.name}
                     </div>
@@ -128,6 +129,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      * @param event the event to render.
      */
     private eventToRow(event: EventResponse) {
+        console.log(event);
         return (
             <tr
                 key={event.id}
@@ -143,7 +145,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 </LinkedTD>
 
                 <LinkedTD to={`/events/${event.id}`}>{event.name}</LinkedTD>
-                <LinkedTD to={`/events/${event.id}`}>{event.venue}</LinkedTD>
+                <LinkedTD to={`/events/${event.id}`}>{event.venue?.name}</LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
                     {moment.unix(event.startDate).format(' dddd Do MMMM (YYYY), HH:mm ')}
                     &#8594;
