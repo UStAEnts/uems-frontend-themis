@@ -1,6 +1,23 @@
 import Axios from 'axios';
 import urljoin from 'url-join';
 import Config from '../config/Config';
+import {
+    CommentResponse,
+    CommentUpdate,
+    EntsStateCreation,
+    EntsStateResponse,
+    EventCreation,
+    EventResponse,
+    EventUpdate,
+    EventWithChangelogResponse,
+    FileCreation,
+    FileResponse,
+    SignupCreation,
+    SignupResponse,
+    SignupUpdate, StateCreation,
+    StateResponse, StateUpdate, TopicCreation, TopicResponse, TopicUpdate,
+    User,
+} from './APITypes';
 
 /**
  * Represents a single api function. It is a callable function which takes any number of parameters and returns a typed
@@ -608,112 +625,5 @@ type AugmentedRequired<T extends object,
     K extends keyof T = keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
 export type IDOnlyResponse = {
-    id: string,
-};
-
-/*
- * Entries below are auto generated from the openAPI spec
- */
-export type EventQuery = {
-    name?: string,
-    startBefore?: number,
-    startAfter?: number,
-    endBefore?: number,
-    endAfter?: number,
-};
-export type SuccessfulAPIResponse = {
-    status: string,
-    result: unknown,
-};
-export type FailedAPIResponse = {
-    status: string,
-    error: object,
-};
-export type CommentUpdate = {
-    content: string,
-    topic?: string,
-};
-export type User = {
-    name: string,
-    username: string,
-    profile?: string,
-    id: string,
-};
-export type SignupUpdate = {
-    name?: string,
-    role?: string,
-};
-export type FileUpdate = {
-    name?: string,
-    private?: boolean,
-};
-export type EntsStateUpdate = {
-    name?: string,
-    color?: string,
-    icon?: string,
-};
-export type StateUpdate = {
-    name?: string,
-    icon?: string,
-    color?: string,
-};
-export type EventUpdate = {
-    name?: string,
-    startDate?: number,
-    endDate?: number,
-};
-export type TopicUpdate = {
-    name?: string,
-    description?: string,
-    color?: string,
-    icon?: string,
-};
-export type EventPropertyChangeResponse = {
-    id: string,
-    occurred: number,
-    change: string,
-    user?: User,
-};
-export type EventWithChangelogResponse = {
-    event?: EventResponse,
-    changelog?: EventPropertyChangeResponse[],
-};
-export type CommentResponse = CommentUpdate & {
-    id: string,
-    posted: number,
-    poster: User,
-    topic?: TopicResponse,
-};
-export type EntsStateCreation = Required<EntsStateUpdate>;
-export type EventCreation = Required<EventUpdate>;
-export type EventResponse = EventCreation & {
-    id: string,
-};
-export type FileCreation = AugmentedRequired<FileUpdate, 'name'>;
-export type SignupCreation = SignupUpdate & {
-    userID?: string,
-};
-export type StateCreation = AugmentedRequired<StateUpdate, 'name'>;
-export type TopicCreation = AugmentedRequired<TopicUpdate, 'name'>;
-export type TopicResponse = AugmentedRequired<TopicCreation, 'description' | 'color' | 'icon'> & {
-    id: string,
-};
-export type SignupResponse = AugmentedRequired<SignupCreation, 'name' | 'role'> & {
-    id: string,
-    user: User,
-    date: number,
-};
-export type FileResponse = AugmentedRequired<FileCreation, 'private'> & {
-    id: string,
-    filename: string,
-    created: number,
-    author: User,
-    size: number,
-    downloadURL: string,
-};
-export type EntsStateResponse = Required<EntsStateCreation> & {
-    id: string,
-};
-export type StateResponse = AugmentedRequired<StateCreation, 'icon' | 'color'> & {
     id: string,
 };
