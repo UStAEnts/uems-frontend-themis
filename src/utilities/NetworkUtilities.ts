@@ -148,8 +148,8 @@ export const API = {
         id: {
             // events/{id}
             this: {
-                get: bind<EventResponse>(
-                    (uri: string, id: string) => getRequest<EventResponse>(uri, { id }),
+                get: bind<EventWithChangelogResponse>(
+                    (uri: string, id: string) => getRequest<EventWithChangelogResponse>(uri, { id }),
                     '/events/{id}',
                     'Fetches properties on a single event',
                 ),
@@ -611,70 +611,99 @@ export type IDOnlyResponse = {
     id: string,
 };
 
+/*
+ * Entries below are auto generated from the openAPI spec
+ */
+export type EventQuery = {
+    name?: string,
+    startBefore?: number,
+    startAfter?: number,
+    endBefore?: number,
+    endAfter?: number,
+};
+export type SuccessfulAPIResponse = {
+    status: string,
+    result: unknown,
+};
+export type FailedAPIResponse = {
+    status: string,
+    error: object,
+};
+export type CommentUpdate = {
+    content: string,
+    topic?: string,
+};
+export type User = {
+    name: string,
+    username: string,
+    profile?: string,
+    id: string,
+};
+export type SignupUpdate = {
+    name?: string,
+    role?: string,
+};
+export type FileUpdate = {
+    name?: string,
+    private?: boolean,
+};
+export type EntsStateUpdate = {
+    name?: string,
+    color?: string,
+    icon?: string,
+};
+export type StateUpdate = {
+    name?: string,
+    icon?: string,
+    color?: string,
+};
+export type EventUpdate = {
+    name?: string,
+    startDate?: number,
+    endDate?: number,
+};
+export type TopicUpdate = {
+    name?: string,
+    description?: string,
+    color?: string,
+    icon?: string,
+};
 export type EventPropertyChangeResponse = {
     id: string,
     occurred: number,
     change: string,
     user?: User,
 };
-
-// region Comments
-
-export type CommentResponse = {
+export type EventWithChangelogResponse = {
+    event?: EventResponse,
+    changelog?: EventPropertyChangeResponse[],
+};
+export type CommentResponse = CommentUpdate & {
     id: string,
     posted: number,
     poster: User,
-    topic: TopicResponse,
-} & CommentUpdate;
-
-export type CommentUpdate = {
-    content: string,
-    topic?: string,
+    topic?: TopicResponse,
 };
-
-// endregion
-
-// region Ents State
-export type EntsStateUpdate = Partial<{
-    name: string,
-    color: string,
-    icon: string,
-}>;
-
 export type EntsStateCreation = Required<EntsStateUpdate>;
-
-export type EntsStateResponse = EntsStateCreation & {
-    id: string,
-};
-
-// endregion
-
-// region Events
-
-export type EventUpdate = Partial<{
-    name: string,
-    startDate: number,
-    endDate: number,
-}>;
-
 export type EventCreation = Required<EventUpdate>;
-
 export type EventResponse = EventCreation & {
     id: string,
 };
-
-// endregion
-
-// region Files
-
-export type FileUpdate = Partial<{
-    name: string,
-    private: boolean,
-}>;
-
-export type FileCreation = Required<FileUpdate>;
-
-export type FileResponse = FileCreation & {
+export type FileCreation = AugmentedRequired<FileUpdate, 'name'>;
+export type SignupCreation = SignupUpdate & {
+    userID?: string,
+};
+export type StateCreation = AugmentedRequired<StateUpdate, 'name'>;
+export type TopicCreation = AugmentedRequired<TopicUpdate, 'name'>;
+export type TopicResponse = AugmentedRequired<TopicCreation, 'description' | 'color' | 'icon'> & {
+    id: string,
+};
+export type SignupResponse = AugmentedRequired<SignupCreation, 'name' | 'role'> & {
+    id: string,
+    user: User,
+    date: number,
+};
+export type FileResponse = AugmentedRequired<FileCreation, 'private'> & {
     id: string,
     filename: string,
     created: number,
@@ -682,64 +711,9 @@ export type FileResponse = FileCreation & {
     size: number,
     downloadURL: string,
 };
-
-// endregion
-
-// region Signups
-
-export type SignupUpdate = Partial<{
-    name: string,
-    role: string,
-}>
-
-export type SignupCreation = Required<SignupUpdate> & {
-    userID: string,
-};
-
-export type SignupResponse = SignupCreation & {
-    id: string,
-    user: User,
-    date: number,
-}
-
-// endregion
-
-// region States
-
-export type StateUpdate = Partial<{
-    name: string,
-    icon: string,
-    color: string,
-}>;
-
-export type StateCreation = AugmentedRequired<StateUpdate, 'name'>;
-
-export type StateResponse = Required<StateCreation> & {
+export type EntsStateResponse = Required<EntsStateCreation> & {
     id: string,
 };
-
-// endregion
-
-// region Topic
-
-export type TopicUpdate = Partial<{
-    name: string,
-    description: string,
-    color: string,
-    icon: string,
-}>;
-
-export type TopicCreation = AugmentedRequired<TopicUpdate, 'name'>;
-
-export type TopicResponse = Required<TopicCreation> & {
+export type StateResponse = AugmentedRequired<StateCreation, 'icon' | 'color'> & {
     id: string,
 };
-
-// endregion
-
-export type User = {
-    name: string,
-    username: string,
-    profile?: string,
-    id: string,
-}
