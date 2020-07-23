@@ -1,19 +1,28 @@
 import * as React from 'react';
 // eslint-disable-next-line max-len
-import { faBolt, faClock, faExclamationCircle, faQuestionCircle, faTag, faTicketAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
+import {
+    faBolt,
+    faClock,
+    faExclamationCircle,
+    faQuestionCircle,
+    faTag,
+    faTicketAlt,
+    faUsers,
+    IconName
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './EventCard.scss';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { EventState, GatewayEvent } from '../../../types/Event';
+import { EventResponse, StateResponse } from '../../../utilities/APITypes';
 
 export type EventCardPropsType = {
     /**
      * The event that this card should render
      */
-    event: GatewayEvent,
+    event: EventResponse,
     /**
      * If this is a collapsed box (less direct detail, smaller profile)
      */
@@ -40,7 +49,9 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
      * `x hours, x minutes` value.
      */
     private getTimeDifference() {
-        const duration = moment.duration(moment(this.props.event.bookingEnd).diff(this.props.event.bookingStart));
+        const duration = moment.duration(
+            moment.unix(this.props.event.endDate).diff(moment.unix(this.props.event.startDate)),
+        );
         const hours = Math.round(Math.floor(duration.asHours()));
         const minutes = Math.round(duration.asMinutes() - (hours * 60));
 
@@ -54,7 +65,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
      * Returns either an undefined component or an exclamation circle if the duration of the event is over 6 hours.
      */
     private getDurationIcon() {
-        const hours = Math.abs(this.props.event.bookingEnd.getTime() - this.props.event.bookingStart.getTime()) / 36e5;
+        const hours = Math.abs(this.props.event.endDate - this.props.event.startDate) / 36e5;
         if (hours > 6) {
             return <FontAwesomeIcon icon={faExclamationCircle} className="warn" size="xs" />;
 
@@ -68,13 +79,13 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
      * provide an icon value, or the icon provided in the props otherwise.
      * @param status the status to render
      */
-    private static getStateIcon(status?: EventState) {
+    private static getStateIcon(status?: StateResponse) {
         if (status === undefined) {
             return <FontAwesomeIcon icon={faQuestionCircle} size="xs" />;
         }
 
         if (status.icon !== undefined && status.icon !== null) {
-            return <FontAwesomeIcon icon={status.icon} size="xs" />;
+            return <FontAwesomeIcon icon={status.icon as IconName} size="xs" />;
         }
 
         return <FontAwesomeIcon icon={faQuestionCircle} size="xs" />;
@@ -87,22 +98,22 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
     private getEntsState() {
         let status = <div className="ents-state unknown">Unknown</div>;
 
-        if (this.props.event.entsStatus !== undefined) {
-            if (this.props.event.entsStatus.color !== undefined) {
+        if (this.props.event.ents !== undefined) {
+            if (this.props.event.ents.color !== undefined) {
                 status = (
                     <div
                         className="ents-state unknown"
-                        style={{ backgroundColor: this.props.event.entsStatus.color }}
+                        style={{ backgroundColor: this.props.event.ents.color }}
                     >
-                        {this.props.event.entsStatus.name}
+                        {this.props.event.ents.name}
                     </div>
                 );
             } else {
                 status = (
                     <div
-                        className={`ents-state ${this.props.event.entsStatus.name}`}
+                        className={`ents-state ${this.props.event.ents.name}`}
                     >
-                        {this.props.event.entsStatus.name}
+                        {this.props.event.ents.name}
                     </div>
                 );
             }
@@ -125,24 +136,25 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
         const stateColor = this.props.event.state === undefined || this.props.event.state.color === undefined
             ? '#B1B9B8'
             : this.props.event.state.color;
-        const entsColor = this.props.event.entsStatus === undefined || this.props.event.entsStatus.color === undefined
+        const entsColor = this.props.event.ents === undefined || this.props.event.ents.color === undefined
             ? '#B1B9B8'
-            : this.props.event.entsStatus.color;
+            : this.props.event.ents.color;
 
         return `linear-gradient(to right, ${stateColor} 0%, ${stateColor} 50%, ${entsColor} 50%, ${entsColor} 100%)`;
 
     }
 
+    // TODO: Icons are not supported on events currently
     /**
      * Renders the icon for the event either using the icon in the event if one is provided or just the ticketAlt icon
      * if not.
      */
-    private renderEventIcon() {
-        if (this.props.event.icon === undefined) {
-            return <FontAwesomeIcon icon={faTicketAlt} color={EventCard.iconColor} size="lg" />;
-        }
-
-        return <FontAwesomeIcon icon={this.props.event.icon} color={EventCard.iconColor} size="lg" />;
+    private static renderEventIcon() {
+        //     if (this.props.event.icon === undefined) {
+        return <FontAwesomeIcon icon={faTicketAlt} color={EventCard.iconColor} size="lg" />;
+        //     }
+        //
+        //     return <FontAwesomeIcon icon={this.props.event.icon} color={EventCard.iconColor} size="lg" />;
     }
 
     /**
@@ -155,7 +167,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
             <div className="event-card collapsed">
                 <div className="upper">
                     <div className="top-bar collapsed">
-                        {this.renderEventIcon()}
+                        {EventCard.renderEventIcon()}
                         <div className="names">
                             <div className="name">{this.props.event.name}</div>
                             <div className="venue">{this.props.event.venue}</div>
@@ -195,13 +207,13 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
                     id={`cb-${Buffer.from(this.props.event.name).toString('base64')}`}
                 >
                     <strong>State: </strong>
-                    <span>{this.props.event.state === undefined ? 'Unknown' : this.props.event.state.state}</span>
+                    <span>{this.props.event.state === undefined ? 'Unknown' : this.props.event.state.name}</span>
                     <br />
                     <strong>Ents: </strong>
                     <span>
-                        {this.props.event.entsStatus === undefined
+                        {this.props.event.ents === undefined
                             ? 'Unknown'
-                            : this.props.event.entsStatus.name}
+                            : this.props.event.ents.name}
                     </span>
                 </ReactTooltip>
             </div>
@@ -218,7 +230,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
             <div className="event-card">
                 <div className="upper">
                     <div className="top-bar">
-                        {this.renderEventIcon()}
+                        {EventCard.renderEventIcon()}
                         <div className="names">
                             <div className="name">{this.props.event.name}</div>
                             <div className="venue">{this.props.event.venue}</div>
@@ -231,7 +243,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
                         </div>
                         <div className="col-xs-6 horizontal">
                             <FontAwesomeIcon icon={faClock} color={EventCard.iconColor} />
-                            <div className="time">{this.props.event.bookingStart.toDateString()}</div>
+                            <div className="time">{moment.unix(this.props.event.startDate).toISOString()}</div>
                         </div>
                     </div>
                 </div>
@@ -253,7 +265,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
                                 <div className="header">State</div>
                                 <div className="state">
                                     {EventCard.getStateIcon(this.props.event.state)}
-                                    {this.props.event.state === undefined ? 'unknown' : this.props.event.state.state}
+                                    {this.props.event.state === undefined ? 'unknown' : this.props.event.state.name}
                                 </div>
                             </div>
                         </div>
@@ -270,7 +282,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
 
     render() {
         return (
-            <Link className="event-card" to={`/events/${this.props.event._id}`}>
+            <Link className="event-card" to={`/events/${this.props.event.id}`}>
                 {this.props.collapsed ? this.renderCollapsed() : this.renderExpanded()}
             </Link>
         );
