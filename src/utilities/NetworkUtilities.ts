@@ -79,8 +79,16 @@ function datalessRequest<T>(
                 },
             },
         ).then((data) => {
-            if (method === 'delete') resolve();
-            else resolve(data.data.result);
+            if (data.data.status === 'FAIL') {
+                reject(new Error(`${data.data.error.message} (${data.data.error.code})`));
+                return;
+            }
+
+            if (method === 'delete') {
+                resolve();
+            } else {
+                resolve(data.data.result);
+            }
         }).catch(reject);
     });
 }
@@ -126,6 +134,11 @@ function requestWithData<T, K>(
                 },
             },
         ).then((resData) => {
+            if (resData.data.status === 'FAIL') {
+                reject(new Error(`${resData.data.error.message} (${resData.data.error.code})`));
+                return;
+            }
+
             resolve(resData.data.result);
         }).catch(reject);
     });
