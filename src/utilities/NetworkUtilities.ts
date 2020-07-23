@@ -16,7 +16,7 @@ import {
     SignupResponse,
     SignupUpdate, StateCreation,
     StateResponse, StateUpdate, TopicCreation, TopicResponse, TopicUpdate,
-    User,
+    User, VenueCreation, VenueResponse, VenueUpdate,
 } from './APITypes';
 
 /**
@@ -616,6 +616,57 @@ export const API = {
                     '/users/{userID}',
                     'Fetches this individual user',
                 ),
+            },
+        },
+    },
+
+    venues: {
+        // venues
+        this: {
+            get: bind<VenueResponse[]>(
+                (uri: string) => getRequest<VenueResponse[]>(uri),
+                '/venues',
+                'Retrieves all venues',
+            ),
+            post: bind<IDOnlyResponse>(
+                (uri: string, data: VenueCreation) => postRequest<IDOnlyResponse, typeof data>(uri, data),
+                '/venues',
+                'Creates a new venue',
+            ),
+        },
+
+        id: {
+            // venues/{id}
+            this: {
+                get: bind<VenueResponse>(
+                    (uri: string, venueID: string) => getRequest<VenueResponse>(uri, { venueID }),
+                    '/venues/{venueID}',
+                    'Retrieves the given venue',
+                ),
+                patch: bind<IDOnlyResponse>(
+                    (
+                        uri: string,
+                        venueID: string,
+                        data: VenueUpdate,
+                    ) => patchRequest<IDOnlyResponse, typeof data>(uri, data, { venueID }),
+                    '/venues/{venueID}',
+                    'Updates this venue with the given changes',
+                ),
+                delete: bind<void>(
+                    (uri: string, venueID: string) => deleteRequest<void>(uri, { venueID }),
+                    '/venues/{venueID}',
+                    'Deletes the given venue',
+                ),
+            },
+
+            events: {
+                this: {
+                    get: bind<EventResponse[]>(
+                        (uri: string, venueID: string) => getRequest<EventResponse[]>(uri, { venueID }),
+                        '/venues/{venueID}/events',
+                        'Fetches all events taking place in this venue',
+                    ),
+                },
             },
         },
     },
