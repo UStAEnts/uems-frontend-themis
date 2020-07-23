@@ -1,7 +1,6 @@
 import { cleanup } from '@testing-library/react';
 import { v4 } from 'uuid';
-import { EntsStatus, EventState, GatewayEvent } from '../types/Event';
-import { EntsStateResponse, StateResponse } from "../utilities/APITypes";
+import { EntsStateResponse, EventResponse, StateResponse } from '../utilities/APITypes';
 
 export function promiseTimeout(func: Function, time: number) {
     return new Promise((resolve) => {
@@ -49,14 +48,14 @@ export const makeEvent = (
     venue?: string,
     id?: string,
     state?: StateResponse,
-    entsStatus?: EntsStateResponse,
+    ents?: EntsStateResponse,
 ) => ({
     name,
-    _id: id ?? v4(),
-    bookingStart: new Date(start),
-    bookingEnd: new Date(start + (hourDuration * 60 * 60 * 1000)),
+    id: id ?? v4(),
+    startDate: start,
+    endDate: start + (hourDuration * 60 * 60 * 1000),
     attendance: attendance ?? 0,
     venue: venue ?? 'venue',
     state,
-    entsStatus,
-} as GatewayEvent);
+    ents,
+} as EventResponse);

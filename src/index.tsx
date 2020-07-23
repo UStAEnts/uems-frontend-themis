@@ -25,7 +25,6 @@ import Event from './pages/event/Event';
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import 'flatpickr/dist/themes/material_green.css';
-import { User } from './types/Event';
 import { GlobalContext, GlobalContextType, ReadableContextType } from './context/GlobalContext';
 import {
     Notification,
@@ -35,6 +34,7 @@ import {
 import { NotificationContext } from './context/NotificationContext';
 import { v4 } from 'uuid';
 import { CreateEvent } from "./pages/event/create/CreateEvent";
+import { User } from "./utilities/APITypes";
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);

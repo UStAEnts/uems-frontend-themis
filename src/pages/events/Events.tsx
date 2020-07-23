@@ -1,15 +1,13 @@
-import axios from 'axios';
 import * as React from 'react';
-import url from 'url';
 import Loader from 'react-loader-spinner';
-import { GatewayEvent } from '../../types/Event';
 import { Calendar as CalendarElement } from '../../components/components/calendar/Calendar';
 import { TabPane } from '../../components/components/tab-pane/TabPane';
 import { EventTable } from '../../components/components/event-table/EventTable';
-import Config from '../../config/Config';
 import { Theme } from '../../theme/Theme';
 
 import './Events.scss';
+import { EventResponse } from '../../utilities/APITypes';
+import { API } from '../../utilities/NetworkUtilities';
 
 export type CalendarPropsType = {};
 
@@ -17,7 +15,7 @@ export type CalendarStateType = {
     /**
      * The list of events loaded from the gateway
      */
-    events?: GatewayEvent[],
+    events?: EventResponse[],
     /**
      * the error to be displayed if one has been provided
      */
@@ -41,20 +39,9 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
      * Load the events from the API endpoint and update the state with the properties or populate the error state
      */
     private loadComments() {
-        axios.get(url.resolve(Config.BASE_GATEWAY_URI, 'events'), {
-            headers: {
-                Authorization: 'Bearer hi',
-            },
-        }).then((data) => {
+        API.events.this.get().then((events) => {
             this.setState({
-                events: data.data.map((e: any) => ({
-                    ...e,
-                    name: e.name,
-                    venue: 'not in data',
-                    bookingStart: new Date(e.start_date),
-                    bookingEnd: new Date(e.end_date),
-                    attendance: -1,
-                })) as unknown as GatewayEvent[],
+                events,
             });
         }).catch((err: Error) => {
             this.setState((oldState) => ({

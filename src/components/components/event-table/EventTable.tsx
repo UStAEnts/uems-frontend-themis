@@ -1,6 +1,5 @@
 /* eslint-disable */
 import React from 'react';
-import { EntsStatus, GatewayEvent, EventState } from '../../../types/Event';
 import ReactTimeAgo from "react-time-ago";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Theme } from "../../../theme/Theme";
@@ -10,14 +9,14 @@ import './EventTable.scss';
 import moment from "moment";
 import { LinkedTD } from "../../atoms/LinkedTD";
 import { Redirect } from "react-router";
-import { EntsStateResponse, StateResponse } from "../../../utilities/APITypes";
+import { EntsStateResponse, EventResponse, StateResponse } from "../../../utilities/APITypes";
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 
 export type EventTablePropsType = {
     /**
      * The list of events to display in this table
      */
-    events: GatewayEvent[],
+    events: EventResponse[],
 }
 
 export type EventTableStateType = {
@@ -128,34 +127,35 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      * box in the table is rendered with {@link LinkedTD} which will allow it to be supported by screen readers.
      * @param event the event to render.
      */
-    private eventToRow(event: GatewayEvent) {
+    private eventToRow(event: EventResponse) {
         return (
             <tr
-                key={event._id}
-                data-testid={`et-row-${event._id}`}
+                key={event.id}
+                data-testid={`et-row-${event.id}`}
                 // @ts-ignore
                 onClick={() => this.redirect(`/events/${event._id}`)}
             >
-                <LinkedTD to={`/events/${event._id}`}>
-                    {event.icon
-                        ? <FontAwesomeIcon icon={event.icon} />
-                        : undefined}
+                <LinkedTD to={`/events/${event.id}`}>
+                    {/* TODO: Icons do not current exist on events */}
+                    {/*{event.icon*/}
+                    {/*    ? <FontAwesomeIcon icon={event.icon} />*/}
+                    {/*    : undefined}*/}
                 </LinkedTD>
 
-                <LinkedTD to={`/events/${event._id}`}>{event.name}</LinkedTD>
-                <LinkedTD to={`/events/${event._id}`}>{event.venue}</LinkedTD>
-                <LinkedTD to={`/events/${event._id}`}>
-                    {moment(event.bookingStart).format(' dddd Do MMMM (YYYY), HH:mm ')}
+                <LinkedTD to={`/events/${event.id}`}>{event.name}</LinkedTD>
+                <LinkedTD to={`/events/${event.id}`}>{event.venue}</LinkedTD>
+                <LinkedTD to={`/events/${event.id}`}>
+                    {moment.unix(event.startDate).format(' dddd Do MMMM (YYYY), HH:mm ')}
                     &#8594;
-                    {moment(event.bookingEnd).format(' dddd Do MMMM (YYYY), HH:mm ')}
+                    {moment.unix(event.endDate).format(' dddd Do MMMM (YYYY), HH:mm ')}
                 </LinkedTD>
-                <LinkedTD to={`/events/${event._id}`}>
-                    <ReactTimeAgo date={event.bookingStart} />
+                <LinkedTD to={`/events/${event.id}`}>
+                    <ReactTimeAgo date={event.startDate} />
                 </LinkedTD>
-                <LinkedTD to={`/events/${event._id}`}>
-                    {this.makeEntsStatus(event.entsStatus)}
+                <LinkedTD to={`/events/${event.id}`}>
+                    {this.makeEntsStatus(event.ents)}
                 </LinkedTD>
-                <LinkedTD to={`/events/${event._id}`}>
+                <LinkedTD to={`/events/${event.id}`}>
                     {this.makeEventState(event.state)}
                 </LinkedTD>
             </tr>
@@ -178,7 +178,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      * ents states and venues. If it returns false it means the event does not match the filters.
      * @param event the event to test
      */
-    private filter(event: GatewayEvent) {
+    private filter(event: EventResponse) {
         if ('name' in this.state.filters) {
             const filter = this.state.filters.name as SearchFilterStatus;
 
@@ -189,11 +189,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             const filter = this.state.filters.date as DateFilterStatus;
 
             if (filter.startDate !== null) {
-                if (filter.startDate.isAfter(moment(event.bookingStart))) return false;
+                if (filter.startDate.isAfter(moment.unix(event.startDate))) return false;
             }
 
             if (filter.endDate !== null) {
-                if (filter.endDate.isBefore(moment(event.bookingEnd))) return false;
+                if (filter.endDate.isBefore(moment.unix(event.endDate))) return false;
             }
         }
 
@@ -202,7 +202,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
 
             if (filter.selectedOption !== 'any') {
                 if (event.state === undefined) return false;
-                if (event.state.state !== filter.selectedOption) return false;
+                if (event.state.name !== filter.selectedOption) return false;
             }
         }
 
@@ -210,8 +210,8 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             const filter = this.state.filters.ents as SelectFilterStatus;
 
             if (filter.selectedOption !== 'any') {
-                if (event.entsStatus === undefined) return false;
-                if (event.entsStatus.name !== filter.selectedOption) return false;
+                if (event.ents === undefined) return false;
+                if (event.ents.name !== filter.selectedOption) return false;
             }
         }
 
@@ -234,8 +234,8 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      * Renders the table with filters for name, date, state, ents and venues.
      */
     render() {
-        const states = this.props.events.map((e) => e.state === undefined ? undefined : e.state.state).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
-        const ents = this.props.events.map((e) => e.entsStatus === undefined ? undefined : e.entsStatus.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
+        const states = this.props.events.map((e) => e.state === undefined ? undefined : e.state.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
+        const ents = this.props.events.map((e) => e.ents === undefined ? undefined : e.ents.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
         const venues = this.props.events.map((e) => e.venue).filter((value, index, self) => self.indexOf(value) === index) as string[];
 
         [states, ents, venues].forEach(a => a.push('any'));
