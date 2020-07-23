@@ -135,7 +135,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 key={event.id}
                 data-testid={`et-row-${event.id}`}
                 // @ts-ignore
-                onClick={() => this.redirect(`/events/${event._id}`)}
+                onClick={() => this.redirect(`/events/${event.id}`)}
             >
                 <LinkedTD to={`/events/${event.id}`}>
                     {/* TODO: Icons do not current exist on events */}
