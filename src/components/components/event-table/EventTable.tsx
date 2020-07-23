@@ -10,6 +10,8 @@ import './EventTable.scss';
 import moment from "moment";
 import { LinkedTD } from "../../atoms/LinkedTD";
 import { Redirect } from "react-router";
+import { EntsStateResponse, StateResponse } from "../../../utilities/APITypes";
+import { IconName } from '@fortawesome/free-solid-svg-icons';
 
 export type EventTablePropsType = {
     /**
@@ -51,7 +53,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
     /**
      * Returns an ents state based on the value in the event, either 'unknown' by default or the value held in the event
      */
-    private makeEntsStatus(entsStatus: undefined | EntsStatus) {
+    private makeEntsStatus(entsStatus: undefined | EntsStateResponse) {
         let status = <div className="ents-state unknown">Unknown</div>;
 
         if (entsStatus !== undefined) {
@@ -83,7 +85,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
     /**
      * Returns an ents state based on the value in the event, either 'unknown' by default or the value held in the event
      */
-    private makeEventState(entsStatus: undefined | EventState) {
+    private makeEventState(entsStatus: undefined | StateResponse) {
         let status = <div className="ents-state unknown">Unknown</div>;
 
         if (entsStatus !== undefined) {
@@ -94,9 +96,9 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                         style={{ backgroundColor: entsStatus.color }}
                     >
                         {entsStatus.icon
-                            ? <FontAwesomeIcon icon={entsStatus.icon} />
+                            ? <FontAwesomeIcon icon={entsStatus.icon as IconName} />
                             : undefined}
-                        {entsStatus.state}
+                        {entsStatus.name}
                     </div>
                 );
             } else {
@@ -105,12 +107,12 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                         style={{
                             backgroundColor: Theme.GRAY_LIGHT,
                         }}
-                        className={`ents-state ${entsStatus.state}`}
+                        className={`ents-state ${entsStatus.name}`}
                     >
                         {entsStatus.icon
-                            ? <FontAwesomeIcon icon={entsStatus.icon} />
+                            ? <FontAwesomeIcon icon={entsStatus.icon as IconName} />
                             : undefined}
-                        {entsStatus.state}
+                        {entsStatus.name}
                     </div>
                 );
             }
