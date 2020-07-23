@@ -1,6 +1,7 @@
 import { cleanup } from '@testing-library/react';
 import { v4 } from 'uuid';
 import { EntsStatus, EventState, GatewayEvent } from '../types/Event';
+import { EntsStateResponse, StateResponse } from "../utilities/APITypes";
 
 export function promiseTimeout(func: Function, time: number) {
     return new Promise((resolve) => {
@@ -47,8 +48,8 @@ export const makeEvent = (
     attendance?: number,
     venue?: string,
     id?: string,
-    state?: EventState,
-    entsStatus?: EntsStatus,
+    state?: StateResponse,
+    entsStatus?: EntsStateResponse,
 ) => ({
     name,
     _id: id ?? v4(),
