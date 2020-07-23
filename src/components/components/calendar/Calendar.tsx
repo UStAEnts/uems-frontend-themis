@@ -1,9 +1,9 @@
 import * as React from 'react';
 import moment, { Moment } from 'moment';
-import { GatewayEvent } from '../../../types/Event';
 
 import './Calendar.scss';
 import { EventCard } from '../../atoms/event-card/EventCard';
+import { EventResponse } from '../../../utilities/APITypes';
 
 export type CalendarPropsType = {
     /**
@@ -13,7 +13,7 @@ export type CalendarPropsType = {
     /**
      * This list of events to display in this event
      */
-    events: GatewayEvent[],
+    events: EventResponse[],
 };
 
 export type CalendarStateType = {
@@ -110,8 +110,8 @@ export class Calendar extends React.Component<CalendarPropsType, CalendarStateTy
 
         const events = this.props.events
             // Filter only those that start at the right time
-            .filter((e) => e.bookingStart.getTime() >= time.valueOf()
-                && e.bookingStart.getTime() < limit.subtract('1', 'minute').valueOf())
+            .filter((e) => e.startDate >= time.valueOf()
+                && e.endDate < limit.subtract('1', 'minute').valueOf())
             // Map them to event cards
             .map((event) => <EventCard event={event} collapsed />);
 
