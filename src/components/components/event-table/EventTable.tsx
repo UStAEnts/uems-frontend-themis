@@ -3,15 +3,24 @@ import React from 'react';
 import ReactTimeAgo from "react-time-ago";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Theme } from "../../../theme/Theme";
-import { DateFilterStatus, Filter, NumberFilterStatus, SearchFilterStatus, SelectFilterStatus } from "../filter/Filter";
+import {
+    DateFilterStatus,
+    Filter,
+    FilterConfiguration,
+    NumberFilterStatus,
+    SearchFilterStatus,
+    SelectFilterStatus
+} from "../filter/Filter";
 
 import './EventTable.scss';
 import moment from "moment";
 import { LinkedTD } from "../../atoms/LinkedTD";
 import { Redirect } from "react-router";
-import { EntsStateResponse, EventResponse, StateResponse } from "../../../utilities/APITypes";
+import { EntsStateResponse, EventResponse, StateResponse, VenueResponse } from "../../../utilities/APITypes";
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { ColorUtilities } from "../../../utilities/ColorUtilities";
+import { KeyValueOption } from "../../atoms/select/Select";
+import { API } from "../../../utilities/NetworkUtilities";
 
 export type EventTablePropsType = {
     /**
@@ -30,6 +39,12 @@ export type EventTableStateType = {
      * This makes it easy to trigger a redirect without having to be in the render function
      */
     forcedRedirect?: string,
+
+    loaded: {
+        venues?: VenueResponse[],
+        states?: StateResponse[],
+        ents?: EntsStateResponse[],
+    }
 };
 
 export class EventTable extends React.Component<EventTablePropsType, EventTableStateType> {
@@ -41,6 +56,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
 
         this.state = {
             filters: {},
+            loaded: {},
         };
 
         this.makeEntsStatus = this.makeEntsStatus.bind(this);
@@ -48,6 +64,45 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         this.eventToRow = this.eventToRow.bind(this);
         this.filter = this.filter.bind(this);
         this.redirect = this.redirect.bind(this);
+    }
+
+    componentDidMount() {
+        API.venues.this.get().then((venues) => {
+            this.setState((oldState) => {
+                const clone = { ...oldState };
+
+                clone.loaded.venues = venues;
+
+                return clone;
+            })
+        }).catch((err) => {
+            //TODO: add error handling
+            console.error(err);
+        });
+        API.states.this.get().then((states) => {
+            this.setState((oldState) => {
+                const clone = { ...oldState };
+
+                clone.loaded.states = states;
+
+                return clone;
+            })
+        }).catch((err) => {
+            //TODO: add error handling
+            console.error(err);
+        });
+        API.ents.this.get().then((ents) => {
+            this.setState((oldState) => {
+                const clone = { ...oldState };
+
+                clone.loaded.ents = ents;
+
+                return clone;
+            })
+        }).catch((err) => {
+            //TODO: add error handling
+            console.error(err);
+        });
     }
 
     /**
@@ -61,7 +116,10 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 status = (
                     <div
                         className="ents-state unknown"
-                        style={{ backgroundColor: entsStatus.color, color: ColorUtilities.determineForegroundColor(entsStatus.color) }}
+                        style={{
+                            backgroundColor: entsStatus.color,
+                            color: ColorUtilities.determineForegroundColor(entsStatus.color)
+                        }}
                     >
                         {entsStatus.name}
                     </div>
@@ -129,7 +187,6 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      * @param event the event to render.
      */
     private eventToRow(event: EventResponse) {
-        console.log(event);
         return (
             <tr
                 key={event.id}
@@ -168,7 +225,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      * Updates the state to set the forced redirect value
      * @param to the url to which we should redirect
      */
-    private redirect(to: string){
+    private redirect(to: string) {
         this.setState((oldState) => ({
             ...oldState,
             forcedRedirect: to,
@@ -220,12 +277,10 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         if ('venues' in this.state.filters) {
             const filter = this.state.filters.venues as SelectFilterStatus;
 
-            if (filter.selectedOption !== 'any') {
-                if (typeof (filter.selectedOption) === 'string') {
-                    if (event.venue.toLowerCase() !== filter.selectedOption.toLowerCase()) return false;
-                } else {
-                    if (event.venue.toLowerCase() !== filter.selectedOption.value.toLowerCase()) return false;
-                }
+            if (typeof (filter.selectedOption) === 'string') return true;
+
+            if (filter.selectedOption.value !== 'any') {
+                if (event.venue?.name.toLowerCase() !== (filter.selectedOption.additional as VenueResponse).name.toLowerCase()) return false;
             }
         }
 
@@ -238,9 +293,65 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
     render() {
         const states = this.props.events.map((e) => e.state === undefined ? undefined : e.state.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
         const ents = this.props.events.map((e) => e.ents === undefined ? undefined : e.ents.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
-        const venues = this.props.events.map((e) => e.venue).filter((value, index, self) => self.indexOf(value) === index) as string[];
+        const venues = this.props.events.map((e) => e.venue).filter((value, index, self) => self.indexOf(value) === index).map((e) => ({
+            text: e?.name,
+            value: e?.id,
+            additional: e,
+        })) as KeyValueOption[];
 
-        [states, ents, venues].forEach(a => a.push('any'));
+        // @ts-ignore
+        [states, ents].forEach(a => a.push({
+            text: 'any',
+            value: 'any',
+        }));
+
+        const filters: { [key: string]: FilterConfiguration } = {
+            'name': {
+                name: 'Event Name',
+                type: 'search',
+            },
+            'date': {
+                name: 'Event Date',
+                type: 'date',
+            },
+        };
+
+        if (this.state.loaded.ents) {
+            filters['ents'] = {
+                name: 'Ents Status',
+                type: 'option',
+                options: this.state.loaded.ents.map((e) => ({
+                    value: e.id,
+                    text: e.name,
+                    additional: e,
+                })),
+            };
+        }
+
+        if (this.state.loaded.states) {
+            filters['state'] = {
+                name: 'Event State',
+                type: 'option',
+                options: this.state.loaded.states.map((e) => ({
+                    additional: e,
+                    value: e.id,
+                    text: e.name,
+                })),
+            };
+        }
+
+        if (this.state.loaded.venues) {
+            filters['venues'] = {
+                name: 'Venue',
+                type: 'option',
+                options: this.state.loaded.venues.map((e) => ({
+                    text: e.name,
+                    value: e.id,
+                    additional: e,
+                })),
+            };
+        }
+
 
         return (
             <div className="events-table">
@@ -248,31 +359,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                     ? <Redirect to={this.state.forcedRedirect} />
                     : undefined}
                 <Filter
-                    filters={{
-                        'name': {
-                            name: 'Event Name',
-                            type: 'search',
-                        },
-                        'date': {
-                            name: 'Event Date',
-                            type: 'date',
-                        },
-                        'state': {
-                            name: 'Event State',
-                            type: 'option',
-                            options: states,
-                        },
-                        'ents': {
-                            name: 'Ents Status',
-                            type: 'option',
-                            options: ents,
-                        },
-                        'venues': {
-                            name: 'Venue',
-                            type: 'option',
-                            options: venues,
-                        }
-                    }}
+                    filters={filters}
                     onFilterChange={
                         (filters) => {
                             console.log('STATE CHANGE');
