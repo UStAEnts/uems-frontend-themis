@@ -217,7 +217,7 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
     private makeSelectInput(key: string, select: FilterConfiguration) {
         if (select.options && select.options.length > 0 && typeof (select.options[0]) === 'string') {
             return (
-                <div className="indv-filter">
+                <div key={key} className="indv-filter">
                     <Select
                         placeholder={select.name}
                         name={key}
@@ -233,7 +233,7 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
             );
         }
         return (
-            <div className="indv-filter">
+            <div key={key} className="indv-filter">
                 <Select
                     placeholder={select.name}
                     name={key}
@@ -382,7 +382,7 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
         }
 
         return (
-            <div className="indv-filter">
+            <div key={key} className="indv-filter">
                 <div className="label">{date.name}</div>
                 <DateRangePicker
                     startDate={moment.unix(0)}
@@ -411,7 +411,7 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
             : undefined;
 
         return (
-            <div className="indv-filter">
+            <div key={key} className="indv-filter">
                 <TextField
                     name={key}
                     type="text"

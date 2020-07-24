@@ -113,9 +113,9 @@ export class Calendar extends React.Component<CalendarPropsType, CalendarStateTy
             .filter((e) => e.startDate >= time.valueOf()
                 && e.endDate < limit.subtract('1', 'minute').valueOf())
             // Map them to event cards
-            .map((event) => <EventCard event={event} collapsed />);
+            .map((event) => <EventCard key={event.id} event={event} collapsed />);
 
-        return <div className="hour-entry">{events}</div>;
+        return <div className="hour-entry" key={limit.unix()}>{events}</div>;
     }
 
     /**
@@ -133,7 +133,7 @@ export class Calendar extends React.Component<CalendarPropsType, CalendarStateTy
         }
 
         return (
-            <div className="hour-row c-row">
+            <div key={`hr${hour}.${minute}`} className="hour-row c-row">
                 <div className="hour-label">{`${Calendar.padToTwo(hour)}:${Calendar.padToTwo(minute)}`}</div>
                 {entries}
             </div>

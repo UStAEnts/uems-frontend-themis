@@ -31,6 +31,6 @@ export const FileList: React.FunctionComponent<{
 }> = ({ files }) => (
     <div className="file-list">
         <div className="title">Files</div>
-        {files.map((e) => <FileBar file={e} />)}
+        {files.map((e) => <FileBar key={e.id} file={e} />)}
     </div>
 );

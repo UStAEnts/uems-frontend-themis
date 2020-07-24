@@ -68,7 +68,7 @@ export class CommentList extends React.Component<CommentListPropsType, CommentLi
                     .concat(this.state.comments)
                     .sort((a, b) => b.posted - a.posted)
                     .map((e) => (
-                        <Comment comment={e} />
+                        <Comment key={e.id} comment={e} />
                     ))}
             </div>
         );
