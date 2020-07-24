@@ -106,7 +106,7 @@ export class Calendar extends React.Component<CalendarPropsType, CalendarStateTy
      * @param time the time that this hour box should be rendered for
      */
     private renderHourBox(time: Moment) {
-        const limit = time.clone().add(31, 'minutes');
+        const limit = time.clone().add(30, 'minutes');
 
         const events = this.props.events
             // Filter only those that start at the right time
