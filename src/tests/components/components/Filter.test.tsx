@@ -146,11 +146,11 @@ describe('<Filter />', () => {
                                 options: [
                                     {
                                         value: 'key',
-                                        key: 'option',
+                                        text: 'option',
                                     },
                                     {
                                         value: 'two',
-                                        key: 'second',
+                                        text: 'second',
                                     },
                                 ],
                             },
