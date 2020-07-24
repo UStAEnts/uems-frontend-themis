@@ -22,7 +22,7 @@ import {
     EventPropertyChangeResponse,
     EventResponse, EventUpdate,
     FileResponse,
-    StateResponse,
+    StateResponse, VenueResponse,
 } from '../../utilities/APITypes';
 import { API } from '../../utilities/NetworkUtilities';
 
@@ -58,7 +58,7 @@ export type EventStateType = {
     /**
      * The venues that this event could take place in
      */
-    venues?: string[],
+    venues?: VenueResponse[],
 };
 
 class Event extends React.Component<EventPropsType, EventStateType> {
@@ -293,7 +293,8 @@ class Event extends React.Component<EventPropsType, EventStateType> {
      */
     private generateEditableProperty = (
         options: string[] | KeyValueOption[] | undefined,
-        name: string, selected: string | undefined,
+        name: string,
+        selected: string | undefined,
         property: keyof EventUpdate,
     ) => (
         options ? (
@@ -397,9 +398,13 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                     <div className="entry">
                         <div className="title">Venue</div>
                         {this.generateEditableProperty(
-                            this.state.venues,
+                            this.state.venues?.map((e: VenueResponse) => ({
+                                text: e.name,
+                                value: e.id,
+                                additional: e,
+                            })),
                             'Venue',
-                            this.state.event.venue,
+                            this.state.event.venue?.name,
                             'venue',
                         )}
                     </div>
@@ -448,7 +453,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                     name="Booking Start"
                                     config={{
                                         type: 'date',
-                                        value: new Date(this.state.event.startDate),
+                                        value: new Date(this.state.event.startDate*1000),
                                         onChange: this.changeStartTime,
                                     }}
                                 >
@@ -470,7 +475,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                     name="Booking End"
                                     config={{
                                         type: 'date',
-                                        value: new Date(this.state.event.endDate),
+                                        value: new Date(this.state.event.endDate*1000),
                                         onChange: this.changeEndTime,
                                     }}
                                 >
