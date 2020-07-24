@@ -77,7 +77,6 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
                 className="events-page"
             >
                 <TabPane
-                    unmountHidden
                     panes={[
                         {
                             key: 'calendar',
