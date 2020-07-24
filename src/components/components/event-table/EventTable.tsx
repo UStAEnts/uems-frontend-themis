@@ -259,18 +259,20 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         if ('state' in this.state.filters) {
             const filter = this.state.filters.state as SelectFilterStatus;
 
-            if (filter.selectedOption !== 'any') {
-                if (event.state === undefined) return false;
-                if (event.state.name !== filter.selectedOption) return false;
+            if (typeof (filter.selectedOption) === 'string') return true;
+
+            if (filter.selectedOption.value !== 'any') {
+                if (event.state?.name.toLowerCase() !== (filter.selectedOption.additional as StateResponse).name.toLowerCase()) return false;
             }
         }
 
         if ('ents' in this.state.filters) {
             const filter = this.state.filters.ents as SelectFilterStatus;
 
-            if (filter.selectedOption !== 'any') {
-                if (event.ents === undefined) return false;
-                if (event.ents.name !== filter.selectedOption) return false;
+            if (typeof (filter.selectedOption) === 'string') return true;
+
+            if (filter.selectedOption.value !== 'any') {
+                if (event.ents?.name.toLowerCase() !== (filter.selectedOption.additional as EntsStateResponse).name.toLowerCase()) return false;
             }
         }
 
@@ -291,20 +293,6 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      * Renders the table with filters for name, date, state, ents and venues.
      */
     render() {
-        const states = this.props.events.map((e) => e.state === undefined ? undefined : e.state.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
-        const ents = this.props.events.map((e) => e.ents === undefined ? undefined : e.ents.name).filter((e) => e !== undefined).filter((value, index, self) => self.indexOf(value) === index) as string[];
-        const venues = this.props.events.map((e) => e.venue).filter((value, index, self) => self.indexOf(value) === index).map((e) => ({
-            text: e?.name,
-            value: e?.id,
-            additional: e,
-        })) as KeyValueOption[];
-
-        // @ts-ignore
-        [states, ents].forEach(a => a.push({
-            text: 'any',
-            value: 'any',
-        }));
-
         const filters: { [key: string]: FilterConfiguration } = {
             'name': {
                 name: 'Event Name',
@@ -317,38 +305,59 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         };
 
         if (this.state.loaded.ents) {
+            const entsFilter: KeyValueOption[] = this.state.loaded.ents.map((e) => ({
+                value: e.id,
+                text: e.name,
+                additional: e,
+            }));
+
+            entsFilter.push({
+                value: 'any',
+                text: 'any',
+            });
+
             filters['ents'] = {
                 name: 'Ents Status',
                 type: 'option',
-                options: this.state.loaded.ents.map((e) => ({
-                    value: e.id,
-                    text: e.name,
-                    additional: e,
-                })),
+                options: entsFilter,
             };
         }
 
         if (this.state.loaded.states) {
+            const stateFilter: KeyValueOption[] = this.state.loaded.states.map((e) => ({
+                additional: e,
+                value: e.id,
+                text: e.name,
+            }));
+
+            stateFilter.push({
+                value: 'any',
+                text: 'any',
+            });
+
             filters['state'] = {
                 name: 'Event State',
                 type: 'option',
-                options: this.state.loaded.states.map((e) => ({
-                    additional: e,
-                    value: e.id,
-                    text: e.name,
-                })),
+                options: stateFilter,
             };
         }
 
         if (this.state.loaded.venues) {
+            const venueFilter: KeyValueOption[] = this.state.loaded.venues.map((e) => ({
+                text: e.name,
+                value: e.id,
+                additional: e,
+            }));
+
+            venueFilter.push({
+                value: 'any',
+                text: 'any',
+            });
+
             filters['venues'] = {
                 name: 'Venue',
                 type: 'option',
-                options: this.state.loaded.venues.map((e) => ({
-                    text: e.name,
-                    value: e.id,
-                    additional: e,
-                })),
+                options: venueFilter,
             };
         }
 
