@@ -167,7 +167,7 @@ describe('<Filter />', () => {
                     number: {
                         selectedOption: {
                             value: 'key',
-                            key: 'option',
+                            text: 'option',
                         },
                     },
                 });
