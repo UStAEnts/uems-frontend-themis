@@ -17,6 +17,7 @@ import {
     faWrench,
     IconDefinition
 } from '@fortawesome/free-solid-svg-icons';
+import * as Icons from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import App from './pages/App';
 import { Events } from './pages/events/Events';
@@ -34,6 +35,7 @@ import {
 import { NotificationContext } from './context/NotificationContext';
 import { v4 } from 'uuid';
 import { CreateEvent } from "./pages/event/create/CreateEvent";
+import { library } from "@fortawesome/fontawesome-svg-core";
 import { User } from "./utilities/APITypes";
 
 // Register EN locale for time ago components
@@ -46,6 +48,16 @@ moment.relativeTimeThreshold('h', 24);
 moment.relativeTimeThreshold('d', 31);
 moment.relativeTimeThreshold('M', 12);
 moment.relativeTimeThreshold('y', 365);
+
+// region TODO: HACK: This adds EVERY font awesome icon to the library. Not sure if there is a better way to do this?
+const iconList = Object
+    .keys(Icons)
+    .filter((key) => key !== 'fas' && key !== 'prefix')
+    // @ts-ignore
+    .map((icon) => Icons[icon]);
+
+library.add(...iconList);
+// endregion HACK END
 
 type RootSiteState = {
     notifications: Notification[],
