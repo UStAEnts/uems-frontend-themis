@@ -110,8 +110,8 @@ export class Calendar extends React.Component<CalendarPropsType, CalendarStateTy
 
         const events = this.props.events
             // Filter only those that start at the right time
-            .filter((e) => e.startDate >= time.valueOf()
-                && e.endDate < limit.subtract('1', 'minute').valueOf())
+            .filter((e) => e.startDate >= time.unix()
+                && e.startDate <= limit.subtract('1', 'minute').unix())
             // Map them to event cards
             .map((event) => <EventCard key={event.id} event={event} collapsed />);
 
