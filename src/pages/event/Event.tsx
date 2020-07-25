@@ -17,14 +17,13 @@ import { EditableProperty } from '../../components/components/editable-property/
 import { Theme } from '../../theme/Theme';
 import { KeyValueOption } from '../../components/atoms/select/Select';
 import {
-    CommentResponse,
-    EntsStateResponse,
+    API,
+    CommentResponse, EntsStateResponse,
     EventPropertyChangeResponse,
     EventResponse, EventUpdate,
-    FileResponse,
-    StateResponse, VenueResponse,
-} from '../../utilities/APITypes';
-import { API } from '../../utilities/NetworkUtilities';
+    FileResponse, StateResponse,
+    VenueResponse
+} from "../../utilities/APIGen";
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
@@ -77,14 +76,14 @@ class Event extends React.Component<EventPropsType, EventStateType> {
      * When the components mount, we need to query the API for the actual properties we need
      */
     componentDidMount() {
-        API.events.id.this.get(this.props.match.params.id).then((data) => {
+        API.events.id.get(this.props.match.params.id).then((data) => {
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
                 ...oldState,
-                event: data.event,
+                event: data.result.event,
 
                 // Changelog is provided on the /event/{id} endpoint but no where else (not on patch)
-                changelog: data.changelog,
+                changelog: data.result.changelog,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -233,11 +232,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
     private patchEvent = (changeProps: EventUpdate) => {
         if (!this.state.event) return;
 
-        // TODO: check this is alright
-        // if (changeProps.startDate instanceof Date) changed.bookingStart = changeProps.bookingStart.getTime();
-        // if (changeProps.bookingEnd instanceof Date) changed.bookingEnd = changeProps.bookingEnd.getTime();
-
-        API.events.id.this.patch(this.state.event.id, changeProps).then(() => {
+        API.events.id.patch(this.state.event.id, changeProps).then(() => {
             // The response only contains an ID so we need to spread the updated parameters on top of the existing ones
             this.setState((oldState) => ({
                 ...oldState,
@@ -248,27 +243,6 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             console.error(err);
             this.failedLoad('Could not save the event!');
         });
-
-        // Axios.patch(
-        //     url.resolve(
-        //         Config.BASE_GATEWAY_URI,
-        //         `/event/${encodeURIComponent(this.state.event.id)}`,
-        //     ),
-        //     changed,
-        //     {
-        //         headers: {
-        //             Accepts: 'application/json',
-        //         },
-        //     },
-        // ).then((data) => {
-        //     this.setState((oldState) => ({
-        //         ...oldState,
-        //         event: data.data.result,
-        //     }));
-        // }).catch((err) => {
-        //     // TODO: figure out how to raise errors!
-        //     console.error(err);
-        // });
     }
 
     private changeStartTime = (date: Date) => {
@@ -453,7 +427,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                     name="Booking Start"
                                     config={{
                                         type: 'date',
-                                        value: new Date(this.state.event.startDate*1000),
+                                        value: new Date(this.state.event.startDate * 1000),
                                         onChange: this.changeStartTime,
                                     }}
                                 >
@@ -475,7 +449,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                     name="Booking End"
                                     config={{
                                         type: 'date',
-                                        value: new Date(this.state.event.endDate*1000),
+                                        value: new Date(this.state.event.endDate * 1000),
                                         onChange: this.changeEndTime,
                                     }}
                                 >

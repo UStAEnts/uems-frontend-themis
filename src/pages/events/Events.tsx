@@ -6,8 +6,7 @@ import { EventTable } from '../../components/components/event-table/EventTable';
 import { Theme } from '../../theme/Theme';
 
 import './Events.scss';
-import { EventResponse } from '../../utilities/APITypes';
-import { API } from '../../utilities/NetworkUtilities';
+import { API, EventResponse } from "../../utilities/APIGen";
 
 export type CalendarPropsType = {};
 
@@ -39,9 +38,9 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
      * Load the events from the API endpoint and update the state with the properties or populate the error state
      */
     private loadComments() {
-        API.events.this.get().then((events) => {
+        API.events.get().then((events) => {
             this.setState({
-                events,
+                events: events.result,
             });
         }).catch((err: Error) => {
             this.setState((oldState) => ({

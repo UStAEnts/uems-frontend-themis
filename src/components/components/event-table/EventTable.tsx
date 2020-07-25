@@ -16,11 +16,10 @@ import './EventTable.scss';
 import moment from "moment";
 import { LinkedTD } from "../../atoms/LinkedTD";
 import { Redirect } from "react-router";
-import { EntsStateResponse, EventResponse, StateResponse, VenueResponse } from "../../../utilities/APITypes";
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { ColorUtilities } from "../../../utilities/ColorUtilities";
 import { KeyValueOption } from "../../atoms/select/Select";
-import { API } from "../../../utilities/NetworkUtilities";
+import { API, EntsStateResponse, EventResponse, StateResponse, VenueResponse } from "../../../utilities/APIGen";
 
 export type EventTablePropsType = {
     /**
@@ -67,11 +66,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
     }
 
     componentDidMount() {
-        API.venues.this.get().then((venues) => {
+        API.venues.get().then((venues) => {
             this.setState((oldState) => {
                 const clone = { ...oldState };
 
-                clone.loaded.venues = venues;
+                clone.loaded.venues = venues.result;
 
                 return clone;
             })
@@ -79,11 +78,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             //TODO: add error handling
             console.error(err);
         });
-        API.states.this.get().then((states) => {
+        API.states.get().then((states) => {
             this.setState((oldState) => {
                 const clone = { ...oldState };
 
-                clone.loaded.states = states;
+                clone.loaded.states = states.result;
 
                 return clone;
             })
@@ -91,11 +90,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             //TODO: add error handling
             console.error(err);
         });
-        API.ents.this.get().then((ents) => {
+        API.ents.get().then((ents) => {
             this.setState((oldState) => {
                 const clone = { ...oldState };
 
-                clone.loaded.ents = ents;
+                clone.loaded.ents = ents.result;
 
                 return clone;
             })
