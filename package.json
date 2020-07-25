@@ -38,7 +38,8 @@
     "react-transition-group": "^4.4.1",
     "typescript": "^3.7.5",
     "url-join": "^4.0.1",
-    "uuid": "^8.2.0"
+    "uuid": "^8.2.0",
+    "zod": "^1.10.1"
   },
   "scripts": {
     "test": "react-scripts test",
