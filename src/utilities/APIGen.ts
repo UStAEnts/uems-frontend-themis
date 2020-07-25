@@ -189,7 +189,7 @@ export const SuccessfulAPIResponseZod = z.object({
 export type SuccessfulAPIResponse = z.infer<typeof SuccessfulAPIResponseZod>;
 export const FailedAPIResponseZod = z.object({
     status: z.string(),
-    error: z.object(),
+    error: z.any(),
 });
 export type FailedAPIResponse = z.infer<typeof FailedAPIResponseZod>;
 export const CommentUpdateZod = z.object({
@@ -524,10 +524,113 @@ export type GetVenuesIdEventsAPIResponse = z.infer<typeof GetVenuesIdEventsAPIRe
 //= ============
 export type APIType = {
     events: {
-        get: () => Promise<GetEventAPIResponse>, post: (body: EventCreation) => Promise<CreateEventAPIResponse>, id: {
-            get: (id: string) => Promise<GetEventsIdAPIResponse>, patch: (id: string, body: EventUpdate) => Promise<UpdateEventAPIResponse>, delete: (id: string) => Promise<void>, comments: { get: (id: string) => Promise<GetEventsIdCommentsAPIResponse>, post: (id: string, body: CommentUpdate) => Promise<PostEventsIdCommentsAPIResponse>, id: { get: (id: string, comment: string) => Promise<GetEventsIdCommentsCommentAPIResponse>, patch: (id: string, comment: string, body: CommentUpdate) => Promise<PatchEventsIdCommentsCommentAPIResponse>, delete: (id: string, comment: string) => Promise<void> } }, files: { get: (id: string) => Promise<GetEventsIdFilesAPIResponse>, post: (id: string, body: object) => Promise<PostEventsIdFilesAPIResponse>, id: { get: (id: string, file: string) => Promise<GetEventsIdFilesFileAPIResponse>, delete: (id: string, file: string) => Promise<void> } }, signups: { get: (id: string) => Promise<GetEventsIdSignupsAPIResponse>, post: (id: string, body: SignupCreation) => Promise<PostEventsIdSignupsAPIResponse>, id: { get: (id: string, signup: string) => Promise<GetEventsIdSignupsSignupAPIResponse>, patch: (id: string, signup: string, body: SignupUpdate) => Promise<PatchEventsIdSignupsSignupAPIResponse>, delete: (id: string, signup: string) => Promise<void> } }
+        get: () => Promise<GetEventAPIResponse>,
+        post: (body: EventCreation) => Promise<CreateEventAPIResponse>,
+        id: {
+            get: (id: string) => Promise<GetEventsIdAPIResponse>,
+            patch: (id: string, body: EventUpdate) => Promise<UpdateEventAPIResponse>,
+            delete: (id: string) => Promise<void>,
+            comments: {
+                get: (id: string) => Promise<GetEventsIdCommentsAPIResponse>,
+                post: (id: string, body: CommentUpdate) => Promise<PostEventsIdCommentsAPIResponse>,
+                id: {
+                    get: (id: string, comment: string) => Promise<GetEventsIdCommentsCommentAPIResponse>,
+                    patch: (id: string, comment: string, body: CommentUpdate)
+                        => Promise<PatchEventsIdCommentsCommentAPIResponse>,
+                    delete: (id: string, comment: string) => Promise<void>
+                }
+            },
+            files: {
+                get: (id: string) => Promise<GetEventsIdFilesAPIResponse>,
+                post: (id: string, body: object) => Promise<PostEventsIdFilesAPIResponse>,
+                id: {
+                    get: (id: string, file: string) => Promise<GetEventsIdFilesFileAPIResponse>,
+                    delete: (id: string, file: string) => Promise<void>
+                }
+            },
+            signups: {
+                get: (id: string) => Promise<GetEventsIdSignupsAPIResponse>,
+                post: (id: string, body: SignupCreation) => Promise<PostEventsIdSignupsAPIResponse>,
+                id: {
+                    get: (id: string, signup: string) => Promise<GetEventsIdSignupsSignupAPIResponse>,
+                    patch: (id: string, signup: string, body: SignupUpdate)
+                        => Promise<PatchEventsIdSignupsSignupAPIResponse>,
+                    delete: (id: string, signup: string) => Promise<void>
+                }
+            }
         }
-    }, files: { get: () => Promise<GetFilesAPIResponse>, post: (body: FileCreation) => Promise<PostFilesAPIResponse>, id: { get: (id: string) => Promise<GetFilesIdAPIResponse>, patch: (id: string, body: FileUpdate) => Promise<PatchFilesIdAPIResponse>, delete: (id: string) => Promise<void>, events: { get: (id: string) => Promise<GetFilesIdEventsAPIResponse> }, comments: { get: (id: string) => Promise<GetFilesIdCommentsAPIResponse>, post: (id: string, body: CommentUpdate) => Promise<PostFilesIdCommentsAPIResponse>, id: { get: (id: string, comment: string) => Promise<GetFilesIdCommentsCommentAPIResponse>, patch: (id: string, comment: string, body: CommentUpdate) => Promise<PatchFilesIdCommentsCommentAPIResponse>, delete: (id: string, comment: string) => Promise<void> } } } }, users: { get: () => Promise<GetUsersAPIResponse>, id: { get: (id: string) => Promise<GetUsersIdAPIResponse> } }, ents: { get: () => Promise<GetEntsAPIResponse>, post: (body: EntsStateCreation) => Promise<PostEntsAPIResponse>, id: { get: (id: string) => Promise<GetEntsIdAPIResponse>, patch: (id: string, body: EntsStateUpdate) => Promise<PatchEntsIdAPIResponse>, delete: (id: string) => Promise<void> } }, states: { get: () => Promise<GetStatesAPIResponse>, post: (body: StateCreation) => Promise<PostStatesAPIResponse>, id: { get: (id: string) => Promise<GetStatesIdAPIResponse>, patch: (id: string, body: StateUpdate) => Promise<PatchStatesIdAPIResponse>, delete: (id: string) => Promise<void>, events: { get: (id: string) => Promise<GetStatesIdEventsAPIResponse> } } }, topics: { get: () => Promise<GetTopicsAPIResponse>, post: (body: unknown) => Promise<PostTopicsAPIResponse>, id: { get: (id: string) => Promise<GetTopicsIdAPIResponse>, patch: (id: string, body: TopicUpdate) => Promise<PatchTopicsIdAPIResponse>, delete: (id: string) => Promise<void> } }, venues: { get: () => Promise<GetVenueAPIResponse>, post: (body: VenueCreation) => Promise<PostVenueAPIResponse>, id: { get: (id: string) => Promise<GetVenueIdAPIResponse>, patch: (id: string, body: VenueUpdate) => Promise<PatchVenueIdAPIResponse>, delete: (id: string) => Promise<void>, events: { get: (id: string) => Promise<GetVenuesIdEventsAPIResponse> } } }
+    },
+    files: {
+        get: () => Promise<GetFilesAPIResponse>,
+        post: (body: FileCreation) => Promise<PostFilesAPIResponse>,
+        id: {
+            get: (id: string) => Promise<GetFilesIdAPIResponse>,
+            patch: (id: string, body: FileUpdate) => Promise<PatchFilesIdAPIResponse>,
+            delete: (id: string) => Promise<void>,
+            events: {
+                get: (id: string) => Promise<GetFilesIdEventsAPIResponse>
+            },
+            comments: {
+                get: (id: string) => Promise<GetFilesIdCommentsAPIResponse>,
+                post: (id: string, body: CommentUpdate) => Promise<PostFilesIdCommentsAPIResponse>,
+                id: {
+                    get: (id: string, comment: string) => Promise<GetFilesIdCommentsCommentAPIResponse>,
+                    patch: (id: string, comment: string, body: CommentUpdate)
+                        => Promise<PatchFilesIdCommentsCommentAPIResponse>,
+                    delete: (id: string, comment: string) => Promise<void>
+                }
+            }
+        }
+    },
+    users: {
+        get: () => Promise<GetUsersAPIResponse>,
+        id: {
+            get: (id: string) => Promise<GetUsersIdAPIResponse>
+
+        }
+    },
+    ents: {
+        get: () => Promise<GetEntsAPIResponse>,
+        post: (body: EntsStateCreation) => Promise<PostEntsAPIResponse>,
+        id: {
+            get: (id: string) => Promise<GetEntsIdAPIResponse>,
+            patch: (id: string, body: EntsStateUpdate) => Promise<PatchEntsIdAPIResponse>,
+            delete: (id: string) => Promise<void>
+        }
+    },
+    states: {
+        get: () => Promise<GetStatesAPIResponse>,
+        post: (body: StateCreation) => Promise<PostStatesAPIResponse>,
+        id: {
+            get: (id: string) => Promise<GetStatesIdAPIResponse>,
+            patch: (id: string, body: StateUpdate) => Promise<PatchStatesIdAPIResponse>,
+            delete: (id: string) => Promise<void>,
+            events: {
+                get: (id: string) => Promise<GetStatesIdEventsAPIResponse>
+            }
+        }
+    },
+    topics: {
+        get: () => Promise<GetTopicsAPIResponse>,
+        post: (body: unknown) => Promise<PostTopicsAPIResponse>,
+        id: {
+            get: (id: string) => Promise<GetTopicsIdAPIResponse>,
+            patch: (id: string, body: TopicUpdate) => Promise<PatchTopicsIdAPIResponse>,
+            delete: (id: string) => Promise<void>
+        }
+    },
+    venues: {
+        get: () => Promise<GetVenueAPIResponse>,
+        post: (body: VenueCreation) => Promise<PostVenueAPIResponse>,
+        id: {
+            get: (id: string) => Promise<GetVenueIdAPIResponse>,
+            patch: (id: string, body: VenueUpdate) => Promise<PatchVenueIdAPIResponse>,
+            delete: (id: string) => Promise<void>,
+            events: {
+                get: (id: string) => Promise<GetVenuesIdEventsAPIResponse>
+            }
+        }
+    }
 }
 
 export const API: APIType = {
