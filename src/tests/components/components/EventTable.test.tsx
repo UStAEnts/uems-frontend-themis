@@ -27,6 +27,12 @@ import 'react-dates/initialize';
 beforeAll(() => {
     JavascriptTimeAgo.addLocale(en);
 
+    // jest.mock('../../../utilities/APIGen', () => ({
+    //     get API() {
+    //         return {};
+    //     },
+    // }));
+
     const mock = new MockAdapter(axios);
     mock.onGet(/\/states\/?$/i).reply(200, {
         status: 'OK',
@@ -143,7 +149,7 @@ describe('<EventTable />', () => {
                 expect(queryByText(/event one/ig)).not.toBeNull();
                 expect(queryByText(/event two/ig)).not.toBeNull();
                 expect(queryByText(/event three/ig)).toBeNull();
-            }, 500);
+            }, 2000);
         });
 
         it('ents filter applies', async () => {
@@ -192,7 +198,7 @@ describe('<EventTable />', () => {
                 expect(queryByText(/event one/ig)).toBeNull();
                 expect(queryByText(/event two/ig)).not.toBeNull();
                 expect(queryByText(/event three/ig)).toBeNull();
-            }, 500);
+            }, 2000);
         });
 
         it('venues filter applied', async () => {
@@ -235,7 +241,7 @@ describe('<EventTable />', () => {
                 expect(queryByText(/event one/ig)).toBeNull();
                 expect(queryByText(/event two/ig)).toBeNull();
                 expect(queryByText(/event three/ig)).not.toBeNull();
-            }, 500);
+            }, 2000);
         });
 
     });
