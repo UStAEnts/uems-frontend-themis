@@ -38,7 +38,7 @@ beforeAll(() => {
     });
     mock.onGet(/\/ents\/?$/i).reply(200, {
         status: 'OK',
-        result: [randomVenue('signup')],
+        result: [randomEnts('signup')],
     });
 });
 
