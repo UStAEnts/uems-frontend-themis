@@ -6,7 +6,7 @@ import ReactTooltip from 'react-tooltip';
 import { v4 } from 'uuid';
 
 import './Comment.scss';
-import { CommentResponse } from "../../../utilities/APITypes";
+import { CommentResponse } from '../../../utilities/APIGen';
 
 export type CommentPropsType = {
     /**

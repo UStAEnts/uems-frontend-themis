@@ -36,7 +36,7 @@ import { NotificationContext } from './context/NotificationContext';
 import { v4 } from 'uuid';
 import { CreateEvent } from "./pages/event/create/CreateEvent";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { User } from "./utilities/APITypes";
+import { User } from "./utilities/APIGen";
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);

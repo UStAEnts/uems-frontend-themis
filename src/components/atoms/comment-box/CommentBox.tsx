@@ -8,7 +8,7 @@ import { Button } from '../button/Button';
 import '../comment/Comment.scss';
 import { KeyValueOption, Select } from '../select/Select';
 import { GlobalContext } from '../../../context/GlobalContext';
-import { TopicResponse } from '../../../utilities/APITypes';
+import { TopicResponse } from '../../../utilities/APIGen';
 
 export type CommentBoxPropsType = {
     /**

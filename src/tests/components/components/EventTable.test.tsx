@@ -23,7 +23,6 @@ import { makeEvent, promiseTimeout, randomEnts, randomState, randomVenue } from 
 import { EventTable } from '../../../components/components/event-table/EventTable';
 
 import 'react-dates/initialize';
-import { StateResponse } from "../../../utilities/APITypes";
 
 beforeAll(() => {
     JavascriptTimeAgo.addLocale(en);

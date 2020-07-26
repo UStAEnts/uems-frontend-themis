@@ -3,7 +3,7 @@ import moment, { Moment } from 'moment';
 
 import './Calendar.scss';
 import { EventCard } from '../../atoms/event-card/EventCard';
-import { EventResponse } from '../../../utilities/APITypes';
+import { EventResponse } from '../../../utilities/APIGen';
 
 export type CalendarPropsType = {
     /**

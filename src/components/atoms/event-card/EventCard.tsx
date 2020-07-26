@@ -16,7 +16,7 @@ import './EventCard.scss';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { EventResponse, StateResponse } from '../../../utilities/APITypes';
+import { EventResponse, StateResponse } from '../../../utilities/APIGen';
 
 export type EventCardPropsType = {
     /**

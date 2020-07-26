@@ -2,7 +2,8 @@ import * as React from 'react';
 import { CommentBox } from '../../atoms/comment-box/CommentBox';
 import { Comment } from '../../atoms/comment/Comment';
 import { GlobalContext } from '../../../context/GlobalContext';
-import { CommentResponse } from '../../../utilities/APITypes';
+import { CommentResponse } from '../../../utilities/APIGen';
+
 
 export type CommentListPropsType = {
     /**

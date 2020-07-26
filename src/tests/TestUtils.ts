@@ -1,6 +1,6 @@
 import { cleanup } from '@testing-library/react';
 import { v4 } from 'uuid';
-import { EntsStateResponse, EventResponse, StateResponse, VenueResponse } from '../utilities/APITypes';
+import { EntsStateResponse, EventResponse, StateResponse, VenueResponse } from '../utilities/APIGen';
 
 export function promiseTimeout(func: Function, time: number) {
     return new Promise((resolve) => {
