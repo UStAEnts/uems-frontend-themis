@@ -1,6 +1,8 @@
 import React from 'react';
 
-export type CreateEventPropsType = {};
+export type CreateEventPropsType = {
+    isPage?: boolean,
+};
 
 export type CreateEventStateType = {};
 
