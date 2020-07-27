@@ -4,10 +4,23 @@
 * This file was generated on 2020-07-25T17:28:27.931Z.
 */
 
-import Axios from 'axios';
+import Axios, { AxiosRequestConfig } from 'axios';
 import urljoin from 'url-join';
 import * as z from 'zod';
 import Config from '../config/Config';
+import { ZodError } from "zod";
+
+/*
+ * The following sections adds API overrides to the system for use in testing
+ */
+export type APIOverride = {
+    name: string,
+    uri: RegExp,
+    method: string | string[],
+    response?: any,
+    generator?: (uri: string, method: string) => any,
+}
+export const APIOverrides: APIOverride[] = [];
 
 /**
  * Represents a single api function. It is a callable function which takes any number of parameters and returns a typed
@@ -57,6 +70,40 @@ function formatUri(uri: string, substitutions?: { [key: string]: any }): string 
     return result;
 }
 
+function request(uri: string, method: 'get' | 'delete' | 'post' | 'patch', data?: string, options?: AxiosRequestConfig) {
+    const override = APIOverrides.find((entry) => entry.uri.test(uri) && entry.method === method);
+    if (override) {
+        console.debug(`A request to ${uri} was intercepted by API override "${override.name}" to return a fixed response`);
+        // Prioritise function generators and fallback to basic responses
+        if (override.generator) {
+            return Promise.resolve({
+                data: override.generator(uri, method),
+            });
+        }
+
+        if (override.response) {
+            return Promise.resolve({
+                data: override.response,
+            });
+        }
+
+        return Promise.reject();
+    }
+
+    if (method === 'get' || method === 'delete') {
+        return Axios[method](
+            uri,
+            options,
+        );
+    }
+
+    return Axios[method](
+        uri,
+        data,
+        options,
+    );
+}
+
 function datalessRequest<T>(
     uri: string,
     method: 'get' | 'delete',
@@ -66,19 +113,17 @@ function datalessRequest<T>(
     const result = formatUri(uri, substitutions);
 
     return new Promise<T>((resolve, reject) => {
-        Axios[method](
+        request(
             result,
+            method,
+            undefined,
             {
                 headers: {
                     accept: 'application/json',
                 },
             },
         ).then((data) => {
-            // If a validator was provided, check it and reject if the format is wrong
-            if (validator && !validator.check(data.data)) {
-                reject(new Error('Received an invalid response from the server (doesn\'t match API type)'));
-                return;
-            }
+            if (!validate(result, data.data, validator, reject)) return;
 
             if (data.data.status === 'FAIL') {
                 reject(new Error(`${data.data.error.message} (${data.data.error.code})`));
@@ -88,8 +133,43 @@ function datalessRequest<T>(
             if (method === 'delete') {
                 resolve();
             } else {
-                resolve(data.data.result);
+                resolve(data.data);
             }
+        }).catch(reject);
+    });
+}
+
+function requestWithData<T, K>(
+    uri: string,
+    data: K,
+    method: 'post' | 'patch',
+    substitutions?: { [key: string]: any },
+    validator?: z.ZodTypeAny,
+): Promise<T> {
+    const result = formatUri(uri, substitutions);
+
+    console.trace(`${method} to ${result}`);
+
+    return new Promise<T>((resolve, reject) => {
+        request(
+            result,
+            method,
+            JSON.stringify(data),
+            {
+                headers: {
+                    'content-type': 'application/json',
+                    accept: 'application/json',
+                },
+            },
+        ).then((resData) => {
+            if (!validate(result, resData.data, validator, reject)) return;
+
+            if (resData.data.status === 'FAIL') {
+                reject(new Error(`${resData.data.error.message} (${resData.data.error.code})`));
+                return;
+            }
+
+            resolve(resData.data.result);
         }).catch(reject);
     });
 }
@@ -118,43 +198,32 @@ function deleteRequest<T>(
     return datalessRequest<T>(uri, 'delete', substitutions, validator);
 }
 
-function requestWithData<T, K>(
-    uri: string,
-    data: K,
-    method: 'post' | 'patch',
-    substitutions?: { [key: string]: any },
-    validator?: z.ZodTypeAny,
-): Promise<T> {
-    const result = formatUri(uri, substitutions);
+const validate = (uri: string, data: any, validator: z.ZodTypeAny | undefined, reject: (err: Error) => any) => {
+    // If a validator was provided, check it and reject if the format is wrong
+    if (validator && !validator.check(data)) {
+        // If it doesn't work we need to parse it to get the errors
+        try {
+            validator.parse(data);
+        } catch (e) {
+            if (e instanceof ZodError) {
+                console.warn(`Invalid data received on ${uri}. Parsed to produce errors`);
+                console.warn('Received data:');
+                console.warn(data);
+                console.warn(`  Message: ${e.message}`);
 
-    console.trace(`${method} to ${result}`);
-
-    return new Promise<T>((resolve, reject) => {
-        Axios[method](
-            result,
-            JSON.stringify(data),
-            {
-                headers: {
-                    'content-type': 'application/json',
-                    accept: 'application/json',
-                },
-            },
-        ).then((resData) => {
-            // If a validator was provided, check it and reject if the format is wrong
-            if (validator && !validator.check(resData.data)) {
-                reject(new Error('Received an invalid response from the server (doesn\'t match API type)'));
-                return;
+                for (const err of e.errors) {
+                    console.warn(`  == Suberror: ${err.code}`);
+                    console.warn(`    Message: ${err.message}`);
+                    console.warn(`    @: ${err.path}`);
+                }
             }
+        }
+        reject(new Error('Received an invalid response from the server (doesn\'t match API type)'));
+        return false;
+    }
 
-            if (resData.data.status === 'FAIL') {
-                reject(new Error(`${resData.data.error.message} (${resData.data.error.code})`));
-                return;
-            }
-
-            resolve(resData.data.result);
-        }).catch(reject);
-    });
-}
+    return true;
+};
 
 function postRequest<T, K>(
     uri: string,
