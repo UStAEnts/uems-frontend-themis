@@ -23,28 +23,28 @@ import { makeEvent, promiseTimeout, randomEnts, randomState, randomVenue } from 
 import { EventTable } from '../../../components/components/event-table/EventTable';
 
 import 'react-dates/initialize';
+import { APIOverrides } from "../../../utilities/APIGen";
 
 beforeAll(() => {
     JavascriptTimeAgo.addLocale(en);
 
-    // jest.mock('../../../utilities/APIGen', () => ({
-    //     get API() {
-    //         return {};
-    //     },
-    // }));
+    const success = (data: any) => ({ status: 'OK', result: data });
 
-    const mock = new MockAdapter(axios);
-    mock.onGet(/\/states\/?$/i).reply(200, {
-        status: 'OK',
-        result: [randomState('ready')],
-    });
-    mock.onGet(/\/venues\/?$/i).reply(200, {
-        status: 'OK',
-        result: [randomVenue('venue 3')],
-    });
-    mock.onGet(/\/ents\/?$/i).reply(200, {
-        status: 'OK',
-        result: [randomEnts('signup')],
+    APIOverrides.push({
+        uri: /\/states\/?$/i,
+        response: success([randomState('ready')]),
+        name: 'states response',
+        method: 'get',
+    }, {
+        uri: /\/venues\/?$/i,
+        response: success([randomVenue('venue 3')]),
+        method: 'get',
+        name: 'venues get response',
+    }, {
+        uri: /\/ents\/?$/i,
+        response: success([randomEnts('signup')]),
+        method: 'get',
+        name: 'ents get response',
     });
 });
 
