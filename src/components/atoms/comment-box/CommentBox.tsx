@@ -21,7 +21,7 @@ export type CommentBoxPropsType = {
      * @param content the text content of the comment
      * @param type the optional content type that the user selected
      */
-    submitCommentHandler: (content: string, type?: TopicResponse) => void;
+    submitCommentHandler: (content: string, type: TopicResponse) => void;
 }
 
 export type CommentBoxStateType = {
@@ -77,7 +77,7 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
             return;
         }
         try {
-            this.props.submitCommentHandler(this.state.content);
+            this.props.submitCommentHandler(this.state.content, this.state.type);
 
             this.setState({
                 error: undefined,
