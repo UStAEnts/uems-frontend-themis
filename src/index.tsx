@@ -229,6 +229,9 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
 
                             <div className="content">
                                 <Switch>
+                                    <Route path="/file/create" exact>
+                                        <CreateFile isPage />
+                                    </Route>
                                     <Route path="/ents/create" exact>
                                         <CreateEnts isPage />
                                     </Route>
