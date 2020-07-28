@@ -63,6 +63,9 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
 
         this.state = {
             editMode: false,
+            input: Object.prototype.hasOwnProperty.call(props.config, 'value')
+                ? (props.config as any).value
+                : undefined,
         };
 
     }
@@ -179,6 +182,7 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                     <TextField
                         onChange={this.onTextChange}
                         name={this.props.name}
+                        initialContent={this.state.input}
                         type={this.props.config.fieldType}
                     />
                 );
