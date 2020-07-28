@@ -8,6 +8,8 @@ import Axios from 'axios';
 import ReactTimeAgo from 'react-time-ago';
 import urljoin from 'url-join';
 import { faFileCode, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withNotificationContext } from '../../components/WithNotificationContext';
 import { NotificationContextType } from '../../context/NotificationContext';
 import { FileList } from '../../components/atoms/file-bar/FileBar';
@@ -23,11 +25,9 @@ import {
     EventResponse, EventUpdate,
     FileResponse, SignupResponse, StateResponse, TopicResponse, User,
     VenueResponse
-} from "../../utilities/APIGen";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "../../components/atoms/button/Button";
-import { GlobalContext } from "../../context/GlobalContext";
+} from '../../utilities/APIGen';
+import { Button } from '../../components/atoms/button/Button';
+import { GlobalContext } from '../../context/GlobalContext';
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
@@ -245,10 +245,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             filtered.ents = this.state.entsStates?.find((e) => e.id === changeProps.ents);
         }
         if (Object.prototype.hasOwnProperty.call(filtered, 'state')) {
-            filtered.state = this.state.buildingStates?.find((e) => {
-                console.log(e.id, changeProps.state, e.id === changeProps.state);
-                return e.id === changeProps.state
-            });
+            filtered.state = this.state.buildingStates?.find((e) => e.id === changeProps.state);
         }
         if (Object.prototype.hasOwnProperty.call(filtered, 'venue')) {
             filtered.venue = this.state.venues?.find((e) => e.id === changeProps.venue);
