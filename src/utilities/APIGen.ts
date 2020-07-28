@@ -687,7 +687,7 @@ export type APIType = {
     },
     topics: {
         get: () => Promise<GetTopicsAPIResponse>,
-        post: (body: unknown) => Promise<PostTopicsAPIResponse>,
+        post: (body: TopicCreation) => Promise<PostTopicsAPIResponse>,
         id: {
             get: (id: string) => Promise<GetTopicsIdAPIResponse>,
             patch: (id: string, body: TopicUpdate) => Promise<PatchTopicsIdAPIResponse>,
