@@ -20,8 +20,8 @@ import {
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import App from './pages/App';
-import { Events } from './pages/events/Events';
-import Event from './pages/event/Event';
+import { Events } from './pages/events/list/Events';
+import Event from './pages/events/view/Event';
 
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';

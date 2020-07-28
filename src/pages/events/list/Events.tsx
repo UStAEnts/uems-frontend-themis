@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Loader from 'react-loader-spinner';
-import { Calendar as CalendarElement } from '../../components/components/calendar/Calendar';
-import { TabPane } from '../../components/components/tab-pane/TabPane';
-import { EventTable } from '../../components/components/event-table/EventTable';
-import { Theme } from '../../theme/Theme';
+import { Calendar as CalendarElement } from '../../../components/components/calendar/Calendar';
+import { TabPane } from '../../../components/components/tab-pane/TabPane';
+import { EventTable } from '../../../components/components/event-table/EventTable';
+import { Theme } from '../../../theme/Theme';
 
 import './Events.scss';
-import { API, EventResponse } from "../../utilities/APIGen";
+import { API, EventResponse } from '../../../utilities/APIGen';
 
 export type CalendarPropsType = {};
 
@@ -68,6 +68,7 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
                 </div>
             );
 
+        console.log(this.state.events);
         return (
             <div
                 style={{

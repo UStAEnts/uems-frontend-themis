@@ -10,14 +10,14 @@ import urljoin from 'url-join';
 import { faFileCode, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { withNotificationContext } from '../../components/WithNotificationContext';
-import { NotificationContextType } from '../../context/NotificationContext';
-import { FileList } from '../../components/atoms/file-bar/FileBar';
-import { CommentList } from '../../components/components/comment-list/CommentList';
-import Config from '../../config/Config';
-import { EditableProperty } from '../../components/components/editable-property/EditableProperty';
-import { Theme } from '../../theme/Theme';
-import { KeyValueOption, Select } from '../../components/atoms/select/Select';
+import { withNotificationContext } from '../../../components/WithNotificationContext';
+import { NotificationContextType } from '../../../context/NotificationContext';
+import { FileList } from '../../../components/atoms/file-bar/FileBar';
+import { CommentList } from '../../../components/components/comment-list/CommentList';
+import Config from '../../../config/Config';
+import { EditableProperty } from '../../../components/components/editable-property/EditableProperty';
+import { Theme } from '../../../theme/Theme';
+import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
 import {
     API,
     CommentResponse, EntsStateResponse,
@@ -25,9 +25,9 @@ import {
     EventResponse, EventUpdate,
     FileResponse, SignupResponse, StateResponse, TopicResponse, User,
     VenueResponse
-} from '../../utilities/APIGen';
-import { Button } from '../../components/atoms/button/Button';
-import { GlobalContext } from '../../context/GlobalContext';
+} from '../../../utilities/APIGen';
+import { Button } from '../../../components/atoms/button/Button';
+import { GlobalContext } from '../../../context/GlobalContext';
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
