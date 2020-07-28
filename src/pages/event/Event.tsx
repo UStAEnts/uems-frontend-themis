@@ -466,7 +466,18 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         return this.state.event ? (
             <div className="event-view loaded">
                 <div className="real">
-                    <h1>{this.state.event.name}</h1>
+                    <EditableProperty
+                        name="name"
+                        config={{
+                            value: this.state.event.name,
+                            type: 'text',
+                            onChange: (name: string) => this.patchEvent({
+                                name,
+                            }),
+                        }}
+                    >
+                        <h1 style={{ display: 'inline-block' }}>{this.state.event.name}</h1>
+                    </EditableProperty>
                     <div className="properties-bar">
                         <div className="property creation">
                             <span className="label">Created</span>
