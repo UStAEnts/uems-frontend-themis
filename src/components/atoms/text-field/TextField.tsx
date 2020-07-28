@@ -3,6 +3,7 @@ import * as React from 'react';
 import './TextField.scss';
 import '../text-area/TextArea.scss';
 import DatePicker from 'react-flatpickr';
+import { CSSProperties } from "react";
 
 export type BaseConfiguration = {
     /**
@@ -23,7 +24,11 @@ export type BaseConfiguration = {
     /**
      * If the label should be omitted from rendering, for example when the parent is handling the labelling themselves
      */
-    noLabel?: boolean
+    noLabel?: boolean,
+    /**
+     * Any additional style properties to be added to the field
+     */
+    style?: CSSProperties,
 }
 
 export type TextAreaConfiguration = {
@@ -263,7 +268,7 @@ export class TextField extends React.Component<TextFieldPropsType, TextFieldStat
             );
 
         return (
-            <div className={`text-field${this.props.type === 'textarea' ? ' text-area' : ''}`}>
+            <div className={`text-field${this.props.type === 'textarea' ? ' text-area' : ''}`} style={this.props.style}>
                 {input}
                 <span className="highlight" />
                 <span className="bar" />
