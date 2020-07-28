@@ -37,6 +37,10 @@ import { v4 } from 'uuid';
 import { CreateEvent } from "./pages/event/create/CreateEvent";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { User } from "./utilities/APIGen";
+import { CreateVenue } from './pages/venues/create/CreateVenue';
+import { CreateTopic } from './pages/topic/create/CreateTopic';
+import { CreateState } from './pages/state/create/CreateState';
+import { CreateEnts } from './pages/ents/create/CreateEnts';
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
@@ -225,8 +229,20 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
 
                             <div className="content">
                                 <Switch>
+                                    <Route path="/ents/create" exact>
+                                        <CreateEnts isPage />
+                                    </Route>
+                                    <Route path="/states/create" exact>
+                                        <CreateState isPage />
+                                    </Route>
+                                    <Route path="/topics/create" exact>
+                                        <CreateTopic isPage />
+                                    </Route>
                                     <Route path="/event/create" exact>
                                         <CreateEvent isPage />
+                                    </Route>
+                                    <Route path="/venues/create" exact>
+                                        <CreateVenue isPage />
                                     </Route>
                                     <Route path="/events/:id" exact>
                                         <Event />
