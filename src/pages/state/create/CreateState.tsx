@@ -3,15 +3,15 @@ import { Redirect, withRouter } from 'react-router-dom';
 import { TwitterPicker } from 'react-color';
 import { faNetworkWired, faQuestionCircle, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificationContextType } from '../../../context/NotificationContext';
-import { API, StateCreation } from '../../../utilities/APIGen';
+import { API } from '../../../utilities/APIGen';
 import { TextField } from '../../../components/atoms/text-field/TextField';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { Button } from '../../../components/atoms/button/Button';
 import { Theme } from '../../../theme/Theme';
 import { UIUtilities } from '../../../utilities/UIUtilities';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
-import { IconSelector, OptionType } from "../../../components/atoms/icon-picker/EntrySelector";
-import { IconBox } from "../../../components/atoms/icon-box/IconBox";
+import { IconSelector, OptionType } from '../../../components/atoms/icon-picker/EntrySelector';
+import { IconBox } from '../../../components/atoms/icon-box/IconBox';
 
 export type CreateStatePropsType = {
     isPage?: boolean,
