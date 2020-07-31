@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import { TwitterPicker } from 'react-color';
-import { faNetworkWired, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
+import { faNetworkWired, faQuestionCircle, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificationContextType } from '../../../context/NotificationContext';
 import { API } from '../../../utilities/APIGen';
 import { TextField } from '../../../components/atoms/text-field/TextField';
@@ -10,6 +10,8 @@ import { Button } from '../../../components/atoms/button/Button';
 import { Theme } from '../../../theme/Theme';
 import { UIUtilities } from '../../../utilities/UIUtilities';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
+import { IconBox } from "../../../components/atoms/icon-box/IconBox";
+import { IconSelector, OptionType } from "../../../components/atoms/icon-picker/EntrySelector";
 
 export type CreateTopicPropsType = {
     isPage?: boolean,
@@ -21,6 +23,7 @@ export type CreateTopicStateType = {
         name?: string,
         description?: string,
         color?: string,
+        icon?: OptionType,
     },
     ui: {
         redirect?: string,
@@ -59,6 +62,7 @@ class CreateTopicClass extends React.Component<CreateTopicPropsType, CreateTopic
         API.topics.post({
             color: this.state.topic.color,
             description: this.state.topic.description,
+            icon: this.state.topic.icon?.identifier, // Icons are optional,
             name: this.state.topic.name as string, // This is verified in the for loop above but the typing doesnt work
         }).then((id) => {
             failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/topics/${id.result.id}`);
@@ -107,6 +111,43 @@ class CreateTopicClass extends React.Component<CreateTopicPropsType, CreateTopic
                     color={this.state.topic.color}
                     onChange={(e) => failEarlyStateSet(this.state, this.setState.bind(this), 'topic', 'color')(e.hex)}
                 />
+
+                <div
+                    className="icon-title"
+                    style={{
+                        marginTop: '20px',
+                        marginBottom: '10px',
+                        fontSize: '0.8em',
+                        color: 'gray',
+                    }}
+                >
+                    Icon
+                </div>
+
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        marginBottom: '20px',
+                    }}
+                >
+                    <IconBox
+                        icon={
+                            (this.state.topic.icon ? ['fas', this.state.topic.icon.identifier] : faQuestionCircle) as
+                                unknown as IconDefinition
+                        }
+                        style={{
+                            marginRight: '10px',
+                        }}
+                        color={this.state.topic.color}
+                    />
+                    <IconSelector
+                        searchable
+                        value={this.state.topic.icon}
+                        displayType="boxes"
+                        onSelect={failEarlyStateSet(this.state, this.setState.bind(this), 'topic', 'icon')}
+                    />
+                </div>
 
                 <Button
                     color={Theme.SUCCESS}

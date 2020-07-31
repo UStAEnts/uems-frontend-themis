@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import { TwitterPicker } from 'react-color';
-import { faNetworkWired, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
+import { faNetworkWired, faQuestionCircle, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificationContextType } from '../../../context/NotificationContext';
 import { API, StateCreation } from '../../../utilities/APIGen';
 import { TextField } from '../../../components/atoms/text-field/TextField';
@@ -10,6 +10,8 @@ import { Button } from '../../../components/atoms/button/Button';
 import { Theme } from '../../../theme/Theme';
 import { UIUtilities } from '../../../utilities/UIUtilities';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
+import { IconSelector, OptionType } from "../../../components/atoms/icon-picker/EntrySelector";
+import { IconBox } from "../../../components/atoms/icon-box/IconBox";
 
 export type CreateStatePropsType = {
     isPage?: boolean,
@@ -20,6 +22,7 @@ export type CreateStateStateType = {
     state: {
         name?: string,
         color?: string,
+        icon?: OptionType,
     },
     ui: {
         redirect?: string,
@@ -57,6 +60,7 @@ class CreateStateClass extends React.Component<CreateStatePropsType, CreateState
 
         API.states.post({
             color: this.state.state.color,
+            icon: this.state.state.icon?.identifier, // Icons are optional
             name: this.state.state.name as string, // This is verified in the for loop above but the typing doesnt work
         }).then((id) => {
             failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/states/${id.result.id}`);
@@ -98,6 +102,43 @@ class CreateStateClass extends React.Component<CreateStatePropsType, CreateState
                     color={this.state.state.color}
                     onChange={(e) => failEarlyStateSet(this.state, this.setState.bind(this), 'state', 'color')(e.hex)}
                 />
+
+                <div
+                    className="icon-title"
+                    style={{
+                        marginTop: '20px',
+                        marginBottom: '10px',
+                        fontSize: '0.8em',
+                        color: 'gray',
+                    }}
+                >
+                    Icon
+                </div>
+
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        marginBottom: '20px',
+                    }}
+                >
+                    <IconBox
+                        icon={
+                            (this.state.state.icon ? ['fas', this.state.state.icon.identifier] : faQuestionCircle) as
+                                unknown as IconDefinition
+                        }
+                        style={{
+                            marginRight: '10px',
+                        }}
+                        color={this.state.state.color}
+                    />
+                    <IconSelector
+                        searchable
+                        value={this.state.state.icon}
+                        displayType="boxes"
+                        onSelect={failEarlyStateSet(this.state, this.setState.bind(this), 'state', 'icon')}
+                    />
+                </div>
 
                 <Button
                     color={Theme.SUCCESS}
