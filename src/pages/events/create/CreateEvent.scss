@@ -1,0 +1,29 @@
+.create-event {
+
+  padding: 10px;
+
+  &.page {
+    padding: 1.5pc 3pc 3pc;
+  }
+
+  .title{
+    font-size: 2.5em;
+    font-family: 'MuseoModerno', cursive;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+
+  .select {
+    margin-bottom: 35px;
+  }
+
+  .label {
+    font-weight: bold;
+  }
+
+  .quick-select {
+    background: gainsboro;
+  }
+
+}

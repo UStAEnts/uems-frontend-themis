@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from '../types/Event';
+import { User } from '../utilities/APIGen';
 
 export type ReadableContextType = {
     user?: User,

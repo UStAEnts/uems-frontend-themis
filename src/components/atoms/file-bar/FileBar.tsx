@@ -1,13 +1,13 @@
 import React from 'react';
-import { GatewayFile } from '../../../types/Event';
 import { faDownload, faFile, faGlobe, faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './Files.scss';
 import { Link } from 'react-router-dom';
+import { FileResponse } from '../../../utilities/APIGen';
 
 export const FileBar: React.FunctionComponent<{
-    file: GatewayFile,
+    file: FileResponse,
 }> = ({ file }) => (
     <div className="file-bar">
         <Link to={`/downloads/file/${file.id}`}>
@@ -27,10 +27,10 @@ export const FileBar: React.FunctionComponent<{
 );
 
 export const FileList: React.FunctionComponent<{
-    files: GatewayFile[]
+    files: FileResponse[]
 }> = ({ files }) => (
     <div className="file-list">
         <div className="title">Files</div>
-        {files.map((e) => <FileBar file={e} />)}
+        {files.map((e) => <FileBar key={e.id} file={e} />)}
     </div>
 );

@@ -1,3 +1,6 @@
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
@@ -16,13 +19,36 @@ import { createMemoryHistory } from 'history';
 import { MemoryRouter, Router } from 'react-router';
 import JavascriptTimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import { makeEvent } from '../../TestUtils';
+import { makeEvent, promiseTimeout, randomEnts, randomState, randomVenue } from '../../TestUtils';
 import { EventTable } from '../../../components/components/event-table/EventTable';
 
 import 'react-dates/initialize';
+import { APIOverrides } from "../../../utilities/APIGen";
 
 beforeAll(() => {
     JavascriptTimeAgo.addLocale(en);
+
+    const success = (data: any) => ({ status: 'OK', result: data });
+
+    APIOverrides.push({
+        uri: /\/states\/?$/i,
+        response: success([randomState('ready')]),
+        name: 'states response',
+        method: 'get',
+    }, {
+        uri: /\/venues\/?$/i,
+        response: success([randomVenue('venue 3')]),
+        method: 'get',
+        name: 'venues get response',
+    }, {
+        uri: /\/ents\/?$/i,
+        response: success([randomEnts('signup')]),
+        method: 'get',
+        name: 'ents get response',
+    });
+});
+
+afterEach(() => {
 });
 
 describe('<EventTable />', () => {
@@ -83,7 +109,7 @@ describe('<EventTable />', () => {
                 </MemoryRouter>,
             );
 
-            fireEvent.input(getByAltText('name'), { target: { value: 'two' } });
+            fireEvent.input(getByAltText('Event Name'), { target: { value: 'two' } });
             expect(queryByText(/event one/ig)).toBeNull();
             expect(queryByText(/event two/ig)).not.toBeNull();
             expect(queryByText(/event three/ig)).toBeNull();
@@ -94,19 +120,36 @@ describe('<EventTable />', () => {
                 <MemoryRouter>
                     <EventTable
                         events={[
-                            makeEvent('event one', new Date().getTime(), 1, 0, undefined, 'id1', { state: 'ready' }),
-                            makeEvent('event two', new Date().getTime(), 1, 0, undefined, 'id2', { state: 'ready' }),
-                            makeEvent('event three', new Date().getTime(), 1, 0, undefined, 'id3', { state: 'cancel' }),
+                            makeEvent('event one', new Date().getTime(), 1, 0, undefined, 'id1', {
+                                name: 'ready',
+                                id: 'readid',
+                                color: '#aeaeae',
+                                icon: 'coffee',
+                            }),
+                            makeEvent('event two', new Date().getTime(), 1, 0, undefined, 'id2', {
+                                name: 'ready',
+                                id: 'readid',
+                                color: '#aeaeae',
+                                icon: 'coffee',
+                            }),
+                            makeEvent('event three', new Date().getTime(), 1, 0, undefined, 'id3', {
+                                name: 'cancel',
+                                id: 'cancelid',
+                                color: '#aeaeae',
+                                icon: 'coffee',
+                            }),
                         ]}
                     />
                 </MemoryRouter>,
             );
 
-            fireEvent.click(getByTestId('launch-menu-state'));
-            fireEvent.click(getByRole('option', { name: 'ready' }));
-            expect(queryByText(/event one/ig)).not.toBeNull();
-            expect(queryByText(/event two/ig)).not.toBeNull();
-            expect(queryByText(/event three/ig)).toBeNull();
+            await promiseTimeout(async () => {
+                await fireEvent.click(getByTestId('launch-menu-state'));
+                await fireEvent.click(getByRole('option', { name: 'ready' }));
+                expect(queryByText(/event one/ig)).not.toBeNull();
+                expect(queryByText(/event two/ig)).not.toBeNull();
+                expect(queryByText(/event three/ig)).toBeNull();
+            }, 2000);
         });
 
         it('ents filter applies', async () => {
@@ -122,7 +165,7 @@ describe('<EventTable />', () => {
                                 undefined,
                                 'id1',
                                 undefined,
-                                { name: 'pending requirements' },
+                                randomEnts('pending requirements'),
                             ),
                             makeEvent(
                                 'event two',
@@ -132,7 +175,7 @@ describe('<EventTable />', () => {
                                 undefined,
                                 'id2',
                                 undefined,
-                                { name: 'signup' },
+                                randomEnts('signup'),
                             ),
                             makeEvent(
                                 'event three',
@@ -142,18 +185,20 @@ describe('<EventTable />', () => {
                                 undefined,
                                 'id3',
                                 undefined,
-                                { name: 'cancelled' },
+                                randomEnts('cancelled'),
                             ),
                         ]}
                     />
                 </MemoryRouter>,
             );
 
-            fireEvent.click(getByTestId('launch-menu-ents'));
-            fireEvent.click(getByRole('option', { name: 'signup' }));
-            expect(queryByText(/event one/ig)).toBeNull();
-            expect(queryByText(/event two/ig)).not.toBeNull();
-            expect(queryByText(/event three/ig)).toBeNull();
+            await promiseTimeout(async () => {
+                fireEvent.click(getByTestId('launch-menu-ents'));
+                fireEvent.click(getByRole('option', { name: 'signup' }));
+                expect(queryByText(/event one/ig)).toBeNull();
+                expect(queryByText(/event two/ig)).not.toBeNull();
+                expect(queryByText(/event three/ig)).toBeNull();
+            }, 2000);
         });
 
         it('venues filter applied', async () => {
@@ -166,7 +211,7 @@ describe('<EventTable />', () => {
                                 new Date().getTime(),
                                 1,
                                 0,
-                                'venue 1',
+                                randomVenue('venue 1'),
                                 'id1',
                             ),
                             makeEvent(
@@ -174,7 +219,7 @@ describe('<EventTable />', () => {
                                 new Date().getTime(),
                                 1,
                                 0,
-                                'venue 2',
+                                randomVenue('venue 2'),
                                 'id2',
                             ),
                             makeEvent(
@@ -182,7 +227,7 @@ describe('<EventTable />', () => {
                                 new Date().getTime(),
                                 1,
                                 0,
-                                'venue 3',
+                                randomVenue('venue 3'),
                                 'id3',
                             ),
                         ]}
@@ -190,11 +235,13 @@ describe('<EventTable />', () => {
                 </MemoryRouter>,
             );
 
-            fireEvent.click(getByTestId('launch-menu-venues'));
-            fireEvent.click(getByRole('option', { name: 'venue 3' }));
-            expect(queryByText(/event one/ig)).toBeNull();
-            expect(queryByText(/event two/ig)).toBeNull();
-            expect(queryByText(/event three/ig)).not.toBeNull();
+            await promiseTimeout(async () => {
+                fireEvent.click(getByTestId('launch-menu-venues'));
+                fireEvent.click(getByRole('option', { name: 'venue 3' }));
+                expect(queryByText(/event one/ig)).toBeNull();
+                expect(queryByText(/event two/ig)).toBeNull();
+                expect(queryByText(/event three/ig)).not.toBeNull();
+            }, 2000);
         });
 
     });
