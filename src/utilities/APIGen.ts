@@ -165,7 +165,7 @@ function datalessRequest<T>(
             if (method === 'delete') {
                 resolve();
             } else {
-                resolve(data.data.result);
+                resolve(data.data);
             }
         }).catch(reject);
     });
@@ -199,7 +199,7 @@ function requestWithData<T, K>(
                 return;
             }
 
-            resolve(resData.data.result);
+            resolve(resData.data);
         }).catch(reject);
     });
 }
