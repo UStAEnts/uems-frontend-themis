@@ -7,23 +7,27 @@ import moment from 'moment';
 import Axios from 'axios';
 import ReactTimeAgo from 'react-time-ago';
 import urljoin from 'url-join';
-import { faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
-import { withNotificationContext } from '../../components/WithNotificationContext';
-import { NotificationContextType } from '../../context/NotificationContext';
-import { FileList } from '../../components/atoms/file-bar/FileBar';
-import { CommentList } from '../../components/components/comment-list/CommentList';
-import Config from '../../config/Config';
-import { EditableProperty } from '../../components/components/editable-property/EditableProperty';
-import { Theme } from '../../theme/Theme';
-import { KeyValueOption } from '../../components/atoms/select/Select';
+import { faFileCode, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { withNotificationContext } from '../../../components/WithNotificationContext';
+import { NotificationContextType } from '../../../context/NotificationContext';
+import { FileList } from '../../../components/atoms/file-bar/FileBar';
+import { CommentList } from '../../../components/components/comment-list/CommentList';
+import Config from '../../../config/Config';
+import { EditableProperty } from '../../../components/components/editable-property/EditableProperty';
+import { Theme } from '../../../theme/Theme';
+import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
 import {
     API,
     CommentResponse, EntsStateResponse,
     EventPropertyChangeResponse,
     EventResponse, EventUpdate,
-    FileResponse, StateResponse,
+    FileResponse, SignupResponse, StateResponse, TopicResponse, User,
     VenueResponse
-} from "../../utilities/APIGen";
+} from '../../../utilities/APIGen';
+import { Button } from '../../../components/atoms/button/Button';
+import { GlobalContext } from '../../../context/GlobalContext';
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
@@ -54,21 +58,31 @@ export type EventStateType = {
     buildingStates?: StateResponse[],
     files?: FileResponse[],
     comments?: CommentResponse[],
+    topics?: TopicResponse[],
     /**
      * The venues that this event could take place in
      */
     venues?: VenueResponse[],
+    /**
+     * All users signed on to this event and their roles
+     */
+    signups?: SignupResponse[],
+
+    chosenRole?: string,
 };
 
 class Event extends React.Component<EventPropsType, EventStateType> {
 
     static displayName = 'Event';
 
+    static contextType = GlobalContext;
+
     constructor(props: Readonly<EventPropsType>) {
         super(props);
 
         this.state = {
             id: this.props.match.params.id,
+            chosenRole: 'Other',
         };
     }
 
@@ -90,6 +104,30 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             console.error(err);
 
             this.failedLoad(`Could not load event: ${err.message}`);
+        });
+
+        API.topics.get().then((data) => {
+            this.setState((oldState) => ({
+                ...oldState,
+                topics: data.result,
+            }));
+        }).catch((err: Error) => {
+            console.error('Failed to load topic data');
+            console.error(err);
+
+            this.failedLoad(`Could not load topic list: ${err.message}`);
+        });
+
+        API.events.id.signups.get(this.props.match.params.id).then((data) => {
+            this.setState((oldState) => ({
+                ...oldState,
+                signups: data.result,
+            }));
+        }).catch((err) => {
+            console.error('Failed to load event data');
+            console.error(err);
+
+            this.failedLoad(`Could not load signups: ${err.message}`);
         });
 
         Axios.get(
@@ -179,38 +217,6 @@ class Event extends React.Component<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load list of ents states: ${err.message}`);
         });
-        //
-        // // Pretend this is done via axios!
-        // setTimeout(() => {
-        //     this.setState((oldState) => ({
-        //         ...oldState,
-        //         event: {
-        //             _id: oldState.id,
-        //             attendance: 300,
-        //             bookingEnd: moment().add(7, 'hours').toDate(),
-        //             bookingStart: moment().add(1, 'hour').toDate(),
-        //             name: 'Some Event',
-        //             venue: 'StAge',
-        //         } as GatewayEvent,
-        //     }))
-        //
-        //     setTimeout(() => {
-        //         this.setState((oldState) => ({
-        //             ...oldState,
-        //             venues: ['StAge', '601', 'Stage and 601'],
-        //             entsStates: [
-        //                 { name: 'ready' },
-        //                 { name: 'signup' },
-        //                 { name: 'awaiting requirements' },
-        //             ],
-        //             buildingStates: [
-        //                 { state: 'ready' },
-        //                 { state: 'approved' },
-        //                 { state: 'cancelled' },
-        //             ]
-        //         }));
-        //     }, 1000);
-        // }, 500);
     }
 
     private failedLoad = (reason: string) => {
@@ -232,11 +238,25 @@ class Event extends React.Component<EventPropsType, EventStateType> {
     private patchEvent = (changeProps: EventUpdate) => {
         if (!this.state.event) return;
 
+        const filtered: Partial<EventResponse> = Object.fromEntries(
+            Object.entries(changeProps).filter(([, value]) => value !== undefined),
+        );
+        if (Object.prototype.hasOwnProperty.call(filtered, 'ents')) {
+            filtered.ents = this.state.entsStates?.find((e) => e.id === changeProps.ents);
+        }
+        if (Object.prototype.hasOwnProperty.call(filtered, 'state')) {
+            filtered.state = this.state.buildingStates?.find((e) => e.id === changeProps.state);
+        }
+        if (Object.prototype.hasOwnProperty.call(filtered, 'venue')) {
+            filtered.venue = this.state.venues?.find((e) => e.id === changeProps.venue);
+        }
+        const updatedEvent: EventResponse = { ...this.state.event, ...filtered };
+
         API.events.id.patch(this.state.event.id, changeProps).then(() => {
             // The response only contains an ID so we need to spread the updated parameters on top of the existing ones
             this.setState((oldState) => ({
                 ...oldState,
-                ...changeProps,
+                event: updatedEvent,
             }));
         }).catch((err) => {
             // TODO: figure out how to raise errors and display them properly!
@@ -259,6 +279,60 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         });
     }
 
+    private changeSelectedRole = (role: string) => {
+        this.setState((oldState) => ({
+            ...oldState,
+            chosenRole: role,
+        }));
+    }
+
+    private signup = () => {
+        if (this.state.chosenRole === undefined || this.state.event === undefined) return;
+
+        API.events.id.signups.post(this.state.event.id, {
+            role: this.state.chosenRole,
+            userID: this.context.user.id,
+        }).then((id) => {
+            this.setState((oldState) => ({
+                signups: [{
+                    userID: this.context.user.id,
+                    role: oldState.chosenRole,
+                    date: new Date().getTime() / 1000,
+                    id: id.result.id,
+                    user: this.context.user,
+                }, ...(oldState.signups ?? [])],
+            }));
+        }).catch((err) => {
+            if (this.props.notificationContext) {
+                this.props.notificationContext.showNotification(
+                    'Could not signup signup',
+                    `Failed to add: ${err.message}`,
+                    faSkullCrossbones,
+                    Theme.FAILURE,
+                );
+            }
+        });
+    }
+
+    private removeSignup = (id: string) => {
+        if (this.state.event === undefined) return;
+
+        API.events.id.signups.id.delete(this.state.event.id, id).then(() => {
+            this.setState((oldState) => ({
+                signups: (oldState.signups ?? []).filter((e) => e.id !== id),
+            }));
+        }).catch((err) => {
+            if (this.props.notificationContext) {
+                this.props.notificationContext.showNotification(
+                    'Could not remove signup',
+                    `Failed to remove: ${err.message}`,
+                    faSkullCrossbones,
+                    Theme.FAILURE,
+                );
+            }
+        });
+    }
+
     /**
      * Generates a select editable property with the values provided. This currently does not support an udpate handler
      * @param options the options which the user should be able to select
@@ -277,7 +351,10 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                 config={{
                     options,
                     type: 'select',
-                    onChange: this.changeProperty(property),
+                    // TODO: dangerous?
+                    onChange: (x: string | KeyValueOption) => this.changeProperty(property)(
+                        typeof x === 'string' ? x : x.additional.id,
+                    ),
                 }}
             >
                 <div className="value">{selected || 'Not set'}</div>
@@ -297,6 +374,70 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         )
     )
 
+    private groupSignups = () => {
+        if (this.state.signups === undefined) return {};
+
+        const result: { [key: string]: SignupResponse[] } = {};
+
+        for (const signup of this.state.signups) {
+            if (Object.prototype.hasOwnProperty.call(result, signup.role ?? 'Unassigned')) {
+                result[signup.role ?? 'Unassigned'].push(signup);
+            } else {
+                result[signup.role ?? 'Unassigned'] = [signup];
+            }
+        }
+
+        return result;
+    }
+
+    private makeSignupComponent = (signupID: string, user: User) => (
+        <div key={`signup.${user.id}.${signupID}`} className="signup">
+            <Link className="user" to={`/users/${user.id}`}>
+                <div className="profile">
+                    <img alt={`Profile for ${user.name}`} src={user.profile ?? 'https://placehold.it/200'} />
+                </div>
+                <div className="name">{user.name}</div>
+            </Link>
+            <div className="spacer" />
+            {/* TODO: FIGURE OUT PERMISSIONS SO THIS IS NOT AVAILABLE TO EVERYONE */}
+            <div className="remove">
+                <FontAwesomeIcon
+                    icon={faTimes}
+                    onClick={() => this.removeSignup(signupID)}
+                />
+            </div>
+        </div>
+    );
+
+    private sendComment = (comment: string, topicID: string) => {
+        if (this.state.event === undefined) return;
+
+        API.events.id.comments.post(this.state.event.id, {
+            content: comment,
+            topic: topicID,
+        }).then((id) => {
+            this.setState((old) => ({
+                ...old,
+                comments: [{
+                    id: id.result.id,
+                    content: comment,
+                    posted: new Date().getTime() / 1000,
+                    poster: this.context.user,
+                    topic: (old.topics ?? []).find((e) => e.id === topicID),
+                }, ...(old.comments ?? [])],
+            }));
+        }).catch((e) => {
+            if (this.props.notificationContext) {
+                this.props.notificationContext.showNotification(
+                    'Could not send comment',
+                    `Failed to submit your comment! ${e.message}`,
+                    faSkullCrossbones,
+                    Theme.FAILURE,
+                );
+            }
+        });
+    }
+
     private changeProperty(property: keyof EventUpdate) {
         return (e: any) => {
             const changes: EventUpdate = {};
@@ -307,25 +448,45 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         };
     }
 
+    private renderSignups = () => {
+        const grouped = this.groupSignups();
+
+        return Object.entries(grouped).map(
+            (([name, signups]) => ([
+                (<div key={`role.${name}`} className="role">{name}</div>),
+                ...signups.map((e) => this.makeSignupComponent(e.id, e.user)),
+            ])),
+        ).flat();
+    }
+
     render() {
         return this.state.event ? (
             <div className="event-view loaded">
                 <div className="real">
-                    <h1>{this.state.event.name}</h1>
+                    <EditableProperty
+                        name="name"
+                        config={{
+                            value: this.state.event.name,
+                            type: 'text',
+                            onChange: (name: string) => this.patchEvent({
+                                name,
+                            }),
+                        }}
+                    >
+                        <h1 style={{ display: 'inline-block' }}>{this.state.event.name}</h1>
+                    </EditableProperty>
                     <div className="properties-bar">
-                        <div className="property author">
-                            <span className="label">Created By</span>
-                            <span className="value">Unknown</span>
-                        </div>
                         <div className="property creation">
                             <span className="label">Created</span>
                             <span className="value">
-                                <ReactTimeAgo date={this.state.event.startDate} />
+                                <ReactTimeAgo date={this.state.event.startDate * 1000} />
                             </span>
                         </div>
                         <div className="property updates">
                             <span className="label">Updates</span>
-                            <span className="value">20</span>
+                            <span className="value">
+                                {(this.state.comments ?? []).length + (this.state.changelog ?? []).length}
+                            </span>
                         </div>
                     </div>
                     {/* TODO: add file loading */}
@@ -334,37 +495,21 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             ? (<FileList files={this.state.files} />)
                             : undefined
                     }
-                    {/* <FileList files={[ */}
-                    {/*    { */}
-                    {/*        private: false, */}
-                    {/*        size: 1000, */}
-                    {/*        filename: 'Some file.txt', */}
-                    {/*        name: 'Rider', */}
-                    {/*        author: { */}
-                    {/*            username: 'ryan', */}
-                    {/*            name: 'Ryan Delaney', */}
-                    {/*        }, */}
-                    {/*        created: new Date().getTime(), */}
-                    {/*        downloadURL: '/files/x', */}
-                    {/*        id: 'abcd' */}
-                    {/*    }, */}
-                    {/*    { */}
-                    {/*        private: true, */}
-                    {/*        size: 1000, */}
-                    {/*        filename: 'Some file.txt', */}
-                    {/*        name: 'Rider', */}
-                    {/*        author: { */}
-                    {/*            username: 'ryan', */}
-                    {/*            name: 'Ryan Delaney', */}
-                    {/*        }, */}
-                    {/*        created: new Date().getTime(), */}
-                    {/*        downloadURL: '/files/x', */}
-                    {/*        id: 'abcd' */}
-                    {/*    }, */}
-                    {/* ]} /> */}
+                    <Button
+                        color={Theme.GREEN}
+                        text="Attach new file"
+                        icon={faFileCode}
+                    />
                     {
                         this.state.comments
-                            ? <CommentList comments={this.state.comments} />
+                            ? (
+                                <CommentList
+                                    comments={this.state.comments}
+                                    updates={this.state.changelog}
+                                    topics={this.state.topics ?? []}
+                                    onCommentSent={this.sendComment}
+                                />
+                            )
                             : undefined
                     }
                 </div>
@@ -381,6 +526,20 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                             this.state.event.venue?.name,
                             'venue',
                         )}
+                    </div>
+                    <div className="entry">
+                        <div className="title">Projected Attendance</div>
+                        <EditableProperty
+                            name="attendance"
+                            config={{
+                                type: 'text',
+                                onChange: this.changeProperty('attendance'),
+                                fieldType: 'number',
+                                value: this.state.event.attendance,
+                            }}
+                        >
+                            {this.state.event.attendance}
+                        </EditableProperty>
                     </div>
                     <div className="entry">
                         <div className="title">Ents State</div>
@@ -457,6 +616,36 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                 </EditableProperty>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="entry">
+                        <div className="title">Signups</div>
+                        <div className="signup-list">
+                            {this.renderSignups()}
+                        </div>
+                        <div className="title">Join</div>
+                        <Select
+                            placeholder="Role"
+                            name="role"
+                            options={[
+                                'Lighting (LX)',
+                                'Sound (S)',
+                                'Video / Projections (V)',
+                                'Stage Manager (SM)',
+                                'Event Manager (EM)',
+                                'General Tech (AV)',
+                                'Operator (OP)',
+                                'Shadow',
+                                'Other',
+                            ]}
+                            initialOption={this.state.chosenRole}
+                            onSelectListener={this.changeSelectedRole}
+                        />
+                        <Button
+                            color={Theme.PURPLE_LIGHT}
+                            onClick={this.signup}
+                            text="Signup"
+                        />
                     </div>
                 </div>
                 <div className="rightbar-spacer" />

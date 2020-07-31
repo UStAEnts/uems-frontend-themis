@@ -1,8 +1,10 @@
 import React from 'react';
 import { NotificationContext } from '../context/NotificationContext';
 
-export const withNotificationContext = <T extends React.Component<any, any, any>>(Component: T) => (
-    (props: any) => (
+export function withNotificationContext<P extends any, C extends React.ComponentType<P>>(
+    Component: C & React.ComponentType<P>,
+) {
+    return (props: any) => (
         <NotificationContext.Consumer>
             {(context) => (
                 // @ts-ignore - UNSAFE
@@ -10,5 +12,5 @@ export const withNotificationContext = <T extends React.Component<any, any, any>
                 <Component notificationContext={context} {...props} />
             )}
         </NotificationContext.Consumer>
-    )
-);
+    );
+}
