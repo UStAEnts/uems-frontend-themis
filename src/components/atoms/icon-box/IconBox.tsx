@@ -4,6 +4,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 import './IconBox.scss';
 import { ColorUtilities } from '../../../utilities/ColorUtilities';
+import { CSSProperties } from "react";
 
 export type IconBoxPropsType = {
     /**
@@ -15,6 +16,14 @@ export type IconBoxPropsType = {
      * The color of this icon box. When not provided, it will default to #787878 (medium gray)
      */
     color: string,
+    /**
+     * Any additional style properties to attach to this icon box
+     */
+    style?: CSSProperties,
+    /**
+     * Any additional classes to add to this icon box
+     */
+    classes?: string,
 };
 
 /**
@@ -26,10 +35,11 @@ export function IconBox(props: IconBoxPropsType) {
 
     return (
         <div
-            className="icon-box"
+            className={`icon-box ${props.classes ?? ''}`}
             style={{
                 backgroundColor: props.color,
                 color: ColorUtilities.determineForegroundColor(props.color),
+                ...(props.style ?? {}),
             }}
         >
             <FontAwesomeIcon icon={props.icon} fixedWidth />
