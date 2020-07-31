@@ -1,9 +1,9 @@
 import * as React from 'react';
 import moment, { Moment } from 'moment';
-import { GatewayEvent } from '../../../types/Event';
 
 import './Calendar.scss';
 import { EventCard } from '../../atoms/event-card/EventCard';
+import { EventResponse } from '../../../utilities/APIGen';
 
 export type CalendarPropsType = {
     /**
@@ -13,7 +13,7 @@ export type CalendarPropsType = {
     /**
      * This list of events to display in this event
      */
-    events: GatewayEvent[],
+    events: EventResponse[],
 };
 
 export type CalendarStateType = {
@@ -106,16 +106,16 @@ export class Calendar extends React.Component<CalendarPropsType, CalendarStateTy
      * @param time the time that this hour box should be rendered for
      */
     private renderHourBox(time: Moment) {
-        const limit = time.clone().add(31, 'minutes');
+        const limit = time.clone().add(30, 'minutes');
 
         const events = this.props.events
             // Filter only those that start at the right time
-            .filter((e) => e.bookingStart.getTime() >= time.valueOf()
-                && e.bookingStart.getTime() < limit.subtract('1', 'minute').valueOf())
+            .filter((e) => e.startDate >= time.unix()
+                && e.startDate <= limit.subtract('1', 'minute').unix())
             // Map them to event cards
-            .map((event) => <EventCard event={event} collapsed />);
+            .map((event) => <EventCard key={event.id} event={event} collapsed />);
 
-        return <div className="hour-entry">{events}</div>;
+        return <div className="hour-entry" key={limit.unix()}>{events}</div>;
     }
 
     /**
@@ -133,7 +133,7 @@ export class Calendar extends React.Component<CalendarPropsType, CalendarStateTy
         }
 
         return (
-            <div className="hour-row c-row">
+            <div key={`hr${hour}.${minute}`} className="hour-row c-row">
                 <div className="hour-label">{`${Calendar.padToTwo(hour)}:${Calendar.padToTwo(minute)}`}</div>
                 {entries}
             </div>

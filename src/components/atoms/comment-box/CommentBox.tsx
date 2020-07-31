@@ -1,27 +1,27 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
-import { GatewayTopic } from '../../../types/Event';
 
 import { TextField } from '../text-field/TextField';
 import { Button } from '../button/Button';
 
 import '../comment/Comment.scss';
-import { Select } from '../select/Select';
+import { KeyValueOption, Select } from '../select/Select';
 import { GlobalContext } from '../../../context/GlobalContext';
+import { TopicResponse } from '../../../utilities/APIGen';
 
 export type CommentBoxPropsType = {
     /**
      * The set of content classes through which the user can tag their messages
      */
-    contentClasses: GatewayTopic[],
+    contentClasses: TopicResponse[],
     /**
      * An external handler to be called when the user presses submit on their comment which should handle all functions
      * related to submitting
      * @param content the text content of the comment
      * @param type the optional content type that the user selected
      */
-    submitCommentHandler: (content: string, type?: GatewayTopic) => void;
+    submitCommentHandler: (content: string, type?: TopicResponse) => void;
 }
 
 export type CommentBoxStateType = {
@@ -36,7 +36,7 @@ export type CommentBoxStateType = {
     /**
      * The currently selected text class if relevant
      */
-    type?: GatewayTopic,
+    type?: TopicResponse,
 }
 
 /**
@@ -97,7 +97,7 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
      * updates the value in the state.
      * @param option the option selected by the user
      */
-    private handleSelect = (option: string | { key: string, value: string }) => {
+    private handleSelect = (option: string | KeyValueOption) => {
         this.setState((oldState) => ({
             ...oldState,
             type: this.props.contentClasses.find(
@@ -186,11 +186,11 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                             placeholder="Type"
                             name="type"
                             options={this.props.contentClasses.map((e) => ({
-                                key: e.name + (e.description ? ` (${e.description})` : ''),
+                                text: e.name + (e.description ? ` (${e.description})` : ''),
                                 value: e.id,
                             }))}
                             initialOption={this.state.type ? {
-                                key: this.state.type.name
+                                text: this.state.type.name
                                     + (this.state.type.description ? ` (${this.state.type.description})` : ''),
                                 value: this.state.type.id,
                             } : undefined}

@@ -13,7 +13,7 @@ import { cleanDOMTest, makeEvent } from '../../TestUtils';
 // - next and back buttons move calendar
 // - moving renders the right events
 
-const hrToMs = (hour: number) => hour * 60 * 60 * 1000;
+const hrToMs = (hour: number) => hour * 60 * 60;
 
 describe('<Calendar />', () => {
     const start = 1594745361886;
@@ -23,7 +23,7 @@ describe('<Calendar />', () => {
         it('events are rendered in the calendar', async () => {
             const { queryByText } = render(
                 <Calendar
-                    events={[makeEvent('named event', start + hrToMs(1), 3)]}
+                    events={[makeEvent('named event', (start / 1000) + hrToMs(1), 3)]}
                     startDate={new Date(start)}
                 />,
                 {
@@ -41,12 +41,12 @@ describe('<Calendar />', () => {
             const { queryByText } = render(
                 <Calendar
                     events={[
-                        makeEvent('named event 0', start + hrToMs(1), 3),
-                        makeEvent('named event 2', start + hrToMs(27), 3),
+                        makeEvent('named event 0', (start / 1000) + hrToMs(1), 3),
+                        makeEvent('named event 2', (start / 1000) + hrToMs(27), 3),
                         // 8 days in the future, outside of the range
-                        makeEvent('named event 3', start + hrToMs(192), 3),
+                        makeEvent('named event 3', (start / 1000) + hrToMs(192), 3),
                         // 3 days in the past, outside of the range
-                        makeEvent('named event 4', start + hrToMs(-72), 3),
+                        makeEvent('named event 4', (start / 1000) + hrToMs(-72), 3),
                     ]}
                     startDate={new Date(start)}
                 />,
@@ -90,7 +90,7 @@ describe('<Calendar />', () => {
                     <Calendar
                         events={[makeEvent('named event', start, 3)]}
                         // 6 days in the future
-                        startDate={new Date(start + hrToMs(6 * 24))}
+                        startDate={new Date(start + hrToMs(6 * 24) * 1000)}
                     />,
                     {
                         wrapper: MemoryRouter,
@@ -129,9 +129,9 @@ describe('<Calendar />', () => {
             const { getByTestId, getByText, queryByText } = render(
                 <Calendar
                     events={[
-                        makeEvent('12th event', new Date(2020, 6, 12, 10).getTime(), 3),
-                        makeEvent('11th event', new Date(2020, 6, 11, 10).getTime(), 3),
-                        makeEvent('10th event', new Date(2020, 6, 10, 10).getTime(), 3),
+                        makeEvent('12th event', new Date(2020, 6, 12, 10).getTime() / 1000, 3),
+                        makeEvent('11th event', new Date(2020, 6, 11, 10).getTime() / 1000, 3),
+                        makeEvent('10th event', new Date(2020, 6, 10, 10).getTime() / 1000, 3),
                     ]}
                     startDate={new Date(2020, 6, 13)}
                 />,

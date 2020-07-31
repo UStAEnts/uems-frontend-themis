@@ -4,15 +4,15 @@ import Markdown from 'markdown-to-jsx';
 import ReactTimeAgo from 'react-time-ago';
 import ReactTooltip from 'react-tooltip';
 import { v4 } from 'uuid';
-import { Comment as CommentType } from '../../../types/Event';
 
 import './Comment.scss';
+import { CommentResponse } from '../../../utilities/APIGen';
 
 export type CommentPropsType = {
     /**
      * The comment that this block will be representing
      */
-    comment: CommentType,
+    comment: CommentResponse,
 }
 
 /**
@@ -35,14 +35,14 @@ export function Comment(props: CommentPropsType) {
                     id={`cb-${id}`}
                 >
                     <strong>Category: </strong>
-                    <span>{props.comment.topic.name}</span>
+                    <span>{props.comment.topic ? props.comment.topic.name : 'No Topic'}</span>
                 </ReactTooltip>
                 <div
                     data-tip
                     data-for={`cb-${id}`}
                     className="bar"
                     style={{
-                        backgroundColor: props.comment.topic.color || '#8395a7',
+                        backgroundColor: props.comment.topic?.color || '#8395a7',
                     }}
                 />
                 <div className="image">

@@ -16,7 +16,7 @@ export class ColorUtilities {
     static determineForegroundColor(backgroundHex: string) {
         const matches = backgroundHex.match(ColorUtilities.HEX_REGEX);
 
-        if (matches === null) throw new Error('Background hex was not of a valid hex format');
+        if (matches === null) throw new Error(`Background hex was not of a valid hex format: ${backgroundHex}`);
 
         const color = matches[1];
         const rgb = [0, 0, 0];

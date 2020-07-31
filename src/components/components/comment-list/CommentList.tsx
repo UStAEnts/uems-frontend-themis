@@ -1,21 +1,22 @@
 import * as React from 'react';
-import { Comment as CommentType } from '../../../types/Event';
 import { CommentBox } from '../../atoms/comment-box/CommentBox';
 import { Comment } from '../../atoms/comment/Comment';
 import { GlobalContext } from '../../../context/GlobalContext';
+import { CommentResponse } from '../../../utilities/APIGen';
+
 
 export type CommentListPropsType = {
     /**
      * The list of comments which should be rendered in this list
      */
-    comments: CommentType[],
+    comments: CommentResponse[],
 };
 
 export type CommentListStateType = {
     /**
      * The list of comments currently being rendered in addition to those provided in the props
      */
-    comments: CommentType[],
+    comments: CommentResponse[],
 };
 
 export class CommentList extends React.Component<CommentListPropsType, CommentListStateType> {
@@ -40,17 +41,18 @@ export class CommentList extends React.Component<CommentListPropsType, CommentLi
      * @param content the content of the comment
      */
     private handleSubmit(content: string) {
-        this.setState((oldState) => ({
-            comments: oldState.comments.concat({
-                id: '',
-                content,
-                topic: {
-                    name: '?',
-                },
-                poster: this.context.user,
-                posted: new Date().getTime(),
-            } as CommentType),
-        }));
+        // TODO: migrate to a proper submission
+        // this.setState((oldState) => ({
+        //     comments: oldState.comments.concat({
+        //         id: '',
+        //         content,
+        //         topic: {
+        //             name: '?',
+        //         },
+        //         poster: this.context.user,
+        //         posted: new Date().getTime(),
+        //     } as CommentResponse),
+        // }));
         // TODO: update parent etc - general net things
     }
 
@@ -67,7 +69,7 @@ export class CommentList extends React.Component<CommentListPropsType, CommentLi
                     .concat(this.state.comments)
                     .sort((a, b) => b.posted - a.posted)
                     .map((e) => (
-                        <Comment comment={e} />
+                        <Comment key={e.id} comment={e} />
                     ))}
             </div>
         );

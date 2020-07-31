@@ -1,6 +1,6 @@
 import { cleanup } from '@testing-library/react';
 import { v4 } from 'uuid';
-import { EntsStatus, EventState, GatewayEvent } from '../types/Event';
+import { EntsStateResponse, EventResponse, StateResponse, VenueResponse } from '../utilities/APIGen';
 
 export function promiseTimeout(func: Function, time: number) {
     return new Promise((resolve) => {
@@ -45,17 +45,44 @@ export const makeEvent = (
     start: number,
     hourDuration: number,
     attendance?: number,
-    venue?: string,
+    venue?: VenueResponse,
     id?: string,
-    state?: EventState,
-    entsStatus?: EntsStatus,
+    state?: StateResponse,
+    ents?: EntsStateResponse,
 ) => ({
     name,
-    _id: id ?? v4(),
-    bookingStart: new Date(start),
-    bookingEnd: new Date(start + (hourDuration * 60 * 60 * 1000)),
+    id: id ?? v4(),
+    startDate: start,
+    endDate: start + (hourDuration * 60 * 60 * 1000),
     attendance: attendance ?? 0,
-    venue: venue ?? 'venue',
+    venue: venue ?? randomVenue('vid'),
     state,
-    entsStatus,
-} as GatewayEvent);
+    ents,
+} as EventResponse);
+
+export const randomVenue = (name: string): VenueResponse => ({
+    user: {
+        name: 'name',
+        username: 'username',
+        id: 'userid',
+    },
+    id: v4(),
+    capacity: 0,
+    color: '#aeaeae',
+    date: new Date().getTime() / 1000,
+    name,
+});
+
+export const randomState = (name: string): StateResponse => ({
+    id: v4(),
+    color: '#aeaeae',
+    icon: 'coffee',
+    name,
+});
+
+export const randomEnts = (name: string): EntsStateResponse => ({
+    id: v4(),
+    color: '#eaeaea',
+    icon: 'coffee',
+    name,
+});
