@@ -9,14 +9,12 @@ import './pages/index/index.scss';
 import './pages/index/flexboxgrid.css';
 import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faBox,
+import { faBox, faBoxes, faBuilding,
     faCalendarTimes,
-    faColumns,
+    faColumns, faFileContract,
     faPaperPlane,
     faWrench,
-    IconDefinition
-} from '@fortawesome/free-solid-svg-icons';
+    IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import App from './pages/App';
@@ -27,20 +25,19 @@ import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import 'flatpickr/dist/themes/material_green.css';
 import { GlobalContext, GlobalContextType, ReadableContextType } from './context/GlobalContext';
-import {
-    Notification,
+import { Notification,
     NotificationRenderer,
-    processNotifications
-} from './components/components/notification-renderer/NotificationRenderer';
+    processNotifications } from './components/components/notification-renderer/NotificationRenderer';
 import { NotificationContext } from './context/NotificationContext';
 import { v4 } from 'uuid';
-import { CreateEvent } from "./pages/event/create/CreateEvent";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { User } from "./utilities/APIGen";
+import { CreateEvent } from './pages/events/create/CreateEvent';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { User } from './utilities/APIGen';
 import { CreateVenue } from './pages/venues/create/CreateVenue';
 import { CreateTopic } from './pages/topic/create/CreateTopic';
 import { CreateState } from './pages/state/create/CreateState';
 import { CreateEnts } from './pages/ents/create/CreateEnts';
+import { CreateFile } from "./pages/file/create/CreateFile";
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
@@ -78,6 +75,13 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
             notifications: [],
             timeouts: {},
             animationStates: {},
+            // TODO: MAKE THIS DYNAMIC I JUST WANT IT TO LOOK NICE
+            user: {
+                name: 'Ryan Delaney',
+                id: v4(),
+                profile: 'https://avatars0.githubusercontent.com/u/9435503?s=460&u=a8993c218110056a590db8eb43b7a6222750f169&v=4',
+                username: 'ryan',
+            },
         };
     }
 
@@ -210,6 +214,14 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                                         <FontAwesomeIcon icon={faCalendarTimes} />
                                         <span>Events</span>
                                     </NavLink>
+                                    <NavLink to="/venues" className="entry">
+                                        <FontAwesomeIcon icon={faBuilding} />
+                                        <span>Venues</span>
+                                    </NavLink>
+                                    <NavLink to="/files" className="entry">
+                                        <FontAwesomeIcon icon={faFileContract} />
+                                        <span>Files</span>
+                                    </NavLink>
                                     <NavLink to="/equipment" className="entry">
                                         <FontAwesomeIcon icon={faBox} />
                                         <span>Equipment</span>
@@ -221,6 +233,11 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                                     <NavLink to="/ops-planning" className="entry">
                                         <FontAwesomeIcon icon={faPaperPlane} />
                                         <span>Ops Planning</span>
+                                    </NavLink>
+                                    <div style={{ height: '2pc' }} />
+                                    <NavLink to="/more" className="entry">
+                                        <FontAwesomeIcon icon={faBoxes} />
+                                        <span>More</span>
                                     </NavLink>
                                 </div>
                             </div>
