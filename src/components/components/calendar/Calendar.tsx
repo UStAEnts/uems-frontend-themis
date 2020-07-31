@@ -84,8 +84,12 @@ export class Calendar extends React.Component<CalendarPropsType, CalendarStateTy
             <div className="hour-row c-row">
                 <div className="hour-label header" />
                 {
-                    days.map((day) => (
-                        <div key={day.format('MMMM-DD dddd')} className="hour-entry header">
+                    days.map((day, index) => (
+                        <div
+                            key={day.format('MMMM-DD dddd')}
+                            className="hour-entry header"
+                            data-testid={`n${index}-header`}
+                        >
                             <div className="weekday">{day.format('dddd')}</div>
                             <div className="date">{day.format('DD')}</div>
                             <div className="month">{day.format('MMMM')}</div>

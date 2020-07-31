@@ -3,6 +3,11 @@ import * as React from 'react';
 export default class InputUtilities {
 
     /**
+     * Character code for space
+     */
+    static SPACE = 32;
+
+    /**
      * If the keyCode matches the target key it will call the function with the given thisArg and arguments
      * @param e the keyboard event produced by react
      * @param targetKey the key which should be pressed

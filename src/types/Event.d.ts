@@ -29,15 +29,42 @@ export type User = {
     profile?: string,
 }
 
-export type ContentClass = {
+export type GatewayTopic = {
+    id: string,
     name: string,
     description?: string,
     color?: string,
+    icon?: string,
 }
 
 export type Comment = {
+    id: string,
+    posted: number,
     poster: User,
-    posted: Date,
+    topic: GatewayTopic,
     content: string,
-    type: ContentClass,
+}
+
+/**
+ * Source: https://xiomi.stoplight.io/docs/uems-gateway-api/reference/kill-me.yaml/components/schemas/FileResponse
+ */
+export type GatewayFile = {
+    id: string,
+    filename: string,
+    created: number,
+    author: User,
+    size: number,
+    downloadURL: string,
+    name: string,
+    private: boolean,
+}
+
+/**
+ * Source: https://xiomi.stoplight.io/docs/uems-gateway-api/reference/kill-me.yaml/components/schemas/ActionResponse
+ */
+export type EventChange = {
+    id: string,
+    occurred: number,
+    change: string,
+    user?: User,
 }

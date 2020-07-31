@@ -1,15 +1,15 @@
 import axios from 'axios';
 import * as React from 'react';
+import url from 'url';
+import Loader from 'react-loader-spinner';
 import { GatewayEvent } from '../../types/Event';
 import { Calendar as CalendarElement } from '../../components/components/calendar/Calendar';
 import { TabPane } from '../../components/components/tab-pane/TabPane';
 import { EventTable } from '../../components/components/event-table/EventTable';
 import Config from '../../config/Config';
-import url from 'url';
-import Loader from "react-loader-spinner";
-import { Theme } from "../../theme/Theme";
+import { Theme } from '../../theme/Theme';
 
-import "./Events.scss";
+import './Events.scss';
 
 export type CalendarPropsType = {};
 

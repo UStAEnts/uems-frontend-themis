@@ -1,6 +1,8 @@
 $rightbarWidth: 15%;
 $rightbarMinWidth: 14pc;
 
+@import "node_modules/include-media/dist/include-media";
+
 .event-view {
   &.loading-pane {
     height: 100%;
@@ -13,8 +15,15 @@ $rightbarMinWidth: 14pc;
     display: flex;
     flex-direction: row;
 
+
+    @include media('<=1400px') {
+      .real {
+        padding: 0 0 0 30px !important;
+      }
+    }
+
     .real {
-      padding: 0 20px;
+      padding: 0 10%;
       flex-grow: 1;
     }
 
@@ -40,6 +49,8 @@ $rightbarMinWidth: 14pc;
       padding: 20px;
       box-sizing: border-box;
 
+      overflow-y: auto;
+
       .entry {
         margin-bottom: 15px;
         padding-bottom: 15px;
@@ -48,13 +59,58 @@ $rightbarMinWidth: 14pc;
         .title {
           font-family: "MuseoModerno", cursive;
         }
-        .loader{
+
+        .loader {
           margin-top: 7px;
           margin-left: 7px;
         }
 
-        .time {
-          padding-left: 10px;
+        .flow {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+
+          .bar {
+            width: 1px;
+            flex-grow: 0;
+            flex-shrink: 0;
+            background: gainsboro;
+            height: 10px;
+          }
+
+          .time, .label, .duration {
+            padding: 5px;
+            box-sizing: border-box;
+
+            &.duration {
+              font-style: italic;
+            }
+
+            &.label {
+              border-radius: 100px;
+              font-weight: 500;
+            }
+          }
+        }
+
+      }
+    }
+
+    .properties-bar {
+      color: gray;
+      display: flex;
+      border-bottom: 1px solid gainsboro;
+      padding: 0 0 10px;
+      margin-bottom: 30px;
+      margin-top: -10px;
+
+      .property {
+        flex-grow: 1;
+
+        .label{
+          margin-right: 10px;
+          font-weight: bold;
         }
       }
     }

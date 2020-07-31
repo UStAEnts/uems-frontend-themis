@@ -1,0 +1,36 @@
+.file-list{
+  .title{
+    font-weight: bold;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+  }
+}
+.file-bar{
+  padding: 7px;
+  margin: 5px 0;
+  background: #f8f8f8;
+
+  a{
+  display: flex;
+    align-items: center;
+  }
+
+  &:hover{
+    background: #ececec;
+  }
+
+  .icon{
+    flex-basis: 40px;
+    flex-grow: 0;
+    flex-shrink: 1;
+    width: 40px;
+  }
+
+  .name{
+    flex-grow: 0.7;
+  }
+
+  .size{
+    flex-grow: 0.3;
+  }
+}
