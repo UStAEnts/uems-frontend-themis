@@ -24,6 +24,10 @@ export type CommentListPropsType = {
      * Handler function for comment submission
      */
     onCommentSent?: (content: string, topic: string) => void,
+    /**
+     * If the list should be shown without a compose box
+     */
+    withoutBox?: boolean,
 };
 
 type TimeSortableElement = {
@@ -68,12 +72,18 @@ export class CommentList extends React.Component<CommentListPropsType, {}> {
             (a, b) => b.time - a.time
         ).map((e) => e.component);
 
-        return (
-            <div className="comment-list">
+        const box = this.props.withoutBox
+            ? undefined
+            : (
                 <CommentBox
                     contentClasses={this.props.topics}
                     submitCommentHandler={this.handleSubmit}
                 />
+            )
+
+        return (
+            <div className="comment-list">
+                {box}
                 {/* We decide to sort the comments in reverse chronological order (newest first). The state set of
                  comments is added to the props and then rendered to allow for easy manipulation */}
                 {joined}
