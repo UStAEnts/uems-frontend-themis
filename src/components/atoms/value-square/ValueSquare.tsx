@@ -5,7 +5,7 @@ import { EditableProperty } from '../../components/editable-property/EditablePro
 
 import './ValueSquare.scss';
 import { Theme } from "../../../theme/Theme";
-import { Link, withRouter } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { withNotificationContext } from "../../WithNotificationContext";
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 
@@ -18,7 +18,8 @@ export type ValueSquarePropsType = {
     link?: string,
     style?: CSSProperties,
     className?: string,
-};
+    color?: string,
+} & RouteComponentProps;
 
 export type ValueSquareStateType = {};
 
@@ -29,7 +30,7 @@ class ValueSquareClass extends React.Component<ValueSquarePropsType, ValueSquare
     private generateHeader = () => {
         if (this.props.icon && this.props.name) {
             return (
-                <div className="icon" style={{ background: Theme.NOTICE }}>
+                <div className="icon" style={{ background: this.props.color ?? Theme.NOTICE }}>
                     <FontAwesomeIcon icon={this.props.icon} size="lg" />
                     <div className="name">{this.props.name}</div>
                 </div>
@@ -38,7 +39,7 @@ class ValueSquareClass extends React.Component<ValueSquarePropsType, ValueSquare
 
         if (this.props.icon && !this.props.name) {
             return (
-                <div className="icon no-name" style={{ background: Theme.NOTICE }}>
+                <div className="icon no-name" style={{ background: this.props.color ?? Theme.NOTICE }}>
                     <FontAwesomeIcon icon={this.props.icon} size="lg" />
                 </div>
             );
@@ -46,7 +47,7 @@ class ValueSquareClass extends React.Component<ValueSquarePropsType, ValueSquare
 
         if (!this.props.icon && this.props.name) {
             return (
-                <div className="icon only-name" style={{ background: Theme.NOTICE }}>
+                <div className="icon only-name" style={{ background: this.props.color ?? Theme.NOTICE }}>
                     <div className="name">{this.props.name}</div>
                 </div>
             );
@@ -94,10 +95,10 @@ class ValueSquareClass extends React.Component<ValueSquarePropsType, ValueSquare
         const content = (
             <div
                 className={`value-square ${this.props.className ?? ''}`}
-                style={{ background: Theme.NOTICE, ...this.props.style }}
+                style={{ background: this.props.color ?? Theme.NOTICE, ...this.props.style }}
             >
                 {this.generateHeader()}
-                <div className="conts" >
+                <div className="conts">
                     {value}
                 </div>
                 {
@@ -123,4 +124,4 @@ class ValueSquareClass extends React.Component<ValueSquarePropsType, ValueSquare
 
 }
 
-export const ValueSquare = withRouter(withNotificationContext(ValueSquareClass));
+export const ValueSquare = withRouter(ValueSquareClass);
