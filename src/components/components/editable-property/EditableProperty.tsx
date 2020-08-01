@@ -9,6 +9,21 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import DatePicker from 'react-flatpickr';
 import InputUtilities from '../../../utilities/InputUtilities';
 import { TextField, TextFieldPropsType } from '../../atoms/text-field/TextField';
+import { IconSelector, OptionType } from "../../atoms/icon-picker/EntrySelector";
+import { TwitterPicker } from "react-color";
+import { failEarlyStateSet } from "../../../utilities/AccessUtilities";
+
+export type IconType = {
+    type: 'icon',
+    onChange?: (value: OptionType) => void,
+    value: string,
+}
+
+export type ColorType = {
+    type: 'color',
+    onChange?: (value: string) => void,
+    value: string,
+}
 
 export type SelectType = {
     type: 'select',
@@ -38,7 +53,7 @@ export type EditablePropertyPropsType = {
      * An editable property must contain one or more children which are rendered by default when not in edit mode
      */
     children: React.ReactNode | React.ReactNode[],
-    config: SelectType | DateType | TextType,
+    config: SelectType | DateType | TextType | ColorType | IconType,
 }
 
 export type EditablePropertyStateType = {
@@ -49,7 +64,7 @@ export type EditablePropertyStateType = {
     /**
      * The currently selected property from the select box
      */
-    selectProperty?: string | KeyValueOption,
+    selectProperty?: string | KeyValueOption | OptionType,
     selectedTime?: Date,
     input?: any,
 };
@@ -129,7 +144,11 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
         this.disableEditing();
 
         if (this.props.config.type === 'select' && this.state.selectProperty) {
-            if (this.props.config.onChange) this.props.config.onChange(this.state.selectProperty);
+            if (this.props.config.onChange) {
+                this.props.config.onChange(
+                    this.state.selectProperty as (string | KeyValueOption),
+                );
+            }
         }
         if (this.props.config.type === 'date' && this.state.selectedTime) {
             if (this.props.config.onChange) this.props.config.onChange(this.state.selectedTime);
@@ -137,7 +156,30 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
         if (this.props.config.type === 'text' && this.state.input) {
             if (this.props.config.onChange) this.props.config.onChange(this.state.input);
         }
+        if (this.props.config.type === 'icon' && this.state.selectProperty) {
+            if (this.props.config.onChange) this.props.config.onChange(this.state.selectProperty as OptionType);
+        }
+        if (this.props.config.type === 'color' && this.state.selectProperty) {
+            if (this.props.config.onChange) this.props.config.onChange(this.state.selectProperty as string);
+        }
     }
+
+    private renderIcon = () => (
+        <IconSelector
+            onSelect={failEarlyStateSet(this.state, this.setState.bind(this), 'selectProperty')}
+            value={this.state.selectProperty as OptionType}
+            searchable
+        />
+    );
+
+    private renderColor = () => (
+        <TwitterPicker
+            onChange={(a) => {
+                failEarlyStateSet(this.state, this.setState.bind(this), 'selectProperty')(a.hex);
+            }}
+            color={this.state.selectProperty as (string | undefined)}
+        />
+    );
 
     private renderSelect = (select: SelectType) => {
         if (select.options.length > 0 && typeof (select.options[0]) === 'string') {
@@ -186,6 +228,23 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                         type={this.props.config.fieldType}
                     />
                 );
+            case 'color':
+                return (
+                    <div>
+                        <TextField
+                            style={{
+                                borderBottom: `5px solid ${this.state.selectProperty ?? '#000000'}`,
+                            }}
+                            onChange={failEarlyStateSet(this.state, this.setState.bind(this), 'selectProperty')}
+                            name="Color"
+                            initialContent={(this.state.selectProperty as (string | undefined)) ?? '#000000'}
+                        />
+
+                        {this.renderColor()}
+                    </div>
+                );
+            case 'icon':
+                return (this.renderIcon());
             default:
                 return undefined;
         }
