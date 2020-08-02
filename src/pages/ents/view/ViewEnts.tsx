@@ -74,6 +74,17 @@ class ViewEntsClass extends React.Component<ViewEntsPropsType, ViewEntsStateType
                     excluded={[
                         'id',
                     ]}
+                    delete={{
+                        redirect: '/ents',
+                        onDelete: async () => {
+                            try {
+                                await API.ents.id.delete(this.props.match.params.id);
+                                return true;
+                            } catch (e) {
+                                return false;
+                            }
+                        },
+                    }}
                 />
             );
         }

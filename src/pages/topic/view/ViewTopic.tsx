@@ -82,6 +82,17 @@ class ViewTopicClass extends React.Component<ViewTopicPropsType, ViewTopicStateT
                             },
                         },
                     ]}
+                    delete={{
+                        redirect: '/topics',
+                        onDelete: async () => {
+                            try {
+                                await API.topics.id.delete(this.props.match.params.id);
+                                return true;
+                            } catch (e) {
+                                return false;
+                            }
+                        },
+                    }}
                 />
             );
         }

@@ -80,6 +80,17 @@ class ViewStateClass extends React.Component<ViewStatePropsType, ViewStateStateT
                         'id',
                     ]}
                     events={this.state.events}
+                    delete={{
+                        redirect: '/states',
+                        onDelete: async () => {
+                            try {
+                                await API.states.id.delete(this.props.match.params.id);
+                                return true;
+                            } catch (e) {
+                                return false;
+                            }
+                        },
+                    }}
                 />
             );
         }

@@ -88,6 +88,17 @@ class ViewVenueClass extends React.Component<ViewVenuePropsType, ViewVenueStateT
                         'date',
                     ]}
                     events={this.state.events}
+                    delete={{
+                        redirect: '/venues',
+                        onDelete: async () => {
+                            try {
+                                await API.venues.id.delete(this.props.match.params.id);
+                                return true;
+                            } catch (e) {
+                                return false;
+                            }
+                        },
+                    }}
                 />
             );
         }
