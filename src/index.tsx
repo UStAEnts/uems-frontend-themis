@@ -53,6 +53,7 @@ import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import './pages/index/index.scss';
 import './pages/index/flexboxgrid.css';
+import { ListFile } from "./pages/file/list/ListFile";
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
@@ -268,6 +269,9 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                                 <Switch>
                                     <Route path="/file/create" exact>
                                         <CreateFile isPage />
+                                    </Route>
+                                    <Route path="/files" exact>
+                                        <ListFile />
                                     </Route>
 
                                     <Route path="/ents/create" exact>
