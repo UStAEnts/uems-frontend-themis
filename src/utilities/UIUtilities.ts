@@ -25,4 +25,52 @@ export class UIUtilities {
         }
     }
 
+    static roundToDB(value: number, places: number) {
+        return Math.round((value + Number.EPSILON) * (10 ** places)) / (10 ** places);
+    }
+
+    static sizeToHuman(size: number) {
+        if (size < 1024) return `${size} bytes`;
+
+        const kb = size / 1024;
+        const mb = kb / 1024;
+        const gb = mb / 1024;
+        const tb = gb / 2024;
+
+        if (tb >= 0.5) return `${this.roundToDB(tb, 2)} TiB`;
+        if (gb >= 1) return `${this.roundToDB(gb, 2)} GiB`;
+        if (mb >= 1) return `${this.roundToDB(mb, 2)} MiB`;
+        return `${this.roundToDB(kb, 2)} KiB`;
+    }
+
+    static capitaliseFirst(value: string) {
+        return value.charAt(0).toLocaleUpperCase() + value.substr(1);
+    }
+
+    static defaultSearch<T>(input: string | undefined, entries: T[], map: (value: T) => (string | undefined)[]): T[] {
+        if (!input) return entries;
+
+        const tokens = input.toLocaleLowerCase().split(' ');
+        const mapping: [number, T][] = [];
+
+        for (const option of entries) {
+            let score = 0;
+            const fields = map(option).map((e) => (e ? e.toLowerCase() : e));
+
+            for (const token of tokens) {
+                score += fields.map((e) => (e && e.includes(token) ? 1 : 0) as number).reduce((a, b) => (a + b));
+            }
+
+            mapping.push([score, option]);
+        }
+
+        const average = mapping.map(([score]) => score).reduce((prev, curr) => prev + curr) / mapping.length;
+        const limit = average / 2;
+
+        return mapping
+            .filter(([score]) => score > limit)
+            .sort(([aScore], [bScore]) => aScore - bScore)
+            .map((a) => a[1]);
+    }
+
 }
