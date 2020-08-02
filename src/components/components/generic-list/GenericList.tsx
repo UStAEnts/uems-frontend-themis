@@ -4,10 +4,11 @@ import ReactTooltip from 'react-tooltip';
 import { v4 } from 'uuid';
 import { IconBox } from '../../atoms/icon-box/IconBox';
 import { Theme } from '../../../theme/Theme';
+import { UIUtilities } from '../../../utilities/UIUtilities';
+import { TextField } from '../../atoms/text-field/TextField';
+import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
+import InputUtilities from '../../../utilities/InputUtilities';
 import './GenericList.scss';
-import { UIUtilities } from "../../../utilities/UIUtilities";
-import { TextField } from "../../atoms/text-field/TextField";
-import { failEarlyStateSet } from "../../../utilities/AccessUtilities";
 
 export type GenericRecord<T> = {
     value: T,
@@ -20,6 +21,7 @@ export type GenericListPropsType<T> = {
     records: GenericRecord<T>[],
     render: (value: T) => React.ReactNode,
     dontPad?: boolean,
+    onClick?: (value: T) => void,
     searchable?: (value: GenericRecord<T>) => (string | undefined)[],
 };
 
@@ -51,26 +53,47 @@ class GenericListClass<T> extends React.Component<GenericListPropsType<T>, Gener
     }
 
     private renderElement = (element: GenericRecord<T>, index: number) => {
-        let reactElement;
+        let reactElement: React.ReactElement | React.ReactNode;
 
         if (element.tooltip) {
+            reactElement = [
+                <ReactTooltip
+                    place="bottom"
+                    type="dark"
+                    effect="float"
+                    id={`ewt-${this.state.identifiers[index]}`}
+                >
+                    {element.tooltip}
+                </ReactTooltip>,
+                <div id={`ewt-${this.state.identifiers[index]}`}>
+                    {this.props.render(element.value)}
+                </div>,
+            ];
+        } else {
+            reactElement = this.props.render(element.value);
+        }
+
+        if (reactElement && this.props.onClick) {
+            const handle = () => {
+                if (this.props.onClick) this.props.onClick(element.value);
+            };
+
             reactElement = (
-                <div>
-                    <ReactTooltip
-                        place="bottom"
-                        type="dark"
-                        effect="float"
-                        id={`ewt-${this.state.identifiers[index]}`}
-                    >
-                        {element.tooltip}
-                    </ReactTooltip>
-                    <div id={`ewt-${this.state.identifiers[index]}`}>
-                        {this.props.render(element.value)}
-                    </div>
+                <div
+                    onClick={handle}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={InputUtilities.higherOrderPress(InputUtilities.SPACE, handle, this, element.value)}
+                >
+                    {reactElement}
                 </div>
             );
         } else {
-            reactElement = this.props.render(element.value);
+            reactElement = (
+                <div>
+                    {reactElement}
+                </div>
+            );
         }
 
         if (element.target) {
