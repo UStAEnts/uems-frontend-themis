@@ -5,6 +5,9 @@ import { v4 } from 'uuid';
 import { IconBox } from '../../atoms/icon-box/IconBox';
 import { Theme } from '../../../theme/Theme';
 import './GenericList.scss';
+import { UIUtilities } from "../../../utilities/UIUtilities";
+import { TextField } from "../../atoms/text-field/TextField";
+import { failEarlyStateSet } from "../../../utilities/AccessUtilities";
 
 export type GenericRecord<T> = {
     value: T,
@@ -17,10 +20,12 @@ export type GenericListPropsType<T> = {
     records: GenericRecord<T>[],
     render: (value: T) => React.ReactNode,
     dontPad?: boolean,
+    searchable?: (value: GenericRecord<T>) => (string | undefined)[],
 };
 
 export type GenericListStateType = {
     identifiers: string[],
+    search?: string,
 };
 
 class GenericListClass<T> extends React.Component<GenericListPropsType<T>, GenericListStateType> {
@@ -86,9 +91,29 @@ class GenericListClass<T> extends React.Component<GenericListPropsType<T>, Gener
     }
 
     render() {
+        let search;
+        let { records } = this.props;
+
+        if (this.props.searchable) {
+            search = (
+                <TextField
+                    onChange={failEarlyStateSet(this.state, this.setState.bind(this), 'search')}
+                    name="Search"
+                    initialContent={this.state.search}
+                />
+            );
+            records = UIUtilities.defaultSearch(
+                this.state.search,
+                this.props.records,
+                this.props.searchable,
+            );
+        }
+
         return (
             <div className={`generic-list ${this.props.dontPad ? 'no-padding' : ''}`}>
-                {this.props.records.map(this.renderElement)}
+                {search}
+
+                {records.map(this.renderElement)}
             </div>
         );
     }
@@ -125,7 +150,7 @@ export function genericRender<T extends Record<string, any>>(
 
             properties.push((
                 <div className="property">
-                    <div className="label">{key}</div>
+                    <div className="label">{UIUtilities.capitaliseFirst(key as string)}</div>
                     <div className="value">{String(value[key])}</div>
                 </div>
             ));
