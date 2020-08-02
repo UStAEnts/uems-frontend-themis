@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-    faCheckSquare,
-    faDownload,
-    faLock,
-    faLockOpen,
-    faQuestion, faSquare, faTimesCircle,
-    IconDefinition,
-    IconName
-} from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faLock, faLockOpen, faQuestion, faTimesCircle, IconName } from '@fortawesome/free-solid-svg-icons';
 import { Link, Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 import Loader from 'react-loader-spinner';
@@ -16,14 +8,14 @@ import moment from 'moment';
 import { Theme } from '../../../theme/Theme';
 import { Button } from '../../../components/atoms/button/Button';
 import { IconBox } from '../../../components/atoms/icon-box/IconBox';
-import { GenericList, genericRender } from '../../../components/components/generic-list/GenericList';
+import { GenericList } from '../../../components/components/generic-list/GenericList';
 import './ViewFile.scss';
 import { EditableProperty } from '../../../components/components/editable-property/EditableProperty';
 import { API, EventResponse, FileResponse } from '../../../utilities/APIGen';
 import { UIUtilities } from '../../../utilities/UIUtilities';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { ColorUtilities } from '../../../utilities/ColorUtilities';
-import { TextField } from "../../../components/atoms/text-field/TextField";
+import { TextField } from '../../../components/atoms/text-field/TextField';
 
 export type ViewFilePropsType = {} & RouteComponentProps<{
     id: string,

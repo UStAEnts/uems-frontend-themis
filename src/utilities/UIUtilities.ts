@@ -1,8 +1,6 @@
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificationContextType } from '../context/NotificationContext';
 import { Notification } from '../components/components/notification-renderer/NotificationRenderer';
-import ts from "typescript/lib/tsserverlibrary";
-
 
 type LoaderOptions = 'Audio' | 'BallTriangle' | 'Bars' | 'Circles' | 'Grid' | 'Hearts' | 'Oval' | 'Puff'
     | 'Rings' | 'TailSpin' | 'ThreeDots' | 'Watch' | 'RevolvingDot' | 'Triangle' | 'Plane' | 'MutatingDots'
