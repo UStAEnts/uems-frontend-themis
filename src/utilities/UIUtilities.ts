@@ -1,6 +1,12 @@
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificationContextType } from '../context/NotificationContext';
 import { Notification } from '../components/components/notification-renderer/NotificationRenderer';
+import ts from "typescript/lib/tsserverlibrary";
+
+
+type LoaderOptions = 'Audio' | 'BallTriangle' | 'Bars' | 'Circles' | 'Grid' | 'Hearts' | 'Oval' | 'Puff'
+    | 'Rings' | 'TailSpin' | 'ThreeDots' | 'Watch' | 'RevolvingDot' | 'Triangle' | 'Plane' | 'MutatingDots'
+    | 'None' | 'NotSpecified';
 
 export class UIUtilities {
 
@@ -71,6 +77,14 @@ export class UIUtilities {
             .filter(([score]) => score > limit)
             .sort(([aScore], [bScore]) => aScore - bScore)
             .map((a) => a[1]);
+    }
+
+    static randomLoaderType() {
+        const types: LoaderOptions[] = ['Audio', 'BallTriangle', 'Bars', 'Circles', 'Grid', 'Hearts', 'Oval', 'Puff',
+            'Rings', 'TailSpin', 'ThreeDots', 'Watch', 'Triangle', 'MutatingDots', 'None',
+            'NotSpecified'];
+
+        return types[Math.floor(Math.random() * types.length)];
     }
 
 }
