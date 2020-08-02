@@ -46,6 +46,10 @@ import { ViewVenue } from "./pages/venues/view/ViewVenue";
 import { ViewTopic } from "./pages/topic/view/ViewTopic";
 import { ViewState } from "./pages/state/view/ViewState";
 import { ViewEnts } from "./pages/ents/view/ViewEnts";
+import { ListVenue } from "./pages/venues/list/ListVenue";
+import { ListTopic } from "./pages/topic/list/ListTopic";
+import { ListState } from "./pages/state/list/ListState";
+import { ListEnt } from "./pages/ents/list/ListEnt";
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
@@ -269,12 +273,18 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                                     <Route path="/ents/:id" exact>
                                         <ViewEnts />
                                     </Route>
+                                    <Route path="/ents" exact>
+                                        <ListEnt />
+                                    </Route>
 
                                     <Route path="/states/create" exact>
                                         <CreateState isPage />
                                     </Route>
                                     <Route path="/states/:id" exact>
                                         <ViewState />
+                                    </Route>
+                                    <Route path="/states" exact>
+                                        <ListState />
                                     </Route>
 
                                     <Route path="/topics/create" exact>
@@ -283,12 +293,18 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                                     <Route path="/topics/:id" exact>
                                         <ViewTopic />
                                     </Route>
+                                    <Route path="/topics" exact>
+                                        <ListTopic />
+                                    </Route>
 
                                     <Route path="/venues/create" exact>
                                         <CreateVenue isPage />
                                     </Route>
                                     <Route path="/venues/:id" exact>
                                         <ViewVenue />
+                                    </Route>
+                                    <Route path="/venues" exact>
+                                        <ListVenue />
                                     </Route>
 
                                     <Route path="/event/create" exact>
