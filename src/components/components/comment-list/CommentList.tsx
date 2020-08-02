@@ -1,11 +1,10 @@
 import * as React from 'react';
+import { ReactNode } from 'react';
 import { CommentBox } from '../../atoms/comment-box/CommentBox';
 import { Comment } from '../../atoms/comment/Comment';
 import { GlobalContext } from '../../../context/GlobalContext';
 import { CommentResponse, EventPropertyChangeResponse, TopicResponse } from '../../../utilities/APIGen';
-import { ReactNode } from "react";
-import { EventUpdate } from "../../atoms/update/EventUpdate";
-
+import { EventUpdate } from '../../atoms/update/EventUpdate';
 
 export type CommentListPropsType = {
     /**
@@ -24,6 +23,10 @@ export type CommentListPropsType = {
      * Handler function for comment submission
      */
     onCommentSent?: (content: string, topic: string) => void,
+    /**
+     * If the list should be shown without a compose box
+     */
+    withoutBox?: boolean,
 };
 
 type TimeSortableElement = {
@@ -62,26 +65,32 @@ export class CommentList extends React.Component<CommentListPropsType, {}> {
         const updates = (this.props.updates ?? []).map((e) => ({
             time: e.occurred,
             component: <EventUpdate update={e} key={e.id} />,
-        } as TimeSortableElement))
+        } as TimeSortableElement));
 
         const joined = comments.concat(updates).sort(
-            (a, b) => b.time - a.time
+            (a, b) => b.time - a.time,
         ).map((e) => e.component);
 
-        return (
-            <div className="comment-list">
+        const box = this.props.withoutBox
+            ? undefined
+            : (
                 <CommentBox
                     contentClasses={this.props.topics}
                     submitCommentHandler={this.handleSubmit}
                 />
+            );
+
+        return (
+            <div className="comment-list">
+                {box}
                 {/* We decide to sort the comments in reverse chronological order (newest first). The state set of
                  comments is added to the props and then rendered to allow for easy manipulation */}
                 {joined}
-                {/*{this.props.comments*/}
-                {/*    .sort((a, b) => b.posted - a.posted)*/}
-                {/*    .map((e) => (*/}
-                {/*        <Comment key={e.id} comment={e} />*/}
-                {/*    ))}*/}
+                {/* {this.props.comments */}
+                {/*    .sort((a, b) => b.posted - a.posted) */}
+                {/*    .map((e) => ( */}
+                {/*        <Comment key={e.id} comment={e} /> */}
+                {/*    ))} */}
             </div>
         );
     }

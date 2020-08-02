@@ -8,7 +8,7 @@ import {
     faTag,
     faTicketAlt,
     faUsers,
-    IconName
+    IconName,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 

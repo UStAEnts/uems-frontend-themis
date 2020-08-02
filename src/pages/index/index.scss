@@ -77,6 +77,8 @@ body, html {
 
         &:hover{
           background: #212121;
+          position: relative;
+          left: 7px;
         }
 
         &.active {

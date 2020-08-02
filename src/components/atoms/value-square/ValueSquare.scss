@@ -1,0 +1,77 @@
+.value-square{
+  width: 14pc;
+  height: 14pc;
+  //background: black;
+  border-radius: 10px;
+  color: white;
+  position: relative;
+
+  display: inline-flex;
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+
+  margin: 5px;
+
+  .conts{
+    display: inline-block;
+    font-size: 3em;
+    font-weight: bold;
+    font-family: 'MuseoModerno', cursive;
+  }
+
+  .name{
+    //position: absolute;
+    //top: -10px;
+    //left: 50px;
+    //background: red;
+    font-weight: bold;
+    //margin-left: 4pc;
+    display: inline-block;
+    padding: 7px 20px 7px 12px;
+  }
+
+  .icon{
+    position: absolute;
+    top: -20px;
+    left: 10px;
+    //width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    //background: red;
+    border-radius: 100px;
+    text-align: center;
+
+    &.only-name{
+      .name{
+        padding-left: 20px;
+      }
+    }
+
+    &.no-name{
+      width: 50px;
+
+      svg{
+        margin-left: initial;
+      }
+    }
+
+    svg{
+      margin-left: 15px;
+    }
+  }
+
+  .icon{
+    box-shadow: 1px 2px 21px -2px #949494;
+  }
+
+  .link{
+    color: white;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
+}

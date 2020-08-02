@@ -5,7 +5,7 @@ import { v4 } from 'uuid';
 import './NotificationRenderer.scss';
 import { Link } from 'react-router-dom';
 import { IconBox } from '../../atoms/icon-box/IconBox';
-import InputUtilities from "../../../utilities/InputUtilities";
+import InputUtilities from '../../../utilities/InputUtilities';
 
 export type Notification = {
     id?: string,

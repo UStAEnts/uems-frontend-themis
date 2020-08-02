@@ -1,16 +1,16 @@
 import React from 'react';
+import { faExclamationCircle, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { Redirect, withRouter } from 'react-router-dom';
 import { TextField } from '../../../components/atoms/text-field/TextField';
 import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
-import './CreateEvent.scss';
 import { Button } from '../../../components/atoms/button/Button';
 import { Theme } from '../../../theme/Theme';
-import { Redirect, withRouter } from 'react-router';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
-import { faExclamationCircle, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificationContextType } from '../../../context/NotificationContext';
 import { Notification } from '../../../components/components/notification-renderer/NotificationRenderer';
 import { API, EntsStateResponse, EventCreation, StateResponse, VenueResponse } from '../../../utilities/APIGen';
 import { failEarlySet, failEarlyStateSet } from '../../../utilities/AccessUtilities';
+import './CreateEvent.scss';
 
 export type CreateEventPropsType = {
     isPage?: boolean,

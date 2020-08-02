@@ -1,0 +1,71 @@
+.view-venue {
+  padding: 30px;
+
+  &.comments{
+    .body{
+      .left-props, .right-props{
+        flex-basis: 50%;
+      }
+    }
+  }
+
+  &.loading{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .body {
+    display: flex;
+
+    .left-props {
+      flex-basis: 30%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+
+      border-right: 1px solid gainsboro;
+
+      .property-edit{
+        &:first-child{
+          padding-top:0;
+        }
+        padding-top: 30px;
+      }
+
+      .title {
+        display: inline-block;
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+
+      .delete{
+        margin-top: 10pc;
+        padding-right: 40px;
+      }
+    }
+
+    .right-props {
+      flex-grow: 0;
+      flex-shrink: 0;
+      margin-top: 40px;
+      padding-left: 30px;
+      flex-basis: 69.88%;
+
+      .boxes {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 20px;
+
+        .smaller-square{
+          .conts{
+            font-size: 1.5em;
+          }
+        }
+      }
+    }
+  }
+}

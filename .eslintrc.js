@@ -39,6 +39,7 @@ module.exports = {
             allowForLoopAfterthoughts: true,
         }],
         'no-underscore-dangle': 'off',
+        'no-continue': 'off',
 
         'react/destructuring-assignment': 0,
         'react/jsx-indent-props': ['error', 4],

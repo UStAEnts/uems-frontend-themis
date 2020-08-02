@@ -32,4 +32,12 @@
   .icon{
     margin-right: 10px;
   }
+
+  &.full-width{
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
