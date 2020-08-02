@@ -1,13 +1,12 @@
 import React, { CSSProperties } from 'react';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { EditableProperty } from '../../components/editable-property/EditableProperty';
 
+import { Theme } from '../../../theme/Theme';
 import './ValueSquare.scss';
-import { Theme } from "../../../theme/Theme";
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import { withNotificationContext } from "../../WithNotificationContext";
-import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 
 export type ValueSquarePropsType = {
     value: string | number,

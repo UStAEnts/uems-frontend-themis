@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, withRouter } from 'react-router';
+import { Redirect, withRouter } from 'react-router-dom';
 import { TwitterPicker } from 'react-color';
 import { faNetworkWired, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
 import { TextField } from '../../../components/atoms/text-field/TextField';

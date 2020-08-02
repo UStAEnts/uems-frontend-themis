@@ -5,14 +5,15 @@ import ReactTimeAgo from 'react-time-ago';
 import {
     EntsStateResponse,
     EntsStateResponseZod,
-    EventPropertyChangeResponse, StateResponse,
+    EventPropertyChangeResponse,
+    StateResponse,
     StateResponseZod,
     VenueResponse,
-    VenueResponseZod,
+    VenueResponseZod
 } from '../../../utilities/APIGen';
 
 import './EventUpdate.scss';
-import { ColorUtilities } from "../../../utilities/ColorUtilities";
+import { ColorUtilities } from '../../../utilities/ColorUtilities';
 
 export type EventUpdateProps = {
     update: EventPropertyChangeResponse,
@@ -111,7 +112,7 @@ function generateEntsChange(update: EventPropertyChangeResponse, change: any) {
                 {update.user?.name ?? 'an unknown user'}
                 &nbsp;to
             </div>,
-            <div className="ents">{value.name}</div>
+            <div className="ents">{value.name}</div>,
         ],
         update.occurred,
         value.color,

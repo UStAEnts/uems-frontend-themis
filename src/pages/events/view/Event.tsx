@@ -1,14 +1,12 @@
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
-import './Event.scss';
 import moment from 'moment';
 import Axios from 'axios';
 import ReactTimeAgo from 'react-time-ago';
 import urljoin from 'url-join';
 import { faFileCode, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
 import { NotificationContextType } from '../../../context/NotificationContext';
@@ -20,14 +18,21 @@ import { Theme } from '../../../theme/Theme';
 import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
 import {
     API,
-    CommentResponse, EntsStateResponse,
+    CommentResponse,
+    EntsStateResponse,
     EventPropertyChangeResponse,
-    EventResponse, EventUpdate,
-    FileResponse, SignupResponse, StateResponse, TopicResponse, User,
-    VenueResponse
+    EventResponse,
+    EventUpdate,
+    FileResponse,
+    SignupResponse,
+    StateResponse,
+    TopicResponse,
+    User,
+    VenueResponse,
 } from '../../../utilities/APIGen';
 import { Button } from '../../../components/atoms/button/Button';
 import { GlobalContext } from '../../../context/GlobalContext';
+import './Event.scss';
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,

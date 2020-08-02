@@ -10,8 +10,9 @@ import { Button } from '../../../components/atoms/button/Button';
 import { Theme } from '../../../theme/Theme';
 import { UIUtilities } from '../../../utilities/UIUtilities';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
-import { IconSelector, OptionType } from "../../../components/atoms/icon-picker/EntrySelector";
-import { IconBox } from "../../../components/atoms/icon-box/IconBox";
+import { OptionType } from '../../../components/atoms/icon-picker/EntrySelector';
+import { IconBox } from '../../../components/atoms/icon-box/IconBox';
+import { IconSelector } from '../../../components/atoms/icon-picker/IconPicker';
 
 export type CreateEntsPropsType = {
     isPage?: boolean,

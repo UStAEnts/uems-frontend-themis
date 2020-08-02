@@ -34,7 +34,7 @@ export class ListVenue extends React.Component<ListVenuePropsType, ListVenueStat
         }));
 
         return (
-            <div className="list-venues" style={{padding: '30px'}}>
+            <div className="list-venues" style={{ padding: '30px' }}>
                 <h1>Venues</h1>
                 <GenericList
                     records={venues}

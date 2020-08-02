@@ -66,7 +66,7 @@ class ViewTopicClass extends React.Component<ViewTopicPropsType, ViewTopicStateT
                         {
                             property: 'description',
                             type: 'textarea',
-                        }
+                        },
                     ]}
                     comments={[
                         {

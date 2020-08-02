@@ -1,6 +1,3 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
-
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
@@ -16,14 +13,14 @@ import { render, fireEvent } from '@testing-library/react';
 //   - venues
 
 import { createMemoryHistory } from 'history';
-import { MemoryRouter, Router } from 'react-router';
+import { MemoryRouter, Router } from 'react-router-dom';
 import JavascriptTimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { makeEvent, promiseTimeout, randomEnts, randomState, randomVenue } from '../../TestUtils';
 import { EventTable } from '../../../components/components/event-table/EventTable';
 
 import 'react-dates/initialize';
-import { APIOverrides } from "../../../utilities/APIGen";
+import { APIOverrides } from '../../../utilities/APIGen';
 
 beforeAll(() => {
     JavascriptTimeAgo.addLocale(en);

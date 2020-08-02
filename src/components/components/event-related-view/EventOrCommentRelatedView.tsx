@@ -9,8 +9,8 @@ import { EditableProperty } from '../editable-property/EditableProperty';
 import { IconBox } from '../../atoms/icon-box/IconBox';
 import { ValueSquare } from '../../atoms/value-square/ValueSquare';
 import { OptionType } from '../../atoms/icon-picker/EntrySelector';
+import { CommentList } from '../comment-list/CommentList';
 import './EventOrCommentRelatedView.scss';
-import { CommentList } from "../comment-list/CommentList";
 
 export type Override<T> = {
     property: Extract<keyof T, string>,
@@ -29,7 +29,8 @@ export type EventRelatedViewPropsType<T, C> = {
 
 export type EventRelatedViewStateType = {};
 
-export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelatedViewPropsType<T, C>, EventRelatedViewStateType> {
+export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelatedViewPropsType<T, C>,
+    EventRelatedViewStateType> {
 
     static displayName = 'EventOrCommentRelatedView';
 
@@ -296,7 +297,6 @@ export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelate
             if (type === 'color') properties.push(this.generateColorEdit(key));
             if (type === 'textarea') properties.push(this.generateText(key, 'textarea'));
         }
-
 
         return (
             <div className={`view-venue ${this.props.events ? 'events' : 'comments'}`}>

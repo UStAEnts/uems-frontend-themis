@@ -1,17 +1,18 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import DatePicker from 'react-flatpickr';
+import { TwitterPicker } from 'react-color';
 import { KeyValueOption, Select } from '../../atoms/select/Select';
 import { Button } from '../../atoms/button/Button';
 import { Theme } from '../../../theme/Theme';
 
-import './EditableProperty.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import DatePicker from 'react-flatpickr';
 import InputUtilities from '../../../utilities/InputUtilities';
 import { TextField, TextFieldPropsType } from '../../atoms/text-field/TextField';
-import { IconSelector, OptionType } from "../../atoms/icon-picker/EntrySelector";
-import { TwitterPicker } from "react-color";
-import { failEarlyStateSet } from "../../../utilities/AccessUtilities";
+import { OptionType } from '../../atoms/icon-picker/EntrySelector';
+import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
+import { IconSelector } from '../../atoms/icon-picker/IconPicker';
+import './EditableProperty.scss';
 
 export type IconType = {
     type: 'icon',

@@ -34,7 +34,7 @@ export class ListEnt extends React.Component<ListEntPropsType, ListEntStateType>
         }));
 
         return (
-            <div className="list-ents" style={{padding: '30px'}}>
+            <div className="list-ents" style={{ padding: '30px' }}>
                 <h1>Ents</h1>
                 <GenericList
                     records={ents}

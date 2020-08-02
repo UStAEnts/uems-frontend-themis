@@ -2,10 +2,9 @@ import React, { CSSProperties } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import { v4 } from 'uuid';
+import { IconBox } from '../../atoms/icon-box/IconBox';
+import { Theme } from '../../../theme/Theme';
 import './GenericList.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconBox } from "../../atoms/icon-box/IconBox";
-import { Theme } from "../../../theme/Theme";
 
 export type GenericRecord<T> = {
     value: T,
@@ -106,8 +105,8 @@ export function genericRender<T extends Record<string, any>>(
             console.error('Invalid setup, must either have a "name" property or provide "nameKey" value');
         }
 
-        let name = nameKey ? value[nameKey] : (value.name ?? 'Unknown');
-        let properties: React.ReactNode[] = [];
+        const name = nameKey ? value[nameKey] : (value.name ?? 'Unknown');
+        const properties: React.ReactNode[] = [];
 
         for (const key of Object.keys(value) as (keyof T)[]) {
             // Skip excluded keys
@@ -166,7 +165,7 @@ export function genericRender<T extends Record<string, any>>(
                 {id}
             </div>
         );
-    }
+    };
 }
 
 // @ts-ignore

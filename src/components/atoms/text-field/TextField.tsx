@@ -1,9 +1,9 @@
 import * as React from 'react';
+import { CSSProperties } from 'react';
 
 import './TextField.scss';
 import '../text-area/TextArea.scss';
 import DatePicker from 'react-flatpickr';
-import { CSSProperties } from "react";
 
 export type BaseConfiguration = {
     /**

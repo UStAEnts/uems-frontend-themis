@@ -34,7 +34,7 @@ export class ListTopic extends React.Component<ListTopicPropsType, ListTopicStat
         }));
 
         return (
-            <div className="list-topics" style={{padding: '30px'}}>
+            <div className="list-topics" style={{ padding: '30px' }}>
                 <h1>Topics</h1>
                 <GenericList
                     records={topics}

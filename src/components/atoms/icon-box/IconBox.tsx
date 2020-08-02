@@ -1,10 +1,10 @@
 import * as React from 'react';
+import { CSSProperties } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { ColorUtilities } from '../../../utilities/ColorUtilities';
 
 import './IconBox.scss';
-import { ColorUtilities } from '../../../utilities/ColorUtilities';
-import { CSSProperties } from "react";
 
 export type IconBoxPropsType = {
     /**

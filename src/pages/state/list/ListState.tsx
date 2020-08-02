@@ -34,7 +34,7 @@ export class ListState extends React.Component<ListStatePropsType, ListStateStat
         }));
 
         return (
-            <div className="list-states" style={{padding: '30px'}}>
+            <div className="list-states" style={{ padding: '30px' }}>
                 <h1>States</h1>
                 <GenericList
                     records={states}

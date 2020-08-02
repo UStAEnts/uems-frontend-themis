@@ -63,7 +63,7 @@ export function Comment(props: CommentPropsType) {
                     </Link>
                     <div className="spacer" />
                     <div className="time">
-                        <ReactTimeAgo locale="en" date={props.comment.posted*1000} />
+                        <ReactTimeAgo locale="en" date={props.comment.posted * 1000} />
                     </div>
                 </div>
                 <div className="bottom content">

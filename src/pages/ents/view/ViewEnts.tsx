@@ -4,7 +4,6 @@ import { API, EntsStateResponse, EntsStateUpdate } from '../../../utilities/APIG
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { EventOrCommentRelatedView } from '../../../components/components/event-related-view/EventOrCommentRelatedView';
 
-
 export type ViewEntsPropsType = {} & RouteComponentProps<{
     id: string,
 }>;

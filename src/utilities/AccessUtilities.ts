@@ -14,9 +14,7 @@ export function get<T,
 
 export function get(obj: any, ...props: string[]): any {
     return obj && props.reduce(
-        (result, prop) => {
-            return result === undefined || result === null ? undefined : result[prop];
-        },
+        (result, prop) => (result === undefined || result === null ? undefined : result[prop]),
         obj,
     );
 }
@@ -111,6 +109,3 @@ export function failEarlyStateSet(obj: any, setState: (set: SetStateType<any>) =
         });
     };
 }
-
-// - headphones
-// -

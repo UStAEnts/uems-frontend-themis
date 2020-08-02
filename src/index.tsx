@@ -2,54 +2,57 @@
 import JavascriptTimeAgo from 'javascript-time-ago';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import en from 'javascript-time-ago/locale/en';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'flatpickr/dist/themes/material_green.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './pages/index/index.scss';
-import './pages/index/flexboxgrid.css';
 import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faBox, faBoxes, faBuilding,
+import * as Icons from '@fortawesome/free-solid-svg-icons';
+import { faBox,
+    faBoxes,
+    faBuilding,
     faCalendarTimes,
-    faColumns, faFileContract,
+    faColumns,
+    faFileContract,
     faPaperPlane,
     faWrench,
-    IconDefinition
-} from '@fortawesome/free-solid-svg-icons';
-import * as Icons from '@fortawesome/free-solid-svg-icons';
+    IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
+
+import { v4 } from 'uuid';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { GlobalContext, GlobalContextType, ReadableContextType } from './context/GlobalContext';
+import {
+    Notification,
+    NotificationRenderer,
+    processNotifications,
+} from './components/components/notification-renderer/NotificationRenderer';
+import { NotificationContext } from './context/NotificationContext';
+import { CreateEvent } from './pages/events/create/CreateEvent';
+import { API, User } from './utilities/APIGen';
+import { CreateVenue } from './pages/venues/create/CreateVenue';
+import { CreateTopic } from './pages/topic/create/CreateTopic';
+import { CreateState } from './pages/state/create/CreateState';
+import { CreateEnts } from './pages/ents/create/CreateEnts';
+import { CreateFile } from './pages/file/create/CreateFile';
+import { ViewVenue } from './pages/venues/view/ViewVenue';
+import { ViewTopic } from './pages/topic/view/ViewTopic';
+import { ViewState } from './pages/state/view/ViewState';
+import { ViewEnts } from './pages/ents/view/ViewEnts';
+import { ListVenue } from './pages/venues/list/ListVenue';
+import { ListTopic } from './pages/topic/list/ListTopic';
+import { ListState } from './pages/state/list/ListState';
+import { ListEnt } from './pages/ents/list/ListEnt';
 import App from './pages/App';
 import { Events } from './pages/events/list/Events';
 import Event from './pages/events/view/Event';
 
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-import 'flatpickr/dist/themes/material_green.css';
-import { GlobalContext, GlobalContextType, ReadableContextType } from './context/GlobalContext';
-import {
-    Notification,
-    NotificationRenderer,
-    processNotifications
-} from './components/components/notification-renderer/NotificationRenderer';
-import { NotificationContext } from './context/NotificationContext';
-import { v4 } from 'uuid';
-import { CreateEvent } from './pages/events/create/CreateEvent';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { API, User } from './utilities/APIGen';
-import { CreateVenue } from './pages/venues/create/CreateVenue';
-import { CreateTopic } from './pages/topic/create/CreateTopic';
-import { CreateState } from './pages/state/create/CreateState';
-import { CreateEnts } from './pages/ents/create/CreateEnts';
-import { CreateFile } from "./pages/file/create/CreateFile";
-import { ViewVenue } from "./pages/venues/view/ViewVenue";
-import { ViewTopic } from "./pages/topic/view/ViewTopic";
-import { ViewState } from "./pages/state/view/ViewState";
-import { ViewEnts } from "./pages/ents/view/ViewEnts";
-import { ListVenue } from "./pages/venues/list/ListVenue";
-import { ListTopic } from "./pages/topic/list/ListTopic";
-import { ListState } from "./pages/state/list/ListState";
-import { ListEnt } from "./pages/ents/list/ListEnt";
+import './pages/index/index.scss';
+import './pages/index/flexboxgrid.css';
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
