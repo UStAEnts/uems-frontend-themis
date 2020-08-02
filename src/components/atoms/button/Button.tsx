@@ -54,13 +54,9 @@ export function Button(props: ButtonPropsType) {
         color: ColorUtilities.determineForegroundColor(props.color),
     } as React.CSSProperties;
 
-    if (props.fullWidth) {
-        buttonStyle.width = '100%';
-    }
-
     return (
         <button
-            className="button"
+            className={`button ${props.fullWidth ? 'full-width' : ''}`}
             type="button"
             style={buttonStyle}
             onClick={props.onClick}
