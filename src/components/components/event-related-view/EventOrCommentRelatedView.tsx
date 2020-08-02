@@ -1,7 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 import Loader from 'react-loader-spinner';
-import { faBolt, faChartLine, faPalette, faTag, faTicketAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faChartLine, faPalette, faTag, faTicketAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Redirect, withRouter } from 'react-router-dom';
 import { CommentResponse, EventResponse } from '../../../utilities/APIGen';
 import { Theme } from '../../../theme/Theme';
 import { EventTable } from '../event-table/EventTable';
@@ -10,6 +11,8 @@ import { IconBox } from '../../atoms/icon-box/IconBox';
 import { ValueSquare } from '../../atoms/value-square/ValueSquare';
 import { OptionType } from '../../atoms/icon-picker/EntrySelector';
 import { CommentList } from '../comment-list/CommentList';
+import { Button } from '../../atoms/button/Button';
+import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import './EventOrCommentRelatedView.scss';
 
 export type Override<T> = {
@@ -25,11 +28,18 @@ export type EventRelatedViewPropsType<T, C> = {
     patch: (changes: C) => void,
     nameKey?: Extract<keyof T, string>,
     excluded?: Extract<keyof T, string>[],
+    delete?: {
+        redirect: string,
+        onDelete: () => boolean | Promise<boolean>,
+    }
 };
 
-export type EventRelatedViewStateType = {};
+export type EventRelatedViewStateType = {
+    isDeleting?: boolean,
+    redirect?: string,
+};
 
-export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelatedViewPropsType<T, C>,
+class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedViewPropsType<T, C>,
     EventRelatedViewStateType> {
 
     static displayName = 'EventOrCommentRelatedView';
@@ -88,27 +98,27 @@ export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelate
         const duration = moment.duration(avgMillis);
 
         if (duration.asYears() >= 1) {
-            return `${EventOrCommentRelatedView.round(duration.asYears())} yrs`;
+            return `${EventOrCommentRelatedViewClass.round(duration.asYears())} yrs`;
         }
 
         if (duration.asMonths() >= 1) {
-            return `${EventOrCommentRelatedView.round(duration.asMonths())} mos`;
+            return `${EventOrCommentRelatedViewClass.round(duration.asMonths())} mos`;
         }
 
         if (duration.asWeeks() >= 1) {
-            return `${EventOrCommentRelatedView.round(duration.asWeeks())} wks`;
+            return `${EventOrCommentRelatedViewClass.round(duration.asWeeks())} wks`;
         }
 
         if (duration.asDays() >= 1) {
-            return `${EventOrCommentRelatedView.round(duration.asDays())} days`;
+            return `${EventOrCommentRelatedViewClass.round(duration.asDays())} days`;
         }
 
         if (duration.asHours() >= 1) {
-            return `${EventOrCommentRelatedView.round(duration.asHours())} hrs`;
+            return `${EventOrCommentRelatedViewClass.round(duration.asHours())} hrs`;
         }
 
         if (duration.asMinutes() >= 1) {
-            return `${EventOrCommentRelatedView.round(duration.asMinutes())} mins`;
+            return `${EventOrCommentRelatedViewClass.round(duration.asMinutes())} mins`;
         }
 
         return 'unknown';
@@ -244,7 +254,7 @@ export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelate
                     <ValueSquare
                         className="smaller-square"
                         value={
-                            EventOrCommentRelatedView.mostFrequent(
+                            EventOrCommentRelatedViewClass.mostFrequent(
                                 this.props.events
                                     .map((e) => e.ents?.name)
                                     .filter((e) => e !== undefined),
@@ -258,7 +268,7 @@ export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelate
                     <ValueSquare
                         className="smaller-square"
                         value={
-                            EventOrCommentRelatedView.mostFrequent(
+                            EventOrCommentRelatedViewClass.mostFrequent(
                                 this.props.events
                                     .map((e) => e.state?.name)
                                     .filter((e) => e !== undefined),
@@ -275,7 +285,28 @@ export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelate
         );
     }
 
+    private delete = () => {
+        if (!this.props.delete) return;
+
+        Promise.resolve(this.props.delete.onDelete()).then(() => {
+            failEarlyStateSet(
+                this.state,
+                this.setState.bind(this),
+                'redirect',
+            )(this.props.delete?.redirect ?? '/');
+        }).catch((err) => {
+            console.error('Handle errors', err);
+        });
+    };
+
     render() {
+        // Force redirect if the state is set
+        if (this.state.redirect) {
+            return (
+                <Redirect to={this.state.redirect} />
+            );
+        }
+
         const properties = [];
 
         for (const key of Object.keys(this.props.obj) as (Extract<keyof T, string>)[]) {
@@ -326,6 +357,51 @@ export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelate
                 <div className="body">
                     <div className="left-props">
                         {properties}
+                        {
+                            this.props.delete
+                                ? (
+                                    <div className="delete">
+                                        {
+                                            this.state.isDeleting
+                                                ? (
+                                                    <div>
+                                                        <div>Are you sure you want to delete?</div>
+                                                        <div>
+                                                            <Button
+                                                                color={Theme.FAILURE}
+                                                                text="Confirm"
+                                                                onClick={this.delete}
+                                                            />
+                                                            <Button
+                                                                color={Theme.GRAY_DARK}
+                                                                text="Cancel"
+                                                                onClick={() => failEarlyStateSet(
+                                                                    this.state,
+                                                                    this.setState.bind(this),
+                                                                    'isDeleting',
+                                                                )(false)}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                )
+                                                : (
+                                                    <Button
+                                                        color={Theme.FAILURE}
+                                                        text="Delete"
+                                                        fullWidth
+                                                        icon={faTrash}
+                                                        onClick={() => failEarlyStateSet(
+                                                            this.state,
+                                                            this.setState.bind(this),
+                                                            'isDeleting',
+                                                        )(true)}
+                                                    />
+                                                )
+                                        }
+                                    </div>
+                                )
+                                : undefined
+                        }
                     </div>
                     {
                         this.props.events
@@ -339,3 +415,8 @@ export class EventOrCommentRelatedView<T, C> extends React.Component<EventRelate
     }
 
 }
+
+// @ts-ignore
+export const EventOrCommentRelatedView: React.ComponentClass<EventRelatedViewPropsType<any, any>,
+    // @ts-ignore
+    EventRelatedViewStateType> = withRouter(EventOrCommentRelatedViewClass);

@@ -23,6 +23,8 @@
       flex-basis: 30%;
       flex-grow: 0;
       flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
 
       border-right: 1px solid gainsboro;
 
@@ -37,6 +39,11 @@
         display: inline-block;
         font-weight: bold;
         font-size: 1.2em;
+      }
+
+      .delete{
+        margin-top: 10pc;
+        padding-right: 40px;
       }
     }
 
