@@ -172,7 +172,7 @@ export function genericRender<T extends Record<string, any>>(
             if (key === 'icon') continue;
 
             properties.push((
-                <div className="property">
+                <div className="property" key={`prop-${String(value[key])}-${v4()}`}>
                     <div className="label">{UIUtilities.capitaliseFirst(key as string)}</div>
                     <div className="value">{String(value[key])}</div>
                 </div>
