@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import {
     CartesianGrid,
-    ContentRenderer,
     Legend,
     Line,
     LineChart,
@@ -12,27 +11,25 @@ import {
     XAxis,
     YAxis
 } from 'recharts';
-import { inspect } from 'util';
-import ReactTooltip from 'react-tooltip';
 import {
     API,
     EntsStateResponse,
     EventResponse,
     StateResponse,
     SuccessfulAPIResponse,
-    TopicResponse,
     VenueResponse
 } from '../../utilities/APIGen';
 import { failEarlyStateSet } from '../../utilities/AccessUtilities';
-import { NotificationPropsType } from '../../context/NotificationContext';
+import { NotificationContext, NotificationPropsType } from '../../context/NotificationContext';
 import { UIUtilities } from '../../utilities/UIUtilities';
 import './Dashboard.scss';
 import { Theme } from '../../theme/Theme';
 import { Tag } from '../../components/atoms/tag/Tag';
 import { Button } from '../../components/atoms/button/Button';
 import { ValueSquare } from '../../components/atoms/value-square/ValueSquare';
-import { GenericList, genericRender } from "../../components/components/generic-list/GenericList";
-import { RenderUtilities } from "../../utilities/RenderUtilities";
+import { GenericList, genericRender } from '../../components/components/generic-list/GenericList';
+import { RenderUtilities } from '../../utilities/RenderUtilities';
+import { withNotificationContext } from "../../components/WithNotificationContext";
 
 export type DashboardPropsType = {} & NotificationPropsType;
 
@@ -54,12 +51,6 @@ export type DashboardStateType = {
     }
 };
 
-type DataPoint = {
-    x: number | string,
-    y: number,
-    [key: string]: any,
-};
-
 type EventDataPoint = {
     x: number,
     y: number,
@@ -69,7 +60,7 @@ type EventDataPoint = {
 };
 
 const EventStackTooltip: React.FunctionComponent<TooltipProps> = (
-    { active, payload, label },
+    { active, payload },
 ) => {
     if (!active) return null;
     if (!payload) return null;
@@ -98,7 +89,7 @@ const EventStackTooltip: React.FunctionComponent<TooltipProps> = (
     );
 };
 
-export class Dashboard extends React.Component<DashboardPropsType, DashboardStateType> {
+class DashboardClass extends React.Component<DashboardPropsType, DashboardStateType> {
 
     static displayName = 'Dashboard';
 
@@ -117,19 +108,19 @@ export class Dashboard extends React.Component<DashboardPropsType, DashboardStat
     }
 
     componentDidMount() {
-        API.events.get().then(Dashboard.extract)
+        API.events.get().then(DashboardClass.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'events'))
             .then(this.processEvents)
             .catch(UIUtilities.failedLoad(this.props.notificationContext, 'the events could not be loaded'));
-        API.venues.get().then(Dashboard.extract)
+        API.venues.get().then(DashboardClass.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'venues'))
             .then(this.processEvents)
             .catch(UIUtilities.failedLoad(this.props.notificationContext, 'the venues could not be loaded'));
-        API.ents.get().then(Dashboard.extract)
+        API.ents.get().then(DashboardClass.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'entsState'))
             .then(this.processEvents)
             .catch(UIUtilities.failedLoad(this.props.notificationContext, 'the ents could not be loaded'));
-        API.states.get().then(Dashboard.extract)
+        API.states.get().then(DashboardClass.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'buildingState'))
             .then(this.processEvents)
             .catch(UIUtilities.failedLoad(this.props.notificationContext, 'the states could not be loaded'));
@@ -190,7 +181,7 @@ export class Dashboard extends React.Component<DashboardPropsType, DashboardStat
         let themeIterator = Theme.ALL[Symbol.iterator]();
 
         const nextColor = () => {
-            let next = themeIterator.next();
+            const next = themeIterator.next();
 
             if (next.done) themeIterator = Theme.ALL[Symbol.iterator]();
 
@@ -376,3 +367,5 @@ export class Dashboard extends React.Component<DashboardPropsType, DashboardStat
     }
 
 }
+
+export const Dashboard = withNotificationContext(DashboardClass);
