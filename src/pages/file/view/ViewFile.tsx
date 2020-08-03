@@ -21,6 +21,7 @@ import {
     FallibleReactStateType,
 } from '../../../components/components/error-screen/FallibleReactComponent';
 import { loadAPIData } from '../../../utilities/DataUtilities';
+import { RenderUtilities } from "../../../utilities/RenderUtilities";
 
 export type ViewFilePropsType = {} & RouteComponentProps<{
     id: string,
@@ -82,98 +83,7 @@ class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileSt
             }
             <div className="body">
                 <Link to={`/events/${event.id}`}>
-                    <div className="name">{event.name}</div>
-                    <div className="id">{event.id}</div>
-                    <div className="columns">
-                        <div className="left">
-                            <div className="property collapsed">
-                                <div className="label">Attendance</div>
-                                <div className="value">{event.attendance}</div>
-                            </div>
-                            <div className="property collapsed">
-                                <div className="label">Start</div>
-                                <div className="value">
-                                    <ReactTimeAgo date={event.startDate * 1000} />
-                                </div>
-                            </div>
-                            <div className="property collapsed">
-                                <div className="label">Duration</div>
-                                <div className="value">
-                                    {moment.duration(
-                                        moment.unix(event.startDate).diff(moment.unix(event.endDate)),
-                                    ).humanize()}
-                                </div>
-                            </div>
-                            <div className="property collapsed">
-                                <div className="label">Venue</div>
-                                {
-                                    !event.venue
-                                        ? undefined
-                                        : (
-                                            <div
-                                                className="value advanced"
-                                                style={{
-                                                    backgroundColor: event.venue.color,
-                                                    color: event.venue.color
-                                                        ? ColorUtilities.determineForegroundColor(event.venue.color)
-                                                        : 'black',
-                                                }}
-                                            >
-                                                <div className="name">
-                                                    {event.venue.name}
-                                                </div>
-                                            </div>
-                                        )
-                                }
-
-                            </div>
-                        </div>
-                        <div className="right">
-                            <div className="property collapsed">
-                                <div className="label">Ents</div>
-                                <div
-                                    className="value advanced"
-                                    style={{
-                                        backgroundColor: event.ents.color,
-                                        color: ColorUtilities.determineForegroundColor(event.ents.color),
-                                    }}
-                                >
-                                    <div className="icon">
-                                        <FontAwesomeIcon icon={(event.ents.icon ?? faQuestion) as IconName} />
-                                    </div>
-                                    <div className="name">
-                                        {event.ents.name}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="property collapsed">
-                                <div className="label">End</div>
-                                <div className="value">
-                                    <ReactTimeAgo date={event.endDate * 1000} />
-                                </div>
-                            </div>
-                            <div className="property collapsed">
-                                <div className="label">Building</div>
-                                <div
-                                    className="value advanced"
-                                    style={{
-                                        backgroundColor: event.state.color,
-                                        color: event.state.color
-                                            ? ColorUtilities.determineForegroundColor(event.state.color)
-                                            : 'black',
-                                    }}
-                                >
-                                    <div className="icon">
-                                        <FontAwesomeIcon icon={(event.state.icon ?? faQuestion) as IconName} />
-                                    </div>
-                                    <div className="name">
-                                        {event.state.name}
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                    {RenderUtilities.renderBasicEvent(event)}
                 </Link>
             </div>
         </div>
