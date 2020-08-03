@@ -2,14 +2,20 @@ import React from 'react';
 import { API, TopicResponse } from '../../../utilities/APIGen';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
+import {
+    FallibleReactComponent,
+    FallibleReactStateType
+} from "../../../components/components/error-screen/FallibleReactComponent";
+import { loadAPIData } from "../../../utilities/DataUtilities";
+import { ViewTopicStateType } from "../view/ViewTopic";
 
 export type ListTopicPropsType = {};
 
 export type ListTopicStateType = {
     topics?: TopicResponse[],
-};
+} & FallibleReactStateType;
 
-export class ListTopic extends React.Component<ListTopicPropsType, ListTopicStateType> {
+export class ListTopic extends FallibleReactComponent<ListTopicPropsType, ListTopicStateType> {
 
     static displayName = 'ListTopic';
 
@@ -20,11 +26,17 @@ export class ListTopic extends React.Component<ListTopicPropsType, ListTopicStat
     }
 
     componentDidMount() {
-        API.topics.get().then((data) => failEarlyStateSet(this.state, this.setState.bind(this), 'topics')(data.result))
-            .catch((err) => console.error(err));
+        loadAPIData<ListTopicStateType>(
+            [{
+                call: API.topics.get,
+                stateName: 'topics',
+                params: [],
+            }],
+            this.setState.bind(this),
+        );
     }
 
-    render() {
+    realRender() {
         if (!this.state.topics) return null;
 
         const topics: GenericRecord<TopicResponse>[] = this.state.topics.map((e) => ({

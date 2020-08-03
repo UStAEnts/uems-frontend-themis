@@ -3,6 +3,11 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { API, TopicResponse, TopicUpdate } from '../../../utilities/APIGen';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { EventOrCommentRelatedView } from '../../../components/components/event-related-view/EventOrCommentRelatedView';
+import {
+    FallibleReactComponent,
+    FallibleReactStateType,
+} from '../../../components/components/error-screen/FallibleReactComponent';
+import { loadAPIData } from '../../../utilities/DataUtilities';
 
 export type ViewTopicPropsType = {} & RouteComponentProps<{
     id: string,
@@ -10,9 +15,9 @@ export type ViewTopicPropsType = {} & RouteComponentProps<{
 
 export type ViewTopicStateType = {
     topic?: TopicResponse,
-};
+} & FallibleReactStateType;
 
-class ViewTopicClass extends React.Component<ViewTopicPropsType, ViewTopicStateType> {
+class ViewTopicClass extends FallibleReactComponent<ViewTopicPropsType, ViewTopicStateType> {
 
     static displayName = 'ViewTopic';
 
@@ -22,16 +27,14 @@ class ViewTopicClass extends React.Component<ViewTopicPropsType, ViewTopicStateT
     }
 
     componentDidMount() {
-        API.topics.id.get(this.props.match.params.id).then((data) => {
-            failEarlyStateSet(
-                this.state,
-                this.setState.bind(this),
-                'topic',
-            )(data.result);
-        }).catch((err) => {
-            console.error(err);
-            // TODO: error handling w/ notifs
-        });
+        loadAPIData<ViewTopicStateType>(
+            [{
+                call: API.topics.id.get,
+                stateName: 'topic',
+                params: [this.props.match.params.id],
+            }],
+            this.setState.bind(this),
+        );
     }
 
     private patch = (update: TopicUpdate) => {
@@ -55,7 +58,7 @@ class ViewTopicClass extends React.Component<ViewTopicPropsType, ViewTopicStateT
         });
     }
 
-    render() {
+    realRender() {
         if (this.state.topic) {
             return (
                 <EventOrCommentRelatedView

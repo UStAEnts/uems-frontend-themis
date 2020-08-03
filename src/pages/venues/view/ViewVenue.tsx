@@ -3,6 +3,11 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { API, EventResponse, VenueResponse, VenueUpdate } from '../../../utilities/APIGen';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { EventOrCommentRelatedView } from '../../../components/components/event-related-view/EventOrCommentRelatedView';
+import { loadAPIData } from '../../../utilities/DataUtilities';
+import {
+    FallibleReactComponent,
+    FallibleReactStateType,
+} from '../../../components/components/error-screen/FallibleReactComponent';
 
 export type ViewVenuePropsType = {} & RouteComponentProps<{
     id: string,
@@ -11,9 +16,9 @@ export type ViewVenuePropsType = {} & RouteComponentProps<{
 export type ViewVenueStateType = {
     venue?: VenueResponse,
     events?: EventResponse[],
-};
+} & FallibleReactStateType;
 
-class ViewVenueClass extends React.Component<ViewVenuePropsType, ViewVenueStateType> {
+class ViewVenueClass extends FallibleReactComponent<ViewVenuePropsType, ViewVenueStateType> {
 
     static displayName = 'ViewVenue';
 
@@ -23,26 +28,21 @@ class ViewVenueClass extends React.Component<ViewVenuePropsType, ViewVenueStateT
     }
 
     componentDidMount() {
-        API.venues.id.get(this.props.match.params.id).then((data) => {
-            failEarlyStateSet(
-                this.state,
-                this.setState.bind(this),
-                'venue',
-            )(data.result);
-        }).catch((err) => {
-            console.error(err);
-            // TODO: error handling w/ notifs
-        });
-        API.venues.id.events.get(this.props.match.params.id).then((data) => {
-            failEarlyStateSet(
-                this.state,
-                this.setState.bind(this),
-                'events',
-            )(data.result);
-        }).catch((err) => {
-            console.error(err);
-            // TODO: error handling w/ notifs
-        });
+        loadAPIData<ViewVenueStateType>(
+            [
+                {
+                    call: API.venues.id.get,
+                    stateName: 'venue',
+                    params: [this.props.match.params.id],
+                },
+                {
+                    call: API.venues.id.events.get,
+                    stateName: 'events',
+                    params: [this.props.match.params.id],
+                },
+            ],
+            this.setState.bind(this),
+        );
     }
 
     //
@@ -68,7 +68,7 @@ class ViewVenueClass extends React.Component<ViewVenuePropsType, ViewVenueStateT
         });
     }
 
-    render() {
+    realRender() {
         if (this.state.venue) {
             return (
                 <EventOrCommentRelatedView

@@ -1,15 +1,19 @@
 import React from 'react';
 import { API, StateResponse } from '../../../utilities/APIGen';
-import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
+import {
+    FallibleReactComponent,
+    FallibleReactStateType,
+} from '../../../components/components/error-screen/FallibleReactComponent';
+import { loadAPIData } from '../../../utilities/DataUtilities';
 
 export type ListStatePropsType = {};
 
 export type ListStateStateType = {
     states?: StateResponse[],
-};
+} & FallibleReactStateType;
 
-export class ListState extends React.Component<ListStatePropsType, ListStateStateType> {
+export class ListState extends FallibleReactComponent<ListStatePropsType, ListStateStateType> {
 
     static displayName = 'ListState';
 
@@ -20,11 +24,17 @@ export class ListState extends React.Component<ListStatePropsType, ListStateStat
     }
 
     componentDidMount() {
-        API.states.get().then((data) => failEarlyStateSet(this.state, this.setState.bind(this), 'states')(data.result))
-            .catch((err) => console.error(err));
+        loadAPIData<ListStateStateType>(
+            [{
+                call: API.states.get,
+                stateName: 'states',
+                params: [],
+            }],
+            this.setState.bind(this),
+        );
     }
 
-    render() {
+    realRender() {
         if (!this.state.states) return null;
 
         const states: GenericRecord<StateResponse>[] = this.state.states.map((e) => ({

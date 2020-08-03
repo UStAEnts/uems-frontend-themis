@@ -16,6 +16,11 @@ import { UIUtilities } from '../../../utilities/UIUtilities';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { ColorUtilities } from '../../../utilities/ColorUtilities';
 import { TextField } from '../../../components/atoms/text-field/TextField';
+import {
+    FallibleReactComponent,
+    FallibleReactStateType,
+} from '../../../components/components/error-screen/FallibleReactComponent';
+import { loadAPIData } from '../../../utilities/DataUtilities';
 
 export type ViewFilePropsType = {} & RouteComponentProps<{
     id: string,
@@ -27,9 +32,9 @@ export type ViewFileStateType = {
     attached?: EventResponse[],
     redirect?: string,
     search?: string,
-};
+} & FallibleReactStateType;
 
-class ViewFileClass extends React.Component<ViewFilePropsType, ViewFileStateType> {
+class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileStateType> {
 
     static displayName = 'ViewFile';
 
@@ -42,17 +47,26 @@ class ViewFileClass extends React.Component<ViewFilePropsType, ViewFileStateType
     }
 
     componentDidMount() {
-        API.events.get().then(
-            (data) => failEarlyStateSet(this.state, this.setState.bind(this), 'events')(data.result),
-        ).catch(console.error);
-
-        API.files.id.events.get(this.props.match.params.id).then(
-            (data) => failEarlyStateSet(this.state, this.setState.bind(this), 'attached')(data.result),
-        ).catch(console.error);
-
-        API.files.id.get(this.props.match.params.id).then(
-            (data) => failEarlyStateSet(this.state, this.setState.bind(this), 'file')(data.result),
-        ).catch(console.error);
+        loadAPIData<ViewFileStateType>(
+            [
+                {
+                    call: API.files.id.get,
+                    stateName: 'file',
+                    params: [this.props.match.params.id],
+                },
+                {
+                    call: API.files.id.events.get,
+                    stateName: 'attached',
+                    params: [this.props.match.params.id],
+                },
+                {
+                    call: API.events.get,
+                    stateName: 'events',
+                    params: [],
+                },
+            ],
+            this.setState.bind(this),
+        );
     }
 
     private renderEvent = (iconType: 'delete' | 'add') => (event: EventResponse) => (
@@ -254,7 +268,7 @@ class ViewFileClass extends React.Component<ViewFilePropsType, ViewFileStateType
         );
     }
 
-    render() {
+    realRender() {
         if (this.state.redirect) {
             return (
                 <Redirect to={this.state.redirect} />

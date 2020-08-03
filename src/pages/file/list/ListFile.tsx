@@ -4,14 +4,20 @@ import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
 import { Theme } from "../../../theme/Theme";
 import { UIUtilities } from "../../../utilities/UIUtilities";
+import { loadAPIData } from "../../../utilities/DataUtilities";
+import { ViewTopicStateType } from "../../topic/view/ViewTopic";
+import {
+    FallibleReactComponent,
+    FallibleReactStateType
+} from "../../../components/components/error-screen/FallibleReactComponent";
 
 export type ListFilePropsType = {};
 
 export type ListFileStateType = {
     files?: FileResponse[],
-};
+} & FallibleReactStateType;
 
-export class ListFile extends React.Component<ListFilePropsType, ListFileStateType> {
+export class ListFile extends FallibleReactComponent<ListFilePropsType, ListFileStateType> {
 
     static displayName = 'ListFile';
 
@@ -22,11 +28,17 @@ export class ListFile extends React.Component<ListFilePropsType, ListFileStateTy
     }
 
     componentDidMount() {
-        API.files.get().then((data) => failEarlyStateSet(this.state, this.setState.bind(this), 'files')(data.result))
-            .catch((err) => console.error(err));
+        loadAPIData<ListFileStateType>(
+            [{
+                call: API.files.get,
+                stateName: 'files',
+                params: [],
+            }],
+            this.setState.bind(this),
+        );
     }
 
-    render() {
+    realRender() {
         if (!this.state.files) return null;
 
         const files: GenericRecord<any>[] = this.state.files.map((e) => ({

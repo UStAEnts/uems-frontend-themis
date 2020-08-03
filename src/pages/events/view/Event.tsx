@@ -33,6 +33,11 @@ import {
 import { Button } from '../../../components/atoms/button/Button';
 import { GlobalContext } from '../../../context/GlobalContext';
 import './Event.scss';
+import {
+    FallibleReactComponent,
+    FallibleReactStateType
+} from "../../../components/components/error-screen/FallibleReactComponent";
+import { loadAPIData } from "../../../utilities/DataUtilities";
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
@@ -74,9 +79,9 @@ export type EventStateType = {
     signups?: SignupResponse[],
 
     chosenRole?: string,
-};
+} & FallibleReactStateType;
 
-class Event extends React.Component<EventPropsType, EventStateType> {
+class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
     static displayName = 'Event';
 
@@ -88,6 +93,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         this.state = {
             id: this.props.match.params.id,
             chosenRole: 'Other',
+            loading: true,
         };
     }
 
@@ -95,22 +101,6 @@ class Event extends React.Component<EventPropsType, EventStateType> {
      * When the components mount, we need to query the API for the actual properties we need
      */
     componentDidMount() {
-        API.events.id.get(this.props.match.params.id).then((data) => {
-            // TODO: add schema validation for data returned by the server
-            this.setState((oldState) => ({
-                ...oldState,
-                event: data.result.event,
-
-                // Changelog is provided on the /event/{id} endpoint but no where else (not on patch)
-                changelog: data.result.changelog,
-            }));
-        }).catch((err: Error) => {
-            console.error('Failed to load event data');
-            console.error(err);
-
-            this.failedLoad(`Could not load event: ${err.message}`);
-        });
-
         API.topics.get().then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
@@ -221,6 +211,23 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             console.error(err);
 
             this.failedLoad(`Could not load list of ents states: ${err.message}`);
+        });
+
+        API.events.id.get(this.props.match.params.id).then((data) => {
+            // TODO: add schema validation for data returned by the server
+            this.setState((oldState) => ({
+                ...oldState,
+                event: data.result.event,
+
+                // Changelog is provided on the /event/{id} endpoint but no where else (not on patch)
+                changelog: data.result.changelog,
+                loading: false,
+            }));
+        }).catch((err: Error) => {
+            console.error('Failed to load event data');
+            console.error(err);
+
+            this.failedLoad(`Could not load event: ${err.message}`);
         });
     }
 
@@ -464,7 +471,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         ).flat();
     }
 
-    render() {
+    realRender() {
         return this.state.event ? (
             <div className="event-view loaded">
                 <div className="real">

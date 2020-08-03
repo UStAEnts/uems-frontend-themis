@@ -3,6 +3,11 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { API, EventResponse, StateResponse, StateUpdate } from '../../../utilities/APIGen';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { EventOrCommentRelatedView } from '../../../components/components/event-related-view/EventOrCommentRelatedView';
+import {
+    FallibleReactComponent,
+    FallibleReactStateType,
+} from '../../../components/components/error-screen/FallibleReactComponent';
+import { loadAPIData } from '../../../utilities/DataUtilities';
 
 export type ViewStatePropsType = {} & RouteComponentProps<{
     id: string,
@@ -13,36 +18,32 @@ export type ViewStateStateType = {
     events?: EventResponse[],
 };
 
-class ViewStateClass extends React.Component<ViewStatePropsType, ViewStateStateType> {
+type ExperimentalStateType = ViewStateStateType & FallibleReactStateType;
 
-    static displayName = 'ViewState';
+class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsType, ExperimentalStateType> {
 
-    constructor(props: Readonly<ViewStatePropsType>) {
+    constructor(props: ViewStatePropsType) {
         super(props);
+
         this.state = {};
     }
 
     componentDidMount() {
-        API.states.id.get(this.props.match.params.id).then((data) => {
-            failEarlyStateSet(
-                this.state,
-                this.setState.bind(this),
-                'state',
-            )(data.result);
-        }).catch((err) => {
-            console.error(err);
-            // TODO: error handling w/ notifs
-        });
-        API.states.id.events.get(this.props.match.params.id).then((data) => {
-            failEarlyStateSet(
-                this.state,
-                this.setState.bind(this),
-                'events',
-            )(data.result);
-        }).catch((err) => {
-            console.error(err);
-            // TODO: error handling w/ notifs
-        });
+        loadAPIData<ExperimentalStateType>(
+            [
+                {
+                    call: API.states.id.get,
+                    stateName: 'state',
+                    params: [this.props.match.params.id],
+                },
+                {
+                    call: API.states.id.events.get,
+                    stateName: 'events',
+                    params: [this.props.match.params.id],
+                },
+            ],
+            this.setState.bind(this),
+        );
     }
 
     //
@@ -68,7 +69,7 @@ class ViewStateClass extends React.Component<ViewStatePropsType, ViewStateStateT
         });
     }
 
-    render() {
+    realRender(): React.ReactNode {
         if (this.state.state) {
             return (
                 <EventOrCommentRelatedView
@@ -96,6 +97,7 @@ class ViewStateClass extends React.Component<ViewStatePropsType, ViewStateStateT
         }
         return null;
     }
+
 }
 
-export const ViewState = withRouter(ViewStateClass);
+export const ViewState = withRouter(ExperimentalViewStateClass);

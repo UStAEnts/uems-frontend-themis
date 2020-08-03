@@ -3,6 +3,11 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { API, EntsStateResponse, EntsStateUpdate } from '../../../utilities/APIGen';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { EventOrCommentRelatedView } from '../../../components/components/event-related-view/EventOrCommentRelatedView';
+import { loadAPIData } from "../../../utilities/DataUtilities";
+import {
+    FallibleReactComponent,
+    FallibleReactStateType
+} from "../../../components/components/error-screen/FallibleReactComponent";
 
 export type ViewEntsPropsType = {} & RouteComponentProps<{
     id: string,
@@ -10,9 +15,9 @@ export type ViewEntsPropsType = {} & RouteComponentProps<{
 
 export type ViewEntsStateType = {
     ents?: EntsStateResponse,
-};
+} & FallibleReactStateType;
 
-class ViewEntsClass extends React.Component<ViewEntsPropsType, ViewEntsStateType> {
+class ViewEntsClass extends FallibleReactComponent<ViewEntsPropsType, ViewEntsStateType> {
 
     static displayName = 'ViewEnts';
 
@@ -22,16 +27,11 @@ class ViewEntsClass extends React.Component<ViewEntsPropsType, ViewEntsStateType
     }
 
     componentDidMount() {
-        API.ents.id.get(this.props.match.params.id).then((data) => {
-            failEarlyStateSet(
-                this.state,
-                this.setState.bind(this),
-                'ents',
-            )(data.result);
-        }).catch((err) => {
-            console.error(err);
-            // TODO: error handling w/ notifs
-        });
+        loadAPIData<ViewEntsStateType>([{
+            params: [this.props.match.params.id],
+            stateName: 'ents',
+            call: API.ents.id.get,
+        }], this.setState.bind(this));
     }
 
     //
@@ -57,7 +57,7 @@ class ViewEntsClass extends React.Component<ViewEntsPropsType, ViewEntsStateType
         });
     }
 
-    render() {
+    realRender() {
         if (this.state.ents) {
             return (
                 <EventOrCommentRelatedView
