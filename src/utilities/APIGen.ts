@@ -26,7 +26,7 @@ export const APIOverrides: APIOverride[] = [];
  * Represents a single api function. It is a callable function which takes any number of parameters and returns a typed
  * promise of data from the API
  */
-type APIFunction<T> = {
+export type APIFunction<T> = {
     (...args: any[]): Promise<T>,
     uri: string,
     description: string,
