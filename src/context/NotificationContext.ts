@@ -2,6 +2,10 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { Notification } from '../components/components/notification-renderer/NotificationRenderer';
 
+export type NotificationPropsType = {
+    notificationContext?: NotificationContextType,
+};
+
 export type NotificationContextType = {
     /**
      * Show a notification in the global state
