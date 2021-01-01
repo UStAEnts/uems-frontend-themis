@@ -111,19 +111,19 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
         API.events.get().then(DashboardClass.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'events'))
             .then(this.processEvents)
-            .catch(UIUtilities.failedLoad(this.props.notificationContext, 'the events could not be loaded'));
+            .catch(() => UIUtilities.failedLoad(this.props.notificationContext, 'the events could not be loaded'));
         API.venues.get().then(DashboardClass.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'venues'))
             .then(this.processEvents)
-            .catch(UIUtilities.failedLoad(this.props.notificationContext, 'the venues could not be loaded'));
+            .catch(() => UIUtilities.failedLoad(this.props.notificationContext, 'the venues could not be loaded'));
         API.ents.get().then(DashboardClass.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'entsState'))
             .then(this.processEvents)
-            .catch(UIUtilities.failedLoad(this.props.notificationContext, 'the ents could not be loaded'));
+            .catch(() => UIUtilities.failedLoad(this.props.notificationContext, 'the ents could not be loaded'));
         API.states.get().then(DashboardClass.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'buildingState'))
             .then(this.processEvents)
-            .catch(UIUtilities.failedLoad(this.props.notificationContext, 'the states could not be loaded'));
+            .catch(() => UIUtilities.failedLoad(this.props.notificationContext, 'the states could not be loaded'));
     }
 
     private processEvents = async () => {
