@@ -64,7 +64,19 @@ class CreateEntsClass extends React.Component<CreateEntsPropsType, CreateEntsSta
             color: this.state.ents.color as string,
             name: this.state.ents.name as string, // This is verified in the for loop above but the typing doesnt work
         }).then((id) => {
-            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/ents/${id.result.id}`);
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
+            console.log(id);
+
+            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/ents/${id.result[0]}`);
         }).catch((err) => {
             UIUtilities.tryShowNotification(
                 this.props.notificationContext,

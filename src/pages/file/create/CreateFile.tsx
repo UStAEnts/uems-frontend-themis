@@ -67,18 +67,28 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
             name: this.state.file.name as string,
             private: this.state.file.private ?? false,
         }).then((id) => {
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
             // Once the metadata is created, we need to upload
             const formData = new FormData();
             formData.append('file', this.state.file.file as File);
 
-            Axios.put(urljoin('files', id.result.id), formData, {
+            Axios.put(urljoin('files', id.result[0] as string), formData, {
                 onUploadProgress: (progress) => {
                     failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'progress')(
                         Math.round((progress.loaded * 100) / progress.total),
                     );
                 },
             }).then(() => {
-                failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/file/${id.result.id}`);
+                failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/file/${id.result[0]}`);
             }).catch((err) => {
                 UIUtilities.tryShowNotification(
                     this.props.notificationContext,

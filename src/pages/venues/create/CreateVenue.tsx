@@ -69,8 +69,22 @@ class CreateVenueClass extends React.Component<CreateVenuePropsType, CreateVenue
             capacity: this.state.venue.capacity,
             name: this.state.venue.name,
         }).then((id) => {
-            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/venues/${id.result.id}`);
+            console.log(id);
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
+            console.log(id);
+
+            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/venues/${id.result[0]}`);
         }).catch((err) => {
+            console.error(err);
             UIUtilities.tryShowNotification(
                 this.props.notificationContext,
                 'Failed to save',

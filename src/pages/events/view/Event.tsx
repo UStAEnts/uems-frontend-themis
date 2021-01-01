@@ -6,7 +6,7 @@ import moment from 'moment';
 import Axios from 'axios';
 import ReactTimeAgo from 'react-time-ago';
 import urljoin from 'url-join';
-import { faFileCode, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faFileCode, faNetworkWired, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
 import { NotificationContextType } from '../../../context/NotificationContext';
@@ -38,6 +38,7 @@ import {
     FallibleReactStateType
 } from "../../../components/components/error-screen/FallibleReactComponent";
 import { loadAPIData } from "../../../utilities/DataUtilities";
+import { UIUtilities } from "../../../utilities/UIUtilities";
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
@@ -214,6 +215,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         });
 
         API.events.id.get(this.props.match.params.id).then((data) => {
+            console.log(data);
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
                 ...oldState,
@@ -305,12 +307,22 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
             role: this.state.chosenRole,
             userID: this.context.user.id,
         }).then((id) => {
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
             this.setState((oldState) => ({
                 signups: [{
                     userID: this.context.user.id,
                     role: oldState.chosenRole,
                     date: new Date().getTime() / 1000,
-                    id: id.result.id,
+                    id: id.result[0] as string,
                     user: this.context.user,
                 }, ...(oldState.signups ?? [])],
             }));
@@ -428,10 +440,20 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
             content: comment,
             topic: topicID,
         }).then((id) => {
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
             this.setState((old) => ({
                 ...old,
                 comments: [{
-                    id: id.result.id,
+                    id: id.result[0] as string,
                     content: comment,
                     posted: new Date().getTime() / 1000,
                     poster: this.context.user,

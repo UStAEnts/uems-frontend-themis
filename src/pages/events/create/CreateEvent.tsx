@@ -1,5 +1,5 @@
 import React from 'react';
-import { faExclamationCircle, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationCircle, faNetworkWired, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { Redirect, withRouter } from 'react-router-dom';
 import { TextField } from '../../../components/atoms/text-field/TextField';
 import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
@@ -11,6 +11,7 @@ import { Notification } from '../../../components/components/notification-render
 import { API, EntsStateResponse, EventCreation, StateResponse, VenueResponse } from '../../../utilities/APIGen';
 import { failEarlySet, failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import './CreateEvent.scss';
+import { UIUtilities } from "../../../utilities/UIUtilities";
 
 export type CreateEventPropsType = {
     isPage?: boolean,
@@ -140,7 +141,17 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
         };
 
         API.events.post(event).then((id) => {
-            failEarlySet(this.state, 'uiProperties', 'redirect')(`/events/${id.result.id}`);
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
+            failEarlySet(this.state, 'uiProperties', 'redirect')(`/events/${id.result[0]}`);
         }).catch((err) => {
             // TODO: better error handling
             this.showNotification(
