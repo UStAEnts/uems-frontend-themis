@@ -66,7 +66,7 @@ export function loadAPIData<T extends FallibleReactStateType>(
                     return n;
                 });
 
-                resolve(data.result);
+                resolve(data);
             }).catch(reject);
         }));
     }
@@ -77,6 +77,7 @@ export function loadAPIData<T extends FallibleReactStateType>(
             loading: false,
         }));
     }).catch((err) => {
+        console.error('Failed to set state', err);
         setState((old) => ({
             ...old,
             error: `Failed to load some data on this page: ${err.message}`,
