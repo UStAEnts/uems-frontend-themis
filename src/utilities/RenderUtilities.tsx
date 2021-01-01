@@ -62,16 +62,16 @@ export class RenderUtilities {
                             <div className="label">Ents</div>
                             <div
                                 className="value advanced"
-                                style={{
+                                style={event.ents ? {
                                     backgroundColor: event.ents.color,
                                     color: ColorUtilities.determineForegroundColor(event.ents.color),
-                                }}
+                                } : {backgroundColor: 'white', color: 'black'}}
                             >
                                 <div className="icon">
-                                    <FontAwesomeIcon icon={(event.ents.icon ?? faQuestion) as IconName} />
+                                    <FontAwesomeIcon icon={(event.ents?.icon ?? faQuestion) as IconName} />
                                 </div>
                                 <div className="name">
-                                    {event.ents.name}
+                                    {event.ents?.name ?? 'No state'}
                                 </div>
                             </div>
                         </div>
@@ -86,17 +86,17 @@ export class RenderUtilities {
                             <div
                                 className="value advanced"
                                 style={{
-                                    backgroundColor: event.state.color,
-                                    color: event.state.color
+                                    backgroundColor: event.state?.color,
+                                    color: event.state?.color
                                         ? ColorUtilities.determineForegroundColor(event.state.color)
                                         : 'black',
                                 }}
                             >
                                 <div className="icon">
-                                    <FontAwesomeIcon icon={(event.state.icon ?? faQuestion) as IconName} />
+                                    <FontAwesomeIcon icon={(event.state?.icon ?? faQuestion) as IconName} />
                                 </div>
                                 <div className="name">
-                                    {event.state.name}
+                                    {event.state?.name}
                                 </div>
                             </div>
                         </div>
