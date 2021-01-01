@@ -106,8 +106,8 @@ class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileSt
             events = UIUtilities.defaultSearch(this.state.search, events, (value) => ([
                 value.name,
                 value.venue?.name,
-                value.ents.name,
-                value.state.name,
+                value.ents?.name,
+                value.state?.name,
             ]));
         }
 
@@ -151,8 +151,8 @@ class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileSt
             events = UIUtilities.defaultSearch(this.state.search, events, (value) => ([
                 value.name,
                 value.venue?.name,
-                value.ents.name,
-                value.state.name,
+                value.ents?.name,
+                value.state?.name,
             ]));
         }
 

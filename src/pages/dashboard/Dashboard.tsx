@@ -154,10 +154,10 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
             };
 
             for (const state of this.state.buildingState) {
-                entry[`st-${state.name}`] = events.filter((e) => e.state.id === state.id).length;
+                entry[`st-${state.name}`] = events.filter((e) => e.state?.id === state.id).length;
             }
             for (const state of this.state.entsState) {
-                entry[`en-${state.name}`] = events.filter((e) => e.ents.id === state.id).length;
+                entry[`en-${state.name}`] = events.filter((e) => e.ents?.id === state.id).length;
             }
             for (const state of this.state.venues) {
                 entry[`ve-${state.name}`] = events.filter((e) => e.venue?.id === state.id).length;

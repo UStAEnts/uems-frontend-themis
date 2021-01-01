@@ -257,7 +257,7 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
                             EventOrCommentRelatedViewClass.mostFrequent(
                                 this.props.events
                                     .map((e) => e.ents?.name)
-                                    .filter((e) => e !== undefined),
+                                    .filter((e) => e !== undefined) as string[],
                             ) as string
                         }
                         icon={faBolt}
@@ -271,7 +271,7 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
                             EventOrCommentRelatedViewClass.mostFrequent(
                                 this.props.events
                                     .map((e) => e.state?.name)
-                                    .filter((e) => e !== undefined),
+                                    .filter((e) => e !== undefined) as string[],
                             ) as string
                         }
                         icon={faTag}
