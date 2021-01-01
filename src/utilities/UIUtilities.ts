@@ -85,4 +85,19 @@ export class UIUtilities {
         return types[Math.floor(Math.random() * types.length)];
     }
 
+    static failedLoad(context: NotificationContextType | undefined, reason: string) {
+        if (context) {
+            try {
+                context.showNotification(
+                    'Failed to Load',
+                    `There was an error: ${reason}`,
+                    faSkullCrossbones,
+                    Theme.FAILURE,
+                );
+            } catch (e) {
+                console.error('Notification system failed to send', e);
+            }
+        }
+    }
+
 }
