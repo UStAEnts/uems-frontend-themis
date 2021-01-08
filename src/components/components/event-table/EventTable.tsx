@@ -201,7 +201,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 </LinkedTD>
 
                 <LinkedTD to={`/events/${event.id}`}>{event.name}</LinkedTD>
-                <LinkedTD to={`/events/${event.id}`}>{event.venue?.name}</LinkedTD>
+                <LinkedTD to={`/events/${event.id}`}>{event.venues.map((e) => e.name).join(', ')}</LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
                     {moment.unix(event.start).format(' dddd Do MMMM (YYYY), HH:mm ')}
                     &#8594;
@@ -281,7 +281,8 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             if (typeof (filter.selectedOption) === 'string') return true;
 
             if (filter.selectedOption.value !== 'any') {
-                if (event.venue?.name.toLowerCase() !== (filter.selectedOption.additional as VenueResponse).name.toLowerCase()) return false;
+                if(!event.venues.map((e) => e.name.toLowerCase()).includes((filter.selectedOption.additional as VenueResponse).name.toLowerCase())) return false;
+                // if (event.venue?.name.toLowerCase() !== (filter.selectedOption.additional as VenueResponse).name.toLowerCase()) return false;
             }
         }
 

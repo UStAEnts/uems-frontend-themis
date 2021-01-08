@@ -36,25 +36,22 @@ export class RenderUtilities {
                         <div className="property collapsed">
                             <div className="label">Venue</div>
                             {
-                                !event.venue
-                                    ? undefined
-                                    : (
-                                        <div
-                                            className="value advanced"
-                                            style={{
-                                                backgroundColor: event.venue.color,
-                                                color: event.venue.color
-                                                    ? ColorUtilities.determineForegroundColor(event.venue.color)
-                                                    : 'black',
-                                            }}
-                                        >
-                                            <div className="name">
-                                                {event.venue.name}
-                                            </div>
+                                event.venues.map((venue) => (
+                                    <div
+                                        className="value advanced"
+                                        style={{
+                                            backgroundColor: venue.color,
+                                            color: venue.color
+                                                ? ColorUtilities.determineForegroundColor(venue.color)
+                                                : 'black',
+                                        }}
+                                    >
+                                        <div className="name">
+                                            {venue.name}
                                         </div>
-                                    )
+                                    </div>
+                                ))
                             }
-
                         </div>
                     </div>
                     <div className="right">

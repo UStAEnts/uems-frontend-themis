@@ -556,16 +556,17 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                 <div className="rightbar-real">
                     <div className="entry">
                         <div className="title">Venue</div>
-                        {this.generateEditableProperty(
-                            this.state.venues?.map((e: VenueResponse) => ({
-                                text: e.name,
-                                value: e.id,
-                                additional: e,
-                            })),
-                            'Venue',
-                            this.state.event.venue?.name,
-                            'venue',
-                        )}
+                        {/*TODO: rebuild venue selector for checkboxes*/}
+                        {/*{this.generateEditableProperty(*/}
+                        {/*    this.state.venues?.map((e: VenueResponse) => ({*/}
+                        {/*        text: e.name,*/}
+                        {/*        value: e.id,*/}
+                        {/*        additional: e,*/}
+                        {/*    })),*/}
+                        {/*    'Venue',*/}
+                        {/*    this.state.event.venue?.name,*/}
+                        {/*    'venue',*/}
+                        {/*)}*/}
                     </div>
                     <div className="entry">
                         <div className="title">Projected Attendance</div>

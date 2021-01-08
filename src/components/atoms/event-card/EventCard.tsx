@@ -170,7 +170,10 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
                         {EventCard.renderEventIcon()}
                         <div className="names">
                             <div className="name">{this.props.event.name}</div>
-                            <div className="venue">{this.props.event.venue?.name}</div>
+                            {
+                                this.props.event.venues.map((e) => e.name)
+                            }
+                            {/*<div className="venue">{this.props.event.venue?.name}</div>*/}
                         </div>
                     </div>
                     <div className="bottom-bar collapsed">
@@ -233,7 +236,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
                         {EventCard.renderEventIcon()}
                         <div className="names">
                             <div className="name">{this.props.event.name}</div>
-                            <div className="venue">{this.props.event.venue}</div>
+                            <div className="venue">{this.props.event.venues.map((e) => e.name)}</div>
                         </div>
                     </div>
                     <div className="bottom-bar row">

@@ -55,7 +55,7 @@ export const makeEvent = (
     start: start,
     end: start + (hourDuration * 60 * 60 * 1000),
     attendance: attendance ?? 0,
-    venue: venue ?? randomVenue('vid'),
+    venues: [venue ?? randomVenue('vid')],
     state,
     ents,
 } as EventResponse);
