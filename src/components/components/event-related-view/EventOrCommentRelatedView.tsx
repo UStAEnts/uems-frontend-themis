@@ -90,7 +90,7 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
             const event = events[i];
             const next = events[i + 1];
 
-            total += moment.unix(event.startDate).diff(moment.unix(next.startDate));
+            total += moment.unix(event.start).diff(moment.unix(next.start));
             entries += 1;
         }
 

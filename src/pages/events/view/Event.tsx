@@ -282,14 +282,14 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
     private changeStartTime = (date: Date) => {
         // TODO: timezone issues?
         this.patchEvent({
-            startDate: date.getTime(),
+            start: date.getTime(),
         });
     }
 
     private changeEndTime = (date: Date) => {
         // TODO: timezone issues?
         this.patchEvent({
-            endDate: date.getTime(),
+            end: date.getTime(),
         });
     }
 
@@ -519,7 +519,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                         <div className="property creation">
                             <span className="label">Created</span>
                             <span className="value">
-                                <ReactTimeAgo date={this.state.event.startDate * 1000} />
+                                <ReactTimeAgo date={this.state.event.start * 1000} />
                             </span>
                         </div>
                         <div className="property updates">
@@ -626,33 +626,34 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                                     name="Booking Start"
                                     config={{
                                         type: 'date',
-                                        value: new Date(this.state.event.startDate * 1000),
+                                        value: new Date(this.state.event.start * 1000),
                                         onChange: this.changeStartTime,
                                     }}
                                 >
-                                    {moment.unix(this.state.event.startDate).format('dddd Do MMMM (YYYY), HH:mm')}
+                                    {moment.unix(this.state.event.start).format('dddd Do MMMM (YYYY), HH:mm')}
                                 </EditableProperty>
                             </div>
                             <div className="bar" />
                             <div className="duration">
                                 {moment.duration(
-                                    moment.unix(this.state.event.startDate).diff(moment.unix(this.state.event.endDate)),
+                                    moment.unix(this.state.event.start).diff(moment.unix(this.state.event.end)),
                                 ).humanize()}
                             </div>
                             <div className="bar" />
                             <div className="label">
                                 Booking End
                             </div>
+
                             <div className="time">
                                 <EditableProperty
                                     name="Booking End"
                                     config={{
                                         type: 'date',
-                                        value: new Date(this.state.event.endDate * 1000),
+                                        value: new Date(this.state.event.end * 1000),
                                         onChange: this.changeEndTime,
                                     }}
                                 >
-                                    {moment.unix(this.state.event.endDate).format('dddd Do MMMM (YYYY), HH:mm')}
+                                    {moment.unix(this.state.event.end).format('dddd Do MMMM (YYYY), HH:mm')}
                                 </EditableProperty>
                             </div>
                         </div>

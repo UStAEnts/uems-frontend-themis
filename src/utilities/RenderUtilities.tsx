@@ -22,14 +22,14 @@ export class RenderUtilities {
                         <div className="property collapsed">
                             <div className="label">Start</div>
                             <div className="value">
-                                <ReactTimeAgo date={event.startDate * 1000} />
+                                <ReactTimeAgo date={event.start * 1000} />
                             </div>
                         </div>
                         <div className="property collapsed">
                             <div className="label">Duration</div>
                             <div className="value">
                                 {moment.duration(
-                                    moment.unix(event.startDate).diff(moment.unix(event.endDate)),
+                                    moment.unix(event.start).diff(moment.unix(event.end)),
                                 ).humanize()}
                             </div>
                         </div>
@@ -78,7 +78,7 @@ export class RenderUtilities {
                         <div className="property collapsed">
                             <div className="label">End</div>
                             <div className="value">
-                                <ReactTimeAgo date={event.endDate * 1000} />
+                                <ReactTimeAgo date={event.end * 1000} />
                             </div>
                         </div>
                         <div className="property collapsed">

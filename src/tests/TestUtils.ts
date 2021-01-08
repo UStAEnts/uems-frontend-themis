@@ -52,8 +52,8 @@ export const makeEvent = (
 ) => ({
     name,
     id: id ?? v4(),
-    startDate: start,
-    endDate: start + (hourDuration * 60 * 60 * 1000),
+    start: start,
+    end: start + (hourDuration * 60 * 60 * 1000),
     attendance: attendance ?? 0,
     venue: venue ?? randomVenue('vid'),
     state,

@@ -50,7 +50,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
      */
     private getTimeDifference() {
         const duration = moment.duration(
-            moment.unix(this.props.event.endDate).diff(moment.unix(this.props.event.startDate)),
+            moment.unix(this.props.event.end).diff(moment.unix(this.props.event.start)),
         );
         const hours = Math.round(Math.floor(duration.asHours()));
         const minutes = Math.round(duration.asMinutes() - (hours * 60));
@@ -65,7 +65,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
      * Returns either an undefined component or an exclamation circle if the duration of the event is over 6 hours.
      */
     private getDurationIcon() {
-        const hours = Math.abs(this.props.event.endDate - this.props.event.startDate) / 36e5;
+        const hours = Math.abs(this.props.event.end - this.props.event.start) / 36e5;
         if (hours > 6) {
             return <FontAwesomeIcon icon={faExclamationCircle} className="warn" size="xs" />;
 
@@ -243,7 +243,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
                         </div>
                         <div className="col-xs-6 horizontal">
                             <FontAwesomeIcon icon={faClock} color={EventCard.iconColor} />
-                            <div className="time">{moment.unix(this.props.event.startDate).toISOString()}</div>
+                            <div className="time">{moment.unix(this.props.event.start).toISOString()}</div>
                         </div>
                     </div>
                 </div>

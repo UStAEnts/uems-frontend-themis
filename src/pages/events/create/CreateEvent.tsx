@@ -131,8 +131,8 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
         }
 
         const event: EventCreation = {
-            endDate: this.state.eventProperties.dates.endDate.getTime(),
-            startDate: this.state.eventProperties.dates.startDate.getTime(),
+            end: this.state.eventProperties.dates.endDate.getTime(),
+            start: this.state.eventProperties.dates.startDate.getTime(),
             name: this.state.eventProperties.name,
             ents: this.state.eventProperties.ents?.id,
             attendance: this.state.eventProperties.attendance,

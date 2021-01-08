@@ -136,7 +136,7 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
         const rawPre: { [key: number]: EventResponse[] } = {};
 
         for (const event of this.state.events) {
-            const date = moment.unix(event.startDate).startOf('day').unix();
+            const date = moment.unix(event.start).startOf('day').unix();
 
             if (Object.prototype.hasOwnProperty.call(rawPre, date)) {
                 rawPre[date].push(event);
@@ -217,7 +217,7 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
         ));
 
         const limit = (new Date().getTime() / 1000) + 604800; // + 7 days in seconds
-        const eventsInNext7Days = (this.state.events ?? []).filter((e) => e.startDate < limit);
+        const eventsInNext7Days = (this.state.events ?? []).filter((e) => e.start < limit);
 
         return (
             <div className="dashboard">
