@@ -229,9 +229,9 @@ class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileSt
                             <div className="label">Uploaded by</div>
                             <div className="value">
                                 <Link to="/">
-                                    {file.author.name}
+                                    {file.owner.name}
                                     &nbsp;(@
-                                    {file.author.username}
+                                    {file.owner.username}
                                     )
                                 </Link>
                             </div>
@@ -239,7 +239,7 @@ class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileSt
                         <div className="property">
                             <div className="label">Uploaded</div>
                             <div className="value">
-                                <ReactTimeAgo date={file.created * 1000} />
+                                <ReactTimeAgo date={file.date * 1000} />
                             </div>
                         </div>
                         <div className="property">
