@@ -126,18 +126,10 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
             this.failedLoad(`Could not load signups: ${err.message}`);
         });
 
-        Axios.get(
-            urljoin(
-                Config.BASE_GATEWAY_URI,
-                'events',
-                encodeURIComponent(this.props.match.params.id),
-                'comments',
-            ),
-        ).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.events.id.comments.get(this.props.match.params.id).then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                comments: data.data.result,
+                comments: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -145,19 +137,25 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load comments: ${err.message}`);
         });
+        // Axios.get(
+        //     urljoin(
+        //         Config.BASE_GATEWAY_URI,
+        //         'events',
+        //         encodeURIComponent(this.props.match.params.id),
+        //         'comments',
+        //     ),
+        // ).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         comments: data.data.result,
+        //     }));
+        // })
 
-        Axios.get(
-            urljoin(
-                Config.BASE_GATEWAY_URI,
-                'events',
-                encodeURIComponent(this.props.match.params.id),
-                'files',
-            ),
-        ).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.events.id.files.get(this.props.match.params.id).then((data) =>{
             this.setState((oldState) => ({
                 ...oldState,
-                files: data.data.result,
+                files: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -165,15 +163,30 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load event: ${err.message}`);
         });
+        // Axios.get(
+        //     urljoin(
+        //         Config.BASE_GATEWAY_URI,
+        //         'events',
+        //         encodeURIComponent(this.props.match.params.id),
+        //         'files',
+        //     ),
+        // ).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         files: data.data.result,
+        //     }));
+        // }).catch((err: Error) => {
+        //     console.error('Failed to load event data');
+        //     console.error(err);
+        //
+        //     this.failedLoad(`Could not load event: ${err.message}`);
+        // });
 
-        Axios.get(urljoin(
-            Config.BASE_GATEWAY_URI,
-            'venues',
-        )).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.venues.get().then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                venues: data.data.result,
+                venues: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -181,15 +194,26 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load list of venues: ${err.message}`);
         });
+        // Axios.get(urljoin(
+        //     Config.BASE_GATEWAY_URI,
+        //     'venues',
+        // )).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         venues: data.data.result,
+        //     }));
+        // }).catch((err: Error) => {
+        //     console.error('Failed to load event data');
+        //     console.error(err);
+        //
+        //     this.failedLoad(`Could not load list of venues: ${err.message}`);
+        // });
 
-        Axios.get(urljoin(
-            Config.BASE_GATEWAY_URI,
-            'ents',
-        )).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.ents.get().then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                entsStates: data.data.result,
+                entsStates: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -197,15 +221,26 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load list of ents states: ${err.message}`);
         });
+        // Axios.get(urljoin(
+        //     Config.BASE_GATEWAY_URI,
+        //     'ents',
+        // )).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         entsStates: data.data.result,
+        //     }));
+        // }).catch((err: Error) => {
+        //     console.error('Failed to load event data');
+        //     console.error(err);
+        //
+        //     this.failedLoad(`Could not load list of ents states: ${err.message}`);
+        // });
 
-        Axios.get(urljoin(
-            Config.BASE_GATEWAY_URI,
-            'states',
-        )).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.states.get().then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                buildingStates: data.data.result,
+                buildingStates: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -213,6 +248,21 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load list of ents states: ${err.message}`);
         });
+        // Axios.get(urljoin(
+        //     Config.BASE_GATEWAY_URI,
+        //     'states',
+        // )).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         buildingStates: data.data.result,
+        //     }));
+        // }).catch((err: Error) => {
+        //     console.error('Failed to load event data');
+        //     console.error(err);
+        //
+        //     this.failedLoad(`Could not load list of ents states: ${err.message}`);
+        // });
 
         API.events.id.get(this.props.match.params.id).then((data) => {
             console.log(data);
