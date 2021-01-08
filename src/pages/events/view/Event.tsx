@@ -437,8 +437,10 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         if (this.state.event === undefined) return;
 
         API.events.id.comments.post(this.state.event.id, {
-            content: comment,
-            topic: topicID,
+            body: comment,
+            category: topicID,
+            // TODO: move ot actual UI
+            requiresAttention: false,
         }).then((id) => {
             if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
                 UIUtilities.tryShowNotification(
@@ -454,10 +456,14 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                 ...old,
                 comments: [{
                     id: id.result[0] as string,
-                    content: comment,
+                    body: comment,
                     posted: new Date().getTime() / 1000,
                     poster: this.context.user,
-                    topic: (old.topics ?? []).find((e) => e.id === topicID),
+                    // TODO: move to UI
+                    requiresAttention: false,
+                    // TODO: actual category type
+                    category: topicID,
+                    // category: (old.topics ?? []).find((e) => e.id === topicID),
                 }, ...(old.comments ?? [])],
             }));
         }).catch((e) => {

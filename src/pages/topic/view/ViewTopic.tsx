@@ -73,9 +73,11 @@ class ViewTopicClass extends FallibleReactComponent<ViewTopicPropsType, ViewTopi
                     ]}
                     comments={[
                         {
-                            content: 'This is an example comment',
+                            body: 'This is an example comment',
                             topic: this.state.topic,
                             posted: new Date().getTime() / 1000,
+                            // TODO: get from UI
+                            requiresAttention: false,
                             id: 'fakeid',
                             poster: {
                                 name: 'Dave Example',
