@@ -62,7 +62,7 @@ export class RenderUtilities {
                                 style={event.ents ? {
                                     backgroundColor: event.ents.color,
                                     color: ColorUtilities.determineForegroundColor(event.ents.color),
-                                } : {backgroundColor: 'white', color: 'black'}}
+                                } : { backgroundColor: 'white', color: 'black' }}
                             >
                                 <div className="icon">
                                     <FontAwesomeIcon icon={(event.ents?.icon ?? faQuestion) as IconName} />
