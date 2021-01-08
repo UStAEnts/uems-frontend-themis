@@ -311,9 +311,29 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         if (Object.prototype.hasOwnProperty.call(filtered, 'state')) {
             filtered.state = this.state.buildingStates?.find((e) => e.id === changeProps.state);
         }
-        if (Object.prototype.hasOwnProperty.call(filtered, 'venue')) {
-            filtered.venue = this.state.venues?.find((e) => e.id === changeProps.venue);
+        if (Object.prototype.hasOwnProperty.call(filtered, 'start')) {
+            // @ts-ignore
+            filtered.start = Number(filtered.start) / 1000;
         }
+        if (Object.prototype.hasOwnProperty.call(filtered, 'end')) {
+            // @ts-ignore
+            filtered.end = Number(filtered.end) / 1000;
+        }
+        console.log(filtered);
+
+        if(Object.prototype.hasOwnProperty.call(changeProps, 'start')){
+            changeProps.start = Math.round(Number(changeProps.start) /1000);
+        }
+        if(Object.prototype.hasOwnProperty.call(changeProps, 'end')){
+            changeProps.end = Math.round(Number(changeProps.end) / 1000);
+        }
+        if(Object.prototype.hasOwnProperty.call(changeProps, 'attendance')){
+            changeProps.attendance = Number(changeProps.attendance);
+        }
+        // TODO: REBUILD VENUE SELECTOR
+        // if (Object.prototype.hasOwnProperty.call(filtered, 'venue')) {
+        //     filtered.venue = this.state.venues?.find((e) => e.id === changeProps.venue);
+        // }
         const updatedEvent: EventResponse = { ...this.state.event, ...filtered };
 
         API.events.id.patch(this.state.event.id, changeProps).then(() => {
