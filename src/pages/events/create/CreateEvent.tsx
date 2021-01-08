@@ -121,6 +121,11 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
             return;
         }
 
+        if (isNaN(Number(this.state.eventProperties.attendance))){
+            warn('Invalid Attendance', 'Attendance must be a number');
+            return;
+        }
+
         if (this.state.eventProperties.dates.endDate.getTime() < this.state.eventProperties.dates.startDate.getTime()) {
             warn('Invalid End Date', 'End date must be after the start date');
             return;
@@ -135,7 +140,7 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
             start: this.state.eventProperties.dates.startDate.getTime(),
             name: this.state.eventProperties.name,
             ents: this.state.eventProperties.ents?.id,
-            attendance: this.state.eventProperties.attendance,
+            attendance: Number(this.state.eventProperties.attendance),
             state: this.state.eventProperties.state?.id,
             venue: this.state.eventProperties.venue.id,
         };
