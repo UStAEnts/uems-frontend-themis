@@ -210,14 +210,14 @@ class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileSt
                     <h1 className="header">{file.name}</h1>
                 </EditableProperty>
                 <div className="button-container">
-                    <Link to={`/downloads/file/${file.id}`}>
+                    <a href={file.downloadURL} rel="noopener noreferrer" target="_blank">
                         <Button
                             color={Theme.DEEP_SKY}
                             text="Download"
                             icon={faDownload}
                             fullWidth
                         />
-                    </Link>
+                    </a>
                 </div>
                 <div className="columns">
                     <div className="left">
