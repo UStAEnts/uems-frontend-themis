@@ -373,6 +373,9 @@ export const EventCreationZod = EventUpdateZod.extend({
 export type EventCreation = z.infer<typeof EventCreationZod>;
 export const FileCreationZod = FileUpdateZod.extend({
     name: z.string(),
+    filename: z.string(),
+    size: z.number(),
+    type: z.string(),
 });
 export type FileCreation = z.infer<typeof FileCreationZod>;
 export const SignupCreationZod = SignupUpdateZod.extend({
