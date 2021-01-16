@@ -79,6 +79,8 @@ const EventStackTooltip: React.FunctionComponent<TooltipProps> = (
                 {events.map((event) => (
                     <div className="event-line">
                         {event.name}
+                        <br/>
+                        {event.venues.map((e) => e.name).join(', ')}
                         <br />
                         <Tag tag={event.ents} />
                         <Tag tag={event.state} />
@@ -213,7 +215,7 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
         // UNSAFE: what if we are done?
 
         const lines = lineGroup.map((e) => (
-            <Line dataKey={`${prefix}${e.name}`} type="monotone" stroke={nextColor()} />
+            <Line dataKey={`${prefix}${e.name}`} name={e.name} strokeWidth={2} type="monotone" stroke={nextColor()} />
         ));
 
         const limit = (new Date().getTime() / 1000) + 604800; // + 7 days in seconds
@@ -296,7 +298,9 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
                                             <Legend />
                                             <Line
                                                 dataKey="y"
+                                                name="Total Events"
                                                 type="monotone"
+                                                strokeWidth={3}
                                             />
                                             {lines}
                                             <YAxis
