@@ -24,6 +24,7 @@ export type CreateFileStateType = {
         name?: string,
         private: boolean,
         file?: File,
+        type?: string,
     },
     ui: {
         progress?: number,
@@ -50,7 +51,18 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
     }
 
     private save = () => {
-        for (const key of ['name', 'file', 'private'] as (keyof CreateFileStateType['file'])[]) {
+        if (this.state.file.file === undefined) {
+            UIUtilities.tryShowNotification(
+                this.props.notificationContext,
+                'Invalid details',
+                `You must provide a file before saving`,
+                faSkullCrossbones,
+                Theme.FAILURE,
+            );
+            return;
+        }
+
+        for (const key of ['name', 'file', 'type'] as (keyof CreateFileStateType['file'])[]) {
             if (this.state.file[key] === undefined) {
                 UIUtilities.tryShowNotification(
                     this.props.notificationContext,
@@ -65,7 +77,9 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
 
         API.files.post({
             name: this.state.file.name as string,
-            private: this.state.file.private ?? false,
+            filename: this.state.file.file.name,
+            size: this.state.file.file.size,
+            type: this.state.file.type as string,
         }).then((id) => {
             if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
                 UIUtilities.tryShowNotification(
@@ -79,9 +93,9 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
 
             // Once the metadata is created, we need to upload
             const formData = new FormData();
-            formData.append('file', this.state.file.file as File);
+            formData.append('data', this.state.file.file as File);
 
-            Axios.put(urljoin('files', id.result[0] as string), formData, {
+            Axios.post(id.uploadURI, formData, {
                 onUploadProgress: (progress) => {
                     failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'progress')(
                         Math.round((progress.loaded * 100) / progress.total),
@@ -137,6 +151,13 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
                     />
                     Private
                 </div>
+
+                <TextField
+                    name="File Type"
+                    initialContent={this.state.file.type}
+                    onChange={failEarlyStateSet(this.state, this.setState.bind(this), 'file', 'type')}
+                    required
+                />
 
                 <Button
                     color={Theme.SUCCESS}
