@@ -121,7 +121,7 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
             return;
         }
 
-        if (isNaN(Number(this.state.eventProperties.attendance))){
+        if (isNaN(Number(this.state.eventProperties.attendance))) {
             warn('Invalid Attendance', 'Attendance must be a number');
             return;
         }
@@ -156,7 +156,13 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
                 );
             }
 
-            failEarlySet(this.state, 'uiProperties', 'redirect')(`/events/${id.result[0]}`);
+            this.setState((old) => ({
+                ...old,
+                uiProperties: {
+                    redirect: `/events/${id.result[0]}`,
+                    dateFocused: null,
+                },
+            }));
         }).catch((err) => {
             // TODO: better error handling
             this.showNotification(
@@ -193,11 +199,15 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
     )
 
     render() {
+        if (this.state.uiProperties.redirect) {
+            return (
+                <Redirect to={this.state.uiProperties.redirect} />
+            );
+        }
+
+
         return (
             <div className={`create-event ${this.props.isPage ? 'page' : ''}`}>
-                {
-                    this.state.uiProperties.redirect ? <Redirect to={this.state.uiProperties.redirect} /> : undefined
-                }
                 <div className="title">Create Event</div>
                 <TextField
                     name="Event Name"
