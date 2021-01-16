@@ -59,6 +59,7 @@ import './pages/index/index.scss';
 import './pages/index/flexboxgrid.css';
 import { ListFile } from './pages/file/list/ListFile';
 import { ViewFile } from './pages/file/view/ViewFile';
+import Axios from "axios";
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
@@ -96,19 +97,26 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
             notifications: [],
             timeouts: {},
             animationStates: {},
-            // TODO: MAKE THIS DYNAMIC I JUST WANT IT TO LOOK NICE
-            user: {
-                name: 'Ryan Delaney',
-                id: v4(),
-                profile: 'https://avatars0.githubusercontent.com/u/9435503?s=460&u=a8993c218110056a590db8eb43b7a6222750f169&v=4',
-                username: 'ryan',
-            },
         };
     }
 
     componentDidMount() {
         // @ts-ignore
         window.API = API;
+
+        // When the site mounts we need to fetch information about the user
+        Axios.get('/api/whoami').then((data) => {
+            this.setUser({
+                username: data.data.username,
+                id: data.data.username,
+                name: data.data.name,
+                profile: data.data.profile,
+            });
+        }).catch((err) => {
+            console.error('Failed to fetch user information', err);
+            this.showNotification('Failed to fetch your user information');
+            // TODO: what do we need to do when the user fetching fails because we're kinda hosed...
+        })
     }
 
     componentWillUnmount() {
