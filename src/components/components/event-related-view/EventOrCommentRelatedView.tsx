@@ -83,14 +83,22 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
     }
 
     private getFrequency = (events: EventResponse[]) => {
+        if (events.length < 2) {
+            return 'n/a';
+        }
+
+        const orderedResults = events.sort((a, b) => {
+            return a.start - b.start;
+        });
+
         let total = 0;
         let entries = 0;
 
-        for (let i = 0; i < events.length - 1; i++) {
-            const event = events[i];
-            const next = events[i + 1];
+        for (let i = 0; i < orderedResults.length - 1; i++) {
+            const event = orderedResults[i];
+            const next = orderedResults[i + 1];
 
-            total += moment.unix(event.start).diff(moment.unix(next.start));
+            total += Math.abs(moment.unix(event.start).diff(moment.unix(next.start)));
             entries += 1;
         }
 
@@ -125,7 +133,7 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
     }
 
     private generateColorEdit = (property: keyof T) => (
-        <div className="property-edit">
+        <div className="property-edit" key={`property.${property}`}>
             <div className="title">{property}</div>
             <EditableProperty
                 name="color"
@@ -152,7 +160,7 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
     )
 
     private generateIconEdit = (property: Extract<keyof T, string>) => (
-        <div className="property-edit">
+        <div className="property-edit" key={`property.${property}`}>
             <div className="title">{property}</div>
             <EditableProperty
                 name={property}
@@ -310,7 +318,6 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
         const properties = [];
 
         for (const key of Object.keys(this.props.obj) as (Extract<keyof T, string>)[]) {
-            console.log(key, this.props.nameKey ?? 'name');
             if (this.props.excluded && this.props.excluded.includes(key)) continue;
             if (String(key) === String(this.props.nameKey ?? 'name')) continue;
 
