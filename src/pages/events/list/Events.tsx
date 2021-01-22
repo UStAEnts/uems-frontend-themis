@@ -70,7 +70,6 @@ export class Events extends FallibleReactComponent<CalendarPropsType, CalendarSt
                 </div>
             );
 
-        console.log(this.state.events);
         return (
             <div
                 style={{

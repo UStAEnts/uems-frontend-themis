@@ -128,27 +128,17 @@ function request(
         return Promise.reject();
     }
 
-    const optionsMerge = {
-        ...options,
-        headers: {
-            ...(options?.headers ?? {}),
-            'X-UEMS-Identifier': 'eyJhbGciOiJFUzUxMiIsInR5cCI6IkpXVCJ9.eyJpcCI6ImxvY2FsaG9zdCIsInVzZXJJRCI6IjVmZWJiYTI5YmU3NzFiZmYzNmUwNTlkZCIsImlhdCI6MTYwOTk2MDQ2NywiZXhwIjoxNjA5OTYyODY3LCJhdWQiOiJ1ZW1zLmdhdGV3YXkiLCJpc3MiOiJ1ZW1zLmZyb250ZW5kIiwic3ViIjoiaWRlbnRpZmllciJ9.AEZ6xVARO3vQFLehzdktHVbQSyYqG4nzY4OKHrEsaPKngac1HFtEBqvRptoR6GPZqxFPs7QAXA-47M8mplT3PMtxAdH63WAZF4GOOvO4mMe-s168EIDa3DDXzUqEl4p0RHO-PMTHfqIhJGxwPClXZ8fq0AIGN2mgqkPUyrbAXwz_-U7t',
-        }
-    };
-
-    console.log('merged', optionsMerge);
-
     if (method === 'get' || method === 'delete') {
         return Axios[method](
             uri,
-            optionsMerge,
+            options,
         );
     }
 
     return Axios[method](
         uri,
         data,
-        optionsMerge,
+        options,
     );
 }
 

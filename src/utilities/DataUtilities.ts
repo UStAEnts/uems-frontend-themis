@@ -1,4 +1,3 @@
-import { APIFunction } from "./APIGen";
 import { FallibleReactStateType } from "../components/components/error-screen/FallibleReactComponent";
 
 type SetStateType<T> = (old: T) => T;

@@ -334,7 +334,7 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                                             </div>
                                         </Route>
                                     </Switch>
-                                    
+
                                     {/* EQUIPMENT */}
                                     <NavLink to="/equipment" className="entry">
                                         <FontAwesomeIcon icon={faBox} />
