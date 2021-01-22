@@ -1,5 +1,5 @@
 import React from 'react';
-import { faExclamationCircle, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationCircle, faNetworkWired, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { Redirect, withRouter } from 'react-router-dom';
 import { TextField } from '../../../components/atoms/text-field/TextField';
 import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
@@ -11,6 +11,7 @@ import { Notification } from '../../../components/components/notification-render
 import { API, EntsStateResponse, EventCreation, StateResponse, VenueResponse } from '../../../utilities/APIGen';
 import { failEarlySet, failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import './CreateEvent.scss';
+import { UIUtilities } from "../../../utilities/UIUtilities";
 
 export type CreateEventPropsType = {
     isPage?: boolean,
@@ -120,6 +121,11 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
             return;
         }
 
+        if (isNaN(Number(this.state.eventProperties.attendance))) {
+            warn('Invalid Attendance', 'Attendance must be a number');
+            return;
+        }
+
         if (this.state.eventProperties.dates.endDate.getTime() < this.state.eventProperties.dates.startDate.getTime()) {
             warn('Invalid End Date', 'End date must be after the start date');
             return;
@@ -130,17 +136,33 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
         }
 
         const event: EventCreation = {
-            endDate: this.state.eventProperties.dates.endDate.getTime(),
-            startDate: this.state.eventProperties.dates.startDate.getTime(),
+            end: this.state.eventProperties.dates.endDate.getTime(),
+            start: this.state.eventProperties.dates.startDate.getTime(),
             name: this.state.eventProperties.name,
             ents: this.state.eventProperties.ents?.id,
-            attendance: this.state.eventProperties.attendance,
+            attendance: Number(this.state.eventProperties.attendance),
             state: this.state.eventProperties.state?.id,
             venue: this.state.eventProperties.venue.id,
         };
 
         API.events.post(event).then((id) => {
-            failEarlySet(this.state, 'uiProperties', 'redirect')(`/events/${id.result.id}`);
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
+            this.setState((old) => ({
+                ...old,
+                uiProperties: {
+                    redirect: `/events/${id.result[0]}`,
+                    dateFocused: null,
+                },
+            }));
         }).catch((err) => {
             // TODO: better error handling
             this.showNotification(
@@ -177,11 +199,15 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
     )
 
     render() {
+        if (this.state.uiProperties.redirect) {
+            return (
+                <Redirect to={this.state.uiProperties.redirect} />
+            );
+        }
+
+
         return (
             <div className={`create-event ${this.props.isPage ? 'page' : ''}`}>
-                {
-                    this.state.uiProperties.redirect ? <Redirect to={this.state.uiProperties.redirect} /> : undefined
-                }
                 <div className="title">Create Event</div>
                 <TextField
                     name="Event Name"

@@ -1,8 +1,9 @@
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificationContextType } from '../context/NotificationContext';
 import { Notification } from '../components/components/notification-renderer/NotificationRenderer';
+import { Theme } from "../theme/Theme";
 
-type LoaderOptions = 'Audio' | 'BallTriangle' | 'Bars' | 'Circles' | 'Grid' | 'Hearts' | 'Oval' | 'Puff'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+type LoaderOptions = 'Audio' | 'BallTriangle' | 'Bars' | 'Circles' | 'Grid' | 'Hearts' | 'Oval' | 'Puff'
     | 'Rings' | 'TailSpin' | 'ThreeDots' | 'Watch' | 'RevolvingDot' | 'Triangle' | 'Plane' | 'MutatingDots'
     | 'None' | 'NotSpecified';
 
@@ -79,10 +80,24 @@ export class UIUtilities {
 
     static randomLoaderType() {
         const types: LoaderOptions[] = ['Audio', 'BallTriangle', 'Bars', 'Circles', 'Grid', 'Hearts', 'Oval', 'Puff',
-            'Rings', 'TailSpin', 'ThreeDots', 'Watch', 'Triangle', 'MutatingDots', 'None',
-            'NotSpecified'];
+            'Rings', 'TailSpin', 'ThreeDots', 'Watch', 'Triangle', 'MutatingDots'];
 
         return types[Math.floor(Math.random() * types.length)];
+    }
+
+    static failedLoad(context: NotificationContextType | undefined, reason: string) {
+        if (context) {
+            try {
+                context.showNotification(
+                    'Failed to Load',
+                    `There was an error: ${reason}`,
+                    faSkullCrossbones,
+                    Theme.FAILURE,
+                );
+            } catch (e) {
+                console.error('Notification system failed to send', e);
+            }
+        }
     }
 
 }

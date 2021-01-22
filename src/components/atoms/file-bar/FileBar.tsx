@@ -3,14 +3,13 @@ import { faDownload, faFile, faGlobe, faLock } from '@fortawesome/free-solid-svg
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './Files.scss';
-import { Link } from 'react-router-dom';
 import { FileResponse } from '../../../utilities/APIGen';
 
 export const FileBar: React.FunctionComponent<{
     file: FileResponse,
 }> = ({ file }) => (
     <div className="file-bar">
-        <Link to={`/downloads/file/${file.id}`}>
+        <a href={file.downloadURL} target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon className="icon" icon={faFile} />
             <div className="name">
                 {file.name}
@@ -22,7 +21,7 @@ export const FileBar: React.FunctionComponent<{
             <div className="size">{file.size}</div>
             <FontAwesomeIcon className="icon" icon={faDownload} />
             <FontAwesomeIcon className="icon" icon={file.private ? faLock : faGlobe} />
-        </Link>
+        </a>
     </div>
 );
 

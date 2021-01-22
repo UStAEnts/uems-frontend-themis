@@ -64,7 +64,17 @@ class CreateStateClass extends React.Component<CreateStatePropsType, CreateState
             icon: this.state.state.icon?.identifier, // Icons are optional
             name: this.state.state.name as string, // This is verified in the for loop above but the typing doesnt work
         }).then((id) => {
-            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/states/${id.result.id}`);
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
+            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/states/${id.result[0]}`);
         }).catch((err) => {
             UIUtilities.tryShowNotification(
                 this.props.notificationContext,

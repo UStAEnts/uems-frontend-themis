@@ -1,38 +1,24 @@
 import React from 'react';
-import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
 import moment from 'moment';
-import Axios from 'axios';
 import ReactTimeAgo from 'react-time-ago';
-import urljoin from 'url-join';
-import { faFileCode, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faFileCode, faNetworkWired, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
 import { NotificationContextType } from '../../../context/NotificationContext';
 import { FileList } from '../../../components/atoms/file-bar/FileBar';
 import { CommentList } from '../../../components/components/comment-list/CommentList';
-import Config from '../../../config/Config';
 import { EditableProperty } from '../../../components/components/editable-property/EditableProperty';
 import { Theme } from '../../../theme/Theme';
 import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
-import {
-    API,
-    CommentResponse,
-    EntsStateResponse,
-    EventPropertyChangeResponse,
-    EventResponse,
-    EventUpdate,
-    FileResponse,
-    SignupResponse,
-    StateResponse,
-    TopicResponse,
-    User,
-    VenueResponse,
-} from '../../../utilities/APIGen';
+import { API, CommentResponse, EntsStateResponse, EventPropertyChangeResponse, EventResponse, EventUpdate, FileResponse, SignupResponse, StateResponse, TopicResponse, User, VenueResponse, } from '../../../utilities/APIGen';
 import { Button } from '../../../components/atoms/button/Button';
 import { GlobalContext } from '../../../context/GlobalContext';
 import './Event.scss';
+import { FallibleReactComponent, FallibleReactStateType } from "../../../components/components/error-screen/FallibleReactComponent";
+import { UIUtilities } from "../../../utilities/UIUtilities";
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
@@ -74,9 +60,9 @@ export type EventStateType = {
     signups?: SignupResponse[],
 
     chosenRole?: string,
-};
+} & FallibleReactStateType;
 
-class Event extends React.Component<EventPropsType, EventStateType> {
+class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
     static displayName = 'Event';
 
@@ -88,6 +74,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         this.state = {
             id: this.props.match.params.id,
             chosenRole: 'Other',
+            loading: true,
         };
     }
 
@@ -95,22 +82,6 @@ class Event extends React.Component<EventPropsType, EventStateType> {
      * When the components mount, we need to query the API for the actual properties we need
      */
     componentDidMount() {
-        API.events.id.get(this.props.match.params.id).then((data) => {
-            // TODO: add schema validation for data returned by the server
-            this.setState((oldState) => ({
-                ...oldState,
-                event: data.result.event,
-
-                // Changelog is provided on the /event/{id} endpoint but no where else (not on patch)
-                changelog: data.result.changelog,
-            }));
-        }).catch((err: Error) => {
-            console.error('Failed to load event data');
-            console.error(err);
-
-            this.failedLoad(`Could not load event: ${err.message}`);
-        });
-
         API.topics.get().then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
@@ -135,18 +106,10 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             this.failedLoad(`Could not load signups: ${err.message}`);
         });
 
-        Axios.get(
-            urljoin(
-                Config.BASE_GATEWAY_URI,
-                'events',
-                encodeURIComponent(this.props.match.params.id),
-                'comments',
-            ),
-        ).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.events.id.comments.get(this.props.match.params.id).then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                comments: data.data.result,
+                comments: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -154,19 +117,25 @@ class Event extends React.Component<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load comments: ${err.message}`);
         });
+        // Axios.get(
+        //     urljoin(
+        //         Config.BASE_GATEWAY_URI,
+        //         'events',
+        //         encodeURIComponent(this.props.match.params.id),
+        //         'comments',
+        //     ),
+        // ).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         comments: data.data.result,
+        //     }));
+        // })
 
-        Axios.get(
-            urljoin(
-                Config.BASE_GATEWAY_URI,
-                'events',
-                encodeURIComponent(this.props.match.params.id),
-                'files',
-            ),
-        ).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.events.id.files.get(this.props.match.params.id).then((data) =>{
             this.setState((oldState) => ({
                 ...oldState,
-                files: data.data.result,
+                files: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -174,15 +143,30 @@ class Event extends React.Component<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load event: ${err.message}`);
         });
+        // Axios.get(
+        //     urljoin(
+        //         Config.BASE_GATEWAY_URI,
+        //         'events',
+        //         encodeURIComponent(this.props.match.params.id),
+        //         'files',
+        //     ),
+        // ).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         files: data.data.result,
+        //     }));
+        // }).catch((err: Error) => {
+        //     console.error('Failed to load event data');
+        //     console.error(err);
+        //
+        //     this.failedLoad(`Could not load event: ${err.message}`);
+        // });
 
-        Axios.get(urljoin(
-            Config.BASE_GATEWAY_URI,
-            'venues',
-        )).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.venues.get().then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                venues: data.data.result,
+                venues: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -190,15 +174,26 @@ class Event extends React.Component<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load list of venues: ${err.message}`);
         });
+        // Axios.get(urljoin(
+        //     Config.BASE_GATEWAY_URI,
+        //     'venues',
+        // )).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         venues: data.data.result,
+        //     }));
+        // }).catch((err: Error) => {
+        //     console.error('Failed to load event data');
+        //     console.error(err);
+        //
+        //     this.failedLoad(`Could not load list of venues: ${err.message}`);
+        // });
 
-        Axios.get(urljoin(
-            Config.BASE_GATEWAY_URI,
-            'ents',
-        )).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.ents.get().then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                entsStates: data.data.result,
+                entsStates: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
@@ -206,21 +201,65 @@ class Event extends React.Component<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load list of ents states: ${err.message}`);
         });
+        // Axios.get(urljoin(
+        //     Config.BASE_GATEWAY_URI,
+        //     'ents',
+        // )).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         entsStates: data.data.result,
+        //     }));
+        // }).catch((err: Error) => {
+        //     console.error('Failed to load event data');
+        //     console.error(err);
+        //
+        //     this.failedLoad(`Could not load list of ents states: ${err.message}`);
+        // });
 
-        Axios.get(urljoin(
-            Config.BASE_GATEWAY_URI,
-            'states',
-        )).then((data) => {
-            // TODO: add schema validation for data returned by the server
+        API.states.get().then((data) => {
             this.setState((oldState) => ({
                 ...oldState,
-                buildingStates: data.data.result,
+                buildingStates: data.result,
             }));
         }).catch((err: Error) => {
             console.error('Failed to load event data');
             console.error(err);
 
             this.failedLoad(`Could not load list of ents states: ${err.message}`);
+        });
+        // Axios.get(urljoin(
+        //     Config.BASE_GATEWAY_URI,
+        //     'states',
+        // )).then((data) => {
+        //     // TODO: add schema validation for data returned by the server
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         buildingStates: data.data.result,
+        //     }));
+        // }).catch((err: Error) => {
+        //     console.error('Failed to load event data');
+        //     console.error(err);
+        //
+        //     this.failedLoad(`Could not load list of ents states: ${err.message}`);
+        // });
+
+        API.events.id.get(this.props.match.params.id).then((data) => {
+            console.log(data);
+            // TODO: add schema validation for data returned by the server
+            this.setState((oldState) => ({
+                ...oldState,
+                event: data.result.event,
+
+                // Changelog is provided on the /event/{id} endpoint but no where else (not on patch)
+                changelog: data.result.changelog,
+                loading: false,
+            }));
+        }).catch((err: Error) => {
+            console.error('Failed to load event data');
+            console.error(err);
+
+            this.failedLoad(`Could not load event: ${err.message}`);
         });
     }
 
@@ -252,9 +291,29 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         if (Object.prototype.hasOwnProperty.call(filtered, 'state')) {
             filtered.state = this.state.buildingStates?.find((e) => e.id === changeProps.state);
         }
-        if (Object.prototype.hasOwnProperty.call(filtered, 'venue')) {
-            filtered.venue = this.state.venues?.find((e) => e.id === changeProps.venue);
+        if (Object.prototype.hasOwnProperty.call(filtered, 'start')) {
+            // @ts-ignore
+            filtered.start = Number(filtered.start) / 1000;
         }
+        if (Object.prototype.hasOwnProperty.call(filtered, 'end')) {
+            // @ts-ignore
+            filtered.end = Number(filtered.end) / 1000;
+        }
+        console.log(filtered);
+
+        if(Object.prototype.hasOwnProperty.call(changeProps, 'start')){
+            changeProps.start = Math.round(Number(changeProps.start) /1000);
+        }
+        if(Object.prototype.hasOwnProperty.call(changeProps, 'end')){
+            changeProps.end = Math.round(Number(changeProps.end) / 1000);
+        }
+        if(Object.prototype.hasOwnProperty.call(changeProps, 'attendance')){
+            changeProps.attendance = Number(changeProps.attendance);
+        }
+        // TODO: REBUILD VENUE SELECTOR
+        // if (Object.prototype.hasOwnProperty.call(filtered, 'venue')) {
+        //     filtered.venue = this.state.venues?.find((e) => e.id === changeProps.venue);
+        // }
         const updatedEvent: EventResponse = { ...this.state.event, ...filtered };
 
         API.events.id.patch(this.state.event.id, changeProps).then(() => {
@@ -273,14 +332,14 @@ class Event extends React.Component<EventPropsType, EventStateType> {
     private changeStartTime = (date: Date) => {
         // TODO: timezone issues?
         this.patchEvent({
-            startDate: date.getTime(),
+            start: date.getTime(),
         });
     }
 
     private changeEndTime = (date: Date) => {
         // TODO: timezone issues?
         this.patchEvent({
-            endDate: date.getTime(),
+            end: date.getTime(),
         });
     }
 
@@ -298,12 +357,22 @@ class Event extends React.Component<EventPropsType, EventStateType> {
             role: this.state.chosenRole,
             userID: this.context.user.id,
         }).then((id) => {
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
             this.setState((oldState) => ({
                 signups: [{
                     userID: this.context.user.id,
                     role: oldState.chosenRole,
                     date: new Date().getTime() / 1000,
-                    id: id.result.id,
+                    id: id.result[0] as string,
                     user: this.context.user,
                 }, ...(oldState.signups ?? [])],
             }));
@@ -418,17 +487,33 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         if (this.state.event === undefined) return;
 
         API.events.id.comments.post(this.state.event.id, {
-            content: comment,
-            topic: topicID,
+            body: comment,
+            category: topicID,
+            // TODO: move ot actual UI
+            requiresAttention: false,
         }).then((id) => {
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
             this.setState((old) => ({
                 ...old,
                 comments: [{
-                    id: id.result.id,
-                    content: comment,
+                    id: id.result[0] as string,
+                    body: comment,
                     posted: new Date().getTime() / 1000,
                     poster: this.context.user,
-                    topic: (old.topics ?? []).find((e) => e.id === topicID),
+                    // TODO: move to UI
+                    requiresAttention: false,
+                    // TODO: actual category type
+                    category: topicID,
+                    // category: (old.topics ?? []).find((e) => e.id === topicID),
                 }, ...(old.comments ?? [])],
             }));
         }).catch((e) => {
@@ -464,7 +549,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
         ).flat();
     }
 
-    render() {
+    realRender() {
         return this.state.event ? (
             <div className="event-view loaded">
                 <div className="real">
@@ -484,7 +569,7 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                         <div className="property creation">
                             <span className="label">Created</span>
                             <span className="value">
-                                <ReactTimeAgo date={this.state.event.startDate * 1000} />
+                                <ReactTimeAgo date={this.state.event.start * 1000} />
                             </span>
                         </div>
                         <div className="property updates">
@@ -521,16 +606,17 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                 <div className="rightbar-real">
                     <div className="entry">
                         <div className="title">Venue</div>
-                        {this.generateEditableProperty(
-                            this.state.venues?.map((e: VenueResponse) => ({
-                                text: e.name,
-                                value: e.id,
-                                additional: e,
-                            })),
-                            'Venue',
-                            this.state.event.venue?.name,
-                            'venue',
-                        )}
+                        {/*TODO: rebuild venue selector for checkboxes*/}
+                        {/*{this.generateEditableProperty(*/}
+                        {/*    this.state.venues?.map((e: VenueResponse) => ({*/}
+                        {/*        text: e.name,*/}
+                        {/*        value: e.id,*/}
+                        {/*        additional: e,*/}
+                        {/*    })),*/}
+                        {/*    'Venue',*/}
+                        {/*    this.state.event.venue?.name,*/}
+                        {/*    'venue',*/}
+                        {/*)}*/}
                     </div>
                     <div className="entry">
                         <div className="title">Projected Attendance</div>
@@ -591,33 +677,34 @@ class Event extends React.Component<EventPropsType, EventStateType> {
                                     name="Booking Start"
                                     config={{
                                         type: 'date',
-                                        value: new Date(this.state.event.startDate * 1000),
+                                        value: new Date(this.state.event.start * 1000),
                                         onChange: this.changeStartTime,
                                     }}
                                 >
-                                    {moment.unix(this.state.event.startDate).format('dddd Do MMMM (YYYY), HH:mm')}
+                                    {moment.unix(this.state.event.start).format('dddd Do MMMM (YYYY), HH:mm')}
                                 </EditableProperty>
                             </div>
                             <div className="bar" />
                             <div className="duration">
                                 {moment.duration(
-                                    moment.unix(this.state.event.startDate).diff(moment.unix(this.state.event.endDate)),
+                                    moment.unix(this.state.event.start).diff(moment.unix(this.state.event.end)),
                                 ).humanize()}
                             </div>
                             <div className="bar" />
                             <div className="label">
                                 Booking End
                             </div>
+
                             <div className="time">
                                 <EditableProperty
                                     name="Booking End"
                                     config={{
                                         type: 'date',
-                                        value: new Date(this.state.event.endDate * 1000),
+                                        value: new Date(this.state.event.end * 1000),
                                         onChange: this.changeEndTime,
                                     }}
                                 >
-                                    {moment.unix(this.state.event.endDate).format('dddd Do MMMM (YYYY), HH:mm')}
+                                    {moment.unix(this.state.event.end).format('dddd Do MMMM (YYYY), HH:mm')}
                                 </EditableProperty>
                             </div>
                         </div>

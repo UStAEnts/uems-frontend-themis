@@ -66,7 +66,17 @@ class CreateTopicClass extends React.Component<CreateTopicPropsType, CreateTopic
             icon: this.state.topic.icon?.identifier, // Icons are optional,
             name: this.state.topic.name as string, // This is verified in the for loop above but the typing doesnt work
         }).then((id) => {
-            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/topics/${id.result.id}`);
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
+            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/topics/${id.result[0]}`);
         }).catch((err) => {
             UIUtilities.tryShowNotification(
                 this.props.notificationContext,

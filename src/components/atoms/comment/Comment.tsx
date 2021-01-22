@@ -67,7 +67,7 @@ export function Comment(props: CommentPropsType) {
                     </div>
                 </div>
                 <div className="bottom content">
-                    <Markdown>{props.comment.content}</Markdown>
+                    <Markdown>{props.comment.body}</Markdown>
                 </div>
             </div>
         </div>

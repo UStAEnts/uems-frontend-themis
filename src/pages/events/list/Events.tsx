@@ -7,6 +7,11 @@ import { Theme } from '../../../theme/Theme';
 
 import './Events.scss';
 import { API, EventResponse } from '../../../utilities/APIGen';
+import {
+    FallibleReactComponent,
+    FallibleReactStateType
+} from "../../../components/components/error-screen/FallibleReactComponent";
+import { loadAPIData } from "../../../utilities/DataUtilities";
 
 export type CalendarPropsType = {};
 
@@ -15,20 +20,11 @@ export type CalendarStateType = {
      * The list of events loaded from the gateway
      */
     events?: EventResponse[],
-    /**
-     * the error to be displayed if one has been provided
-     */
-    error?: string,
-};
+} & FallibleReactStateType;
 
-export class Events extends React.Component<CalendarPropsType, CalendarStateType> {
+export class Events extends FallibleReactComponent<CalendarPropsType, CalendarStateType> {
 
     static displayName = 'Calendar';
-
-    constructor(props: Readonly<CalendarPropsType>) {
-        super(props);
-        this.state = {};
-    }
 
     componentDidMount() {
         this.loadComments();
@@ -38,19 +34,25 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
      * Load the events from the API endpoint and update the state with the properties or populate the error state
      */
     private loadComments() {
-        API.events.get().then((events) => {
-            this.setState({
-                events: events.result,
-            });
-        }).catch((err: Error) => {
-            this.setState((oldState) => ({
-                ...oldState,
-                error: `Failed to load the events due to ${err.message}`,
-            }));
-        });
+        // API.events.get().then((events) => {
+        //     this.setState({
+        //         events: events.result,
+        //     });
+        // }).catch((err: Error) => {
+        //     this.setState((oldState) => ({
+        //         ...oldState,
+        //         error: `Failed to load the events due to ${err.message}`,
+        //     }));
+        // });
+
+        loadAPIData<CalendarStateType>([{
+            call: API.events.get,
+            stateName: 'events',
+            params: [],
+        }], this.setState.bind(this));
     }
 
-    render() {
+    realRender() {
         const loadOrError = this.state.error
             ? (
                 <div>
@@ -68,7 +70,6 @@ export class Events extends React.Component<CalendarPropsType, CalendarStateType
                 </div>
             );
 
-        console.log(this.state.events);
         return (
             <div
                 style={{

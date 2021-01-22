@@ -18,13 +18,15 @@
     "cookie-parser": "^1.4.5",
     "eslint": "^6.6.0",
     "express": "^4.17.1",
+    "flatpickr": "^4.6.9",
     "helmet": "^3.23.3",
     "include-media": "^1.4.9",
+    "javascript-time-ago": "^2.3.3",
     "markdown-to-jsx": "^6.11.4",
     "moment": "^2.27.0",
     "node-sass": "^4.14.1",
     "passport": "^0.4.1",
-    "passport-cookie": "^1.0.8",
+    "passport-cookie": "^1.0.9",
     "passport-http-bearer": "^1.0.1",
     "react": "^16.13.1",
     "react-color": "^2.18.1",
@@ -32,11 +34,13 @@
     "react-dom": "^16.13.1",
     "react-flatpickr": "^3.10.1",
     "react-loader-spinner": "^3.1.14",
+    "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-time-ago": "^6.0.0",
     "react-tooltip": "^4.2.7",
     "react-transition-group": "^4.4.1",
+    "recharts": "^1.8.5",
     "typescript": "^3.7.5",
     "url-join": "^4.0.1",
     "uuid": "^8.2.0",
@@ -56,7 +60,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "proxy": "http://localhost:15450",
+
   "browserslist": {
     "production": [
       ">0.2%",
@@ -87,6 +91,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-tooltip": "^4.2.4",
     "@types/react-transition-group": "^4.4.0",
+    "@types/recharts": "^1.8.14",
     "@types/testing-library__jest-dom": "^5.9.1",
     "@types/testing-library__react": "^10.2.0",
     "@types/url-join": "^4.0.0",

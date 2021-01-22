@@ -201,14 +201,14 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 </LinkedTD>
 
                 <LinkedTD to={`/events/${event.id}`}>{event.name}</LinkedTD>
-                <LinkedTD to={`/events/${event.id}`}>{event.venue?.name}</LinkedTD>
+                <LinkedTD to={`/events/${event.id}`}>{event.venues.map((e) => e.name).join(', ')}</LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
-                    {moment.unix(event.startDate).format(' dddd Do MMMM (YYYY), HH:mm ')}
+                    {moment.unix(event.start).format(' dddd Do MMMM (YYYY), HH:mm ')}
                     &#8594;
-                    {moment.unix(event.endDate).format(' dddd Do MMMM (YYYY), HH:mm ')}
+                    {moment.unix(event.end).format(' dddd Do MMMM (YYYY), HH:mm ')}
                 </LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
-                    <ReactTimeAgo date={event.startDate} />
+                    <ReactTimeAgo date={event.start} />
                 </LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
                     {this.makeEntsStatus(event.ents)}
@@ -247,11 +247,11 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             const filter = this.state.filters.date as DateFilterStatus;
 
             if (filter.startDate !== null) {
-                if (filter.startDate.isAfter(moment.unix(event.startDate))) return false;
+                if (filter.startDate.isAfter(moment.unix(event.start))) return false;
             }
 
             if (filter.endDate !== null) {
-                if (filter.endDate.isBefore(moment.unix(event.endDate))) return false;
+                if (filter.endDate.isBefore(moment.unix(event.end))) return false;
             }
         }
 
@@ -281,7 +281,8 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             if (typeof (filter.selectedOption) === 'string') return true;
 
             if (filter.selectedOption.value !== 'any') {
-                if (event.venue?.name.toLowerCase() !== (filter.selectedOption.additional as VenueResponse).name.toLowerCase()) return false;
+                if(!event.venues.map((e) => e.name.toLowerCase()).includes((filter.selectedOption.additional as VenueResponse).name.toLowerCase())) return false;
+                // if (event.venue?.name.toLowerCase() !== (filter.selectedOption.additional as VenueResponse).name.toLowerCase()) return false;
             }
         }
 

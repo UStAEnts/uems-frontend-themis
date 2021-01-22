@@ -2,7 +2,6 @@ import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import { faNetworkWired, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
 import Axios from 'axios';
-import urljoin from 'url-join';
 import { NotificationContextType } from '../../../context/NotificationContext';
 import { API } from '../../../utilities/APIGen';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
@@ -24,6 +23,7 @@ export type CreateFileStateType = {
         name?: string,
         private: boolean,
         file?: File,
+        type?: string,
     },
     ui: {
         progress?: number,
@@ -50,7 +50,18 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
     }
 
     private save = () => {
-        for (const key of ['name', 'file', 'private'] as (keyof CreateFileStateType['file'])[]) {
+        if (this.state.file.file === undefined) {
+            UIUtilities.tryShowNotification(
+                this.props.notificationContext,
+                'Invalid details',
+                `You must provide a file before saving`,
+                faSkullCrossbones,
+                Theme.FAILURE,
+            );
+            return;
+        }
+
+        for (const key of ['name', 'file', 'type'] as (keyof CreateFileStateType['file'])[]) {
             if (this.state.file[key] === undefined) {
                 UIUtilities.tryShowNotification(
                     this.props.notificationContext,
@@ -65,20 +76,32 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
 
         API.files.post({
             name: this.state.file.name as string,
-            private: this.state.file.private ?? false,
+            filename: this.state.file.file.name,
+            size: this.state.file.file.size,
+            type: this.state.file.type as string,
         }).then((id) => {
+            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+                UIUtilities.tryShowNotification(
+                    this.props.notificationContext,
+                    'Failed to save',
+                    `Received an error response: ID was not returned`,
+                    faNetworkWired,
+                    Theme.FAILURE,
+                );
+            }
+
             // Once the metadata is created, we need to upload
             const formData = new FormData();
-            formData.append('file', this.state.file.file as File);
+            formData.append('data', this.state.file.file as File);
 
-            Axios.put(urljoin('files', id.result.id), formData, {
+            Axios.post(id.uploadURI, formData, {
                 onUploadProgress: (progress) => {
                     failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'progress')(
                         Math.round((progress.loaded * 100) / progress.total),
                     );
                 },
             }).then(() => {
-                failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/file/${id.result.id}`);
+                failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/file/${id.result[0]}`);
             }).catch((err) => {
                 UIUtilities.tryShowNotification(
                     this.props.notificationContext,
@@ -127,6 +150,13 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
                     />
                     Private
                 </div>
+
+                <TextField
+                    name="File Type"
+                    initialContent={this.state.file.type}
+                    onChange={failEarlyStateSet(this.state, this.setState.bind(this), 'file', 'type')}
+                    required
+                />
 
                 <Button
                     color={Theme.SUCCESS}

@@ -51,4 +51,27 @@ export class Theme {
 
     static readonly NOTICE: string = Theme.CYAN;
 
+    static readonly ALL: string[] = [
+        Theme.PINK_LIGHT,
+        Theme.PINK,
+        Theme.YELLOW,
+        Theme.GOLD,
+        Theme.RED_LIGHT,
+        Theme.RED,
+        Theme.CYAN,
+        Theme.DEEP_SKY,
+        Theme.GRAY_LIGHT,
+        Theme.GREEN,
+        Theme.TEAL_LIGHT,
+        Theme.TEAL,
+        Theme.BLUE_LIGHT,
+        Theme.BLUE,
+        Theme.PURPLE_LIGHT,
+        Theme.PURPLE,
+        Theme.GRAY_LIGHT,
+        Theme.GRAY,
+        Theme.GRAY_DARK,
+        Theme.GRAY_DARKER,
+    ]
+
 }

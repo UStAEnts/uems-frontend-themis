@@ -1,15 +1,16 @@
 import React from 'react';
 import { API, EntsStateResponse } from '../../../utilities/APIGen';
-import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
+import { loadAPIData } from "../../../utilities/DataUtilities";
+import { FallibleReactComponent, FallibleReactStateType } from "../../../components/components/error-screen/FallibleReactComponent";
 
 export type ListEntPropsType = {};
 
 export type ListEntStateType = {
     ents?: EntsStateResponse[],
-};
+} & FallibleReactStateType;
 
-export class ListEnt extends React.Component<ListEntPropsType, ListEntStateType> {
+export class ListEnt extends FallibleReactComponent<ListEntPropsType, ListEntStateType> {
 
     static displayName = 'ListEnt';
 
@@ -20,11 +21,14 @@ export class ListEnt extends React.Component<ListEntPropsType, ListEntStateType>
     }
 
     componentDidMount() {
-        API.ents.get().then((data) => failEarlyStateSet(this.state, this.setState.bind(this), 'ents')(data.result))
-            .catch((err) => console.error(err));
+        loadAPIData<ListEntStateType>([{
+            params: [],
+            stateName: 'ents',
+            call: API.ents.get,
+        }], this.setState.bind(this));
     }
 
-    render() {
+    realRender() {
         if (!this.state.ents) return null;
 
         const ents: GenericRecord<EntsStateResponse>[] = this.state.ents.map((e) => ({

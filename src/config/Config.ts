@@ -24,7 +24,7 @@ const docker: Partial<ConfigType> = {
  * The configuration overrides to be applied when we are in a complete development environment
  */
 const development: Partial<ConfigType> = {
-    BASE_GATEWAY_URI: 'http://localhost:15450/',
+    BASE_GATEWAY_URI: '/api',
 };
 
 /**

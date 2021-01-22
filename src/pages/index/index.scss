@@ -76,17 +76,17 @@ body, html {
             height: 62px;
           }
         }
+      }
 
-        .sub-entry{
-          //display: none;
-          padding-left: 30px;
-          overflow: hidden;
-          height: 0;
-          transition: height 0.5s ease-in-out;
+      .sub-entry{
+        //display: none;
+        padding-left: 30px;
+        overflow: hidden;
+        //height: 0;
+        transition: height 0.5s ease-in-out;
 
-          .entry{
-            border-left: 1px solid #353535;
-          }
+        .entry{
+          border-left: 1px solid #353535;
         }
       }
 

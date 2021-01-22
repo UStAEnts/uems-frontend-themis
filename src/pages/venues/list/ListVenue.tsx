@@ -1,15 +1,19 @@
 import React from 'react';
 import { API, VenueResponse } from '../../../utilities/APIGen';
-import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
+import { loadAPIData } from '../../../utilities/DataUtilities';
+import {
+    FallibleReactComponent,
+    FallibleReactStateType,
+} from '../../../components/components/error-screen/FallibleReactComponent';
 
 export type ListVenuePropsType = {};
 
 export type ListVenueStateType = {
     venues?: VenueResponse[],
-};
+} & FallibleReactStateType;
 
-export class ListVenue extends React.Component<ListVenuePropsType, ListVenueStateType> {
+export class ListVenue extends FallibleReactComponent<ListVenuePropsType, ListVenueStateType> {
 
     static displayName = 'ListVenue';
 
@@ -20,11 +24,17 @@ export class ListVenue extends React.Component<ListVenuePropsType, ListVenueStat
     }
 
     componentDidMount() {
-        API.venues.get().then((data) => failEarlyStateSet(this.state, this.setState.bind(this), 'venues')(data.result))
-            .catch((err) => console.error(err));
+        loadAPIData<ListVenueStateType>(
+            [{
+                params: [],
+                stateName: 'venues',
+                call: API.venues.get,
+            }],
+            this.setState.bind(this),
+        );
     }
 
-    render() {
+    realRender() {
         if (!this.state.venues) return null;
 
         const venues: GenericRecord<VenueResponse>[] = this.state.venues.map((e) => ({
