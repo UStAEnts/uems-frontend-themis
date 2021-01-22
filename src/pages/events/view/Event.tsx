@@ -1,43 +1,23 @@
 import React from 'react';
-import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
 import moment from 'moment';
-import Axios from 'axios';
 import ReactTimeAgo from 'react-time-ago';
-import urljoin from 'url-join';
 import { faFileCode, faNetworkWired, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
 import { NotificationContextType } from '../../../context/NotificationContext';
 import { FileList } from '../../../components/atoms/file-bar/FileBar';
 import { CommentList } from '../../../components/components/comment-list/CommentList';
-import Config from '../../../config/Config';
 import { EditableProperty } from '../../../components/components/editable-property/EditableProperty';
 import { Theme } from '../../../theme/Theme';
 import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
-import {
-    API,
-    CommentResponse,
-    EntsStateResponse,
-    EventPropertyChangeResponse,
-    EventResponse,
-    EventUpdate,
-    FileResponse,
-    SignupResponse,
-    StateResponse,
-    TopicResponse,
-    User,
-    VenueResponse,
-} from '../../../utilities/APIGen';
+import { API, CommentResponse, EntsStateResponse, EventPropertyChangeResponse, EventResponse, EventUpdate, FileResponse, SignupResponse, StateResponse, TopicResponse, User, VenueResponse, } from '../../../utilities/APIGen';
 import { Button } from '../../../components/atoms/button/Button';
 import { GlobalContext } from '../../../context/GlobalContext';
 import './Event.scss';
-import {
-    FallibleReactComponent,
-    FallibleReactStateType
-} from "../../../components/components/error-screen/FallibleReactComponent";
-import { loadAPIData } from "../../../utilities/DataUtilities";
+import { FallibleReactComponent, FallibleReactStateType } from "../../../components/components/error-screen/FallibleReactComponent";
 import { UIUtilities } from "../../../utilities/UIUtilities";
 
 export type EventPropsType = {

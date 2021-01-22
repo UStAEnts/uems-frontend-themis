@@ -20,7 +20,7 @@ import {
     VenueResponse
 } from '../../utilities/APIGen';
 import { failEarlyStateSet } from '../../utilities/AccessUtilities';
-import { NotificationContext, NotificationPropsType } from '../../context/NotificationContext';
+import { NotificationPropsType } from '../../context/NotificationContext';
 import { UIUtilities } from '../../utilities/UIUtilities';
 import './Dashboard.scss';
 import { Theme } from '../../theme/Theme';

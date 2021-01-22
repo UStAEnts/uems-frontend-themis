@@ -2,7 +2,6 @@ import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import { faNetworkWired, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
 import Axios from 'axios';
-import urljoin from 'url-join';
 import { NotificationContextType } from '../../../context/NotificationContext';
 import { API } from '../../../utilities/APIGen';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';

@@ -1,10 +1,9 @@
 import React from 'react';
-import { faDownload, faLock, faLockOpen, faQuestion, faTimesCircle, IconName } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faLock, faLockOpen, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { Link, Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 import Loader from 'react-loader-spinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import moment from 'moment';
 import { Theme } from '../../../theme/Theme';
 import { Button } from '../../../components/atoms/button/Button';
 import { IconBox } from '../../../components/atoms/icon-box/IconBox';
@@ -14,7 +13,6 @@ import { EditableProperty } from '../../../components/components/editable-proper
 import { API, EventResponse, FileResponse } from '../../../utilities/APIGen';
 import { UIUtilities } from '../../../utilities/UIUtilities';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
-import { ColorUtilities } from '../../../utilities/ColorUtilities';
 import { TextField } from '../../../components/atoms/text-field/TextField';
 import {
     FallibleReactComponent,

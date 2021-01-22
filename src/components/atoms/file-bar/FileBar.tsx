@@ -3,7 +3,6 @@ import { faDownload, faFile, faGlobe, faLock } from '@fortawesome/free-solid-svg
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './Files.scss';
-import { Link } from 'react-router-dom';
 import { FileResponse } from '../../../utilities/APIGen';
 
 export const FileBar: React.FunctionComponent<{
