@@ -392,7 +392,7 @@ export type TopicResponse = z.infer<typeof TopicResponseZod>;
 export const VenueResponseZod = VenueCreationZod.extend({
     id: z.string(),
     user: UserZod,
-    date: z.number(),
+    date: z.number().optional(),
 });
 export type VenueResponse = z.infer<typeof VenueResponseZod>;
 export const SignupResponseZod = SignupCreationZod.extend({
