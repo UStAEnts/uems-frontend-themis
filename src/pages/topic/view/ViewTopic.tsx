@@ -90,7 +90,7 @@ class ViewTopicClass extends FallibleReactComponent<ViewTopicPropsType, ViewTopi
                     ]}
                     delete={{
                         redirect: '/topics',
-                        onDelete: () => UIUtilities.deleteWith409Support(API.topics.id.delete, this.props.match.params.id),
+                        onDelete: () => UIUtilities.deleteWith409Support(() => API.topics.id.delete(this.props.match.params.id)),
                     }}
                 />
             );

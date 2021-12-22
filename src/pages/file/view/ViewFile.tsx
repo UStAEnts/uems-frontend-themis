@@ -1,5 +1,5 @@
 import React from 'react';
-import { faDownload, faLock, faLockOpen, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import {faDownload, faLock, faLockOpen, faSkullCrossbones, faTimesCircle} from '@fortawesome/free-solid-svg-icons';
 import { Link, Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 import Loader from 'react-loader-spinner';
@@ -20,8 +20,12 @@ import {
 } from '../../../components/components/error-screen/FallibleReactComponent';
 import { loadAPIData } from '../../../utilities/DataUtilities';
 import { RenderUtilities } from "../../../utilities/RenderUtilities";
+import {NotificationContextType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
-export type ViewFilePropsType = {} & RouteComponentProps<{
+export type ViewFilePropsType = {
+    notificationContext?: NotificationContextType,
+} & RouteComponentProps<{
     id: string,
 }>;
 
@@ -161,14 +165,24 @@ class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileSt
                     value: event,
                 }))}
                 onClick={(entry: EventResponse) => {
-                    API.events.id.files.id.delete(entry.id, this.props.match.params.id).then(() => {
+                    UIUtilities.deleteWith409Support(() => API.events.id.files.id.delete(entry.id, this.props.match.params.id)).then((b) => {
+                        if(!b) throw new Error();
                         this.setState((old) => ({
                             ...old,
                             attached: (old.attached ?? []).filter((e) => e.id !== entry.id),
                             events: (old.events ?? []).concat([entry]),
                         }));
-                    }).catch(console.error);
-                    // TODO
+                    }).catch((err) => {
+                        if (this.props.notificationContext) {
+                            this.props.notificationContext.showNotification(
+                                'Could not remove signup',
+                                `Failed to remove: ${err.message}`,
+                                faSkullCrossbones,
+                                Theme.FAILURE,
+                            );
+                        }
+                    })
+
                 }}
                 dontPad
                 render={this.renderEvent('delete')}
@@ -273,4 +287,4 @@ class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileSt
 
 }
 
-export const ViewFile = withRouter(ViewFileClass);
+export const ViewFile = withRouter(withNotificationContext(ViewFileClass));

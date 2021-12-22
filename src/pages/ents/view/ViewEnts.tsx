@@ -77,7 +77,7 @@ class ViewEntsClass extends FallibleReactComponent<ViewEntsPropsType, ViewEntsSt
                     ]}
                     delete={{
                         redirect: '/ents',
-                        onDelete: () => UIUtilities.deleteWith409Support(API.ents.id.delete, this.props.match.params.id),
+                        onDelete: () => UIUtilities.deleteWith409Support(() => API.ents.id.delete(this.props.match.params.id)),
                     }}
                 />
             );

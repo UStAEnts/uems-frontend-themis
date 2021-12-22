@@ -84,7 +84,7 @@ class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsTy
                     events={this.state.events}
                     delete={{
                         redirect: '/states',
-                        onDelete: () => UIUtilities.deleteWith409Support(API.states.id.delete, this.props.match.params.id),
+                        onDelete: () => UIUtilities.deleteWith409Support(() => API.states.id.delete(this.props.match.params.id)),
                     }}
                 />
             );

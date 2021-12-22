@@ -92,7 +92,7 @@ class ViewVenueClass extends FallibleReactComponent<ViewVenuePropsType, ViewVenu
                     events={this.state.events}
                     delete={{
                         redirect: '/venues',
-                        onDelete: () => UIUtilities.deleteWith409Support(API.venues.id.delete, this.props.match.params.id),
+                        onDelete: () => UIUtilities.deleteWith409Support(()=> API.venues.id.delete(this.props.match.params.id)),
                     }}
                 />
             );
