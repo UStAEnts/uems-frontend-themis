@@ -24,7 +24,6 @@
     "javascript-time-ago": "^2.3.3",
     "markdown-to-jsx": "^6.11.4",
     "moment": "^2.27.0",
-    "node-sass": "^4.14.1",
     "passport": "^0.4.1",
     "passport-cookie": "^1.0.9",
     "passport-http-bearer": "^1.0.1",
@@ -41,6 +40,7 @@
     "react-tooltip": "^4.2.7",
     "react-transition-group": "^4.4.1",
     "recharts": "^1.8.5",
+    "sass": "^1.45.0",
     "typescript": "^3.7.5",
     "url-join": "^4.0.1",
     "uuid": "^8.2.0",
@@ -60,7 +60,6 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-
   "browserslist": {
     "production": [
       ">0.2%",
