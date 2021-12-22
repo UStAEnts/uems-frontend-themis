@@ -102,9 +102,9 @@ export class UIUtilities {
         }
     }
 
-    static async deleteWith409Support(handler: (id: string) => Promise<void>, param: string): Promise<boolean> {
+    static async deleteWith409Support(handler: () => Promise<void>): Promise<boolean> {
         try {
-            await handler(param);
+            await handler();
             return true;
         } catch (e) {
             if (axios.isAxiosError(e)) {
@@ -112,12 +112,12 @@ export class UIUtilities {
                 if (ae.response && ae.response.status === 409) {
                     throw new Error(ae.response.data.error.message);
                 } else {
-                    console.error('Failed to delete entity with ID', param, 'due to an unspecified error', e);
+                    console.error('Failed to delete entity due to an unspecified error', e);
                 }
             } else {
-                console.error('Failed to delete entity with ID', param, 'due to an unspecified, non axios error', e);
+                console.error('Failed to delete entity due to an unspecified, non axios error', e);
             }
-            return false;
+            throw e;
         }
     }
 
