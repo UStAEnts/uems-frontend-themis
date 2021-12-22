@@ -8,6 +8,7 @@ import {
     FallibleReactStateType,
 } from '../../../components/components/error-screen/FallibleReactComponent';
 import { loadAPIData } from '../../../utilities/DataUtilities';
+import {UIUtilities} from "../../../utilities/UIUtilities";
 
 export type ViewStatePropsType = {} & RouteComponentProps<{
     id: string,
@@ -83,14 +84,7 @@ class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsTy
                     events={this.state.events}
                     delete={{
                         redirect: '/states',
-                        onDelete: async () => {
-                            try {
-                                await API.states.id.delete(this.props.match.params.id);
-                                return true;
-                            } catch (e) {
-                                return false;
-                            }
-                        },
+                        onDelete: () => UIUtilities.deleteWith409Support(() => API.states.id.delete(this.props.match.params.id)),
                     }}
                 />
             );

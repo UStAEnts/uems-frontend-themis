@@ -391,7 +391,9 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
     private removeSignup = (id: string) => {
         if (this.state.event === undefined) return;
 
-        API.events.id.signups.id.delete(this.state.event.id, id).then(() => {
+        const stateID = this.state.event.id;
+        UIUtilities.deleteWith409Support(() => API.events.id.signups.id.delete(stateID, id)).then((b) => {
+            if(!b) throw new Error();
             this.setState((oldState) => ({
                 signups: (oldState.signups ?? []).filter((e) => e.id !== id),
             }));
@@ -404,7 +406,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                     Theme.FAILURE,
                 );
             }
-        });
+        })
     }
 
     /**

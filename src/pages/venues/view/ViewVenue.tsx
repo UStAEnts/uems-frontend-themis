@@ -8,6 +8,7 @@ import {
     FallibleReactComponent,
     FallibleReactStateType,
 } from '../../../components/components/error-screen/FallibleReactComponent';
+import {UIUtilities} from "../../../utilities/UIUtilities";
 
 export type ViewVenuePropsType = {} & RouteComponentProps<{
     id: string,
@@ -90,14 +91,7 @@ class ViewVenueClass extends FallibleReactComponent<ViewVenuePropsType, ViewVenu
                     events={this.state.events}
                     delete={{
                         redirect: '/venues',
-                        onDelete: async () => {
-                            try {
-                                await API.venues.id.delete(this.props.match.params.id);
-                                return true;
-                            } catch (e) {
-                                return false;
-                            }
-                        },
+                        onDelete: () => UIUtilities.deleteWith409Support(()=> API.venues.id.delete(this.props.match.params.id)),
                     }}
                 />
             );

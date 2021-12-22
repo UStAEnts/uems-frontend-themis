@@ -1,7 +1,15 @@
 import React from 'react';
 import moment from 'moment';
 import Loader from 'react-loader-spinner';
-import { faBolt, faChartLine, faPalette, faTag, faTicketAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+    faBolt,
+    faChartLine,
+    faPalette,
+    faSkullCrossbones,
+    faTag,
+    faTicketAlt,
+    faTrash
+} from '@fortawesome/free-solid-svg-icons';
 import { Redirect, withRouter } from 'react-router-dom';
 import { CommentResponse, EventResponse } from '../../../utilities/APIGen';
 import { Theme } from '../../../theme/Theme';
@@ -14,6 +22,9 @@ import { CommentList } from '../comment-list/CommentList';
 import { Button } from '../../atoms/button/Button';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import './EventOrCommentRelatedView.scss';
+import {NotificationContextType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../WithNotificationContext";
+import {UIUtilities} from "../../../utilities/UIUtilities";
 
 export type Override<T> = {
     property: Extract<keyof T, string>,
@@ -31,7 +42,8 @@ export type EventRelatedViewPropsType<T, C> = {
     delete?: {
         redirect: string,
         onDelete: () => boolean | Promise<boolean>,
-    }
+    },
+    notificationContext?: NotificationContextType,
 };
 
 export type EventRelatedViewStateType = {
@@ -303,6 +315,13 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
                 'redirect',
             )(this.props.delete?.redirect ?? '/');
         }).catch((err) => {
+            UIUtilities.tryShowNotification(
+                this.props.notificationContext,
+                'Failed to delete',
+                err.message ?? 'An unknown error occurred',
+                faSkullCrossbones,
+                Theme.FAILURE,
+            );
             console.error('Handle errors', err);
         });
     };
@@ -426,4 +445,4 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
 // @ts-ignore
 export const EventOrCommentRelatedView: React.ComponentClass<EventRelatedViewPropsType<any, any>,
     // @ts-ignore
-    EventRelatedViewStateType> = withRouter(EventOrCommentRelatedViewClass);
+    EventRelatedViewStateType> = withRouter(withNotificationContext(EventOrCommentRelatedViewClass));

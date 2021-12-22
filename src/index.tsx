@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import JavascriptTimeAgo from 'javascript-time-ago';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import en from 'javascript-time-ago/locale/en';
+import en from 'javascript-time-ago/locale/en.json'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'flatpickr/dist/themes/material_green.css';
 
