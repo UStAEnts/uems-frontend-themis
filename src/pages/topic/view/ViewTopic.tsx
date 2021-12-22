@@ -8,6 +8,7 @@ import {
     FallibleReactStateType,
 } from '../../../components/components/error-screen/FallibleReactComponent';
 import { loadAPIData } from '../../../utilities/DataUtilities';
+import {UIUtilities} from "../../../utilities/UIUtilities";
 
 export type ViewTopicPropsType = {} & RouteComponentProps<{
     id: string,
@@ -89,14 +90,7 @@ class ViewTopicClass extends FallibleReactComponent<ViewTopicPropsType, ViewTopi
                     ]}
                     delete={{
                         redirect: '/topics',
-                        onDelete: async () => {
-                            try {
-                                await API.topics.id.delete(this.props.match.params.id);
-                                return true;
-                            } catch (e) {
-                                return false;
-                            }
-                        },
+                        onDelete: () => UIUtilities.deleteWith409Support(API.topics.id.delete, this.props.match.params.id),
                     }}
                 />
             );

@@ -8,6 +8,7 @@ import {
     FallibleReactComponent,
     FallibleReactStateType
 } from "../../../components/components/error-screen/FallibleReactComponent";
+import {UIUtilities} from "../../../utilities/UIUtilities";
 
 export type ViewEntsPropsType = {} & RouteComponentProps<{
     id: string,
@@ -76,14 +77,7 @@ class ViewEntsClass extends FallibleReactComponent<ViewEntsPropsType, ViewEntsSt
                     ]}
                     delete={{
                         redirect: '/ents',
-                        onDelete: async () => {
-                            try {
-                                await API.ents.id.delete(this.props.match.params.id);
-                                return true;
-                            } catch (e) {
-                                return false;
-                            }
-                        },
+                        onDelete: () => UIUtilities.deleteWith409Support(API.ents.id.delete, this.props.match.params.id),
                     }}
                 />
             );
