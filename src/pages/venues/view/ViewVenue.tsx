@@ -9,6 +9,7 @@ import {
     FallibleReactStateType,
 } from '../../../components/components/error-screen/FallibleReactComponent';
 import axios, {AxiosError} from "axios";
+import {UIUtilities} from "../../../utilities/UIUtilities";
 
 export type ViewVenuePropsType = {} & RouteComponentProps<{
     id: string,
@@ -91,21 +92,7 @@ class ViewVenueClass extends FallibleReactComponent<ViewVenuePropsType, ViewVenu
                     events={this.state.events}
                     delete={{
                         redirect: '/venues',
-                        onDelete: async () => {
-                            try {
-                                await API.venues.id.delete(this.props.match.params.id);
-                                return true;
-                            } catch (e) {
-                                if (axios.isAxiosError(e)){
-                                    const ae: AxiosError = e;
-                                    if (ae.response && ae.response.status === 409){
-                                        throw new Error(ae.response.data.error.message);
-                                    }
-                                }
-                                console.error('failure', e);
-                                return false;
-                            }
-                        },
+                        onDelete: () => UIUtilities.deleteWith409Support(API.venues.id.delete, this.props.match.params.id),
                     }}
                 />
             );

@@ -1,7 +1,9 @@
-import { faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { NotificationContextType } from '../context/NotificationContext';
-import { Notification } from '../components/components/notification-renderer/NotificationRenderer';
-import { Theme } from "../theme/Theme";
+import {faSkullCrossbones, IconDefinition} from '@fortawesome/free-solid-svg-icons';
+import {NotificationContextType} from '../context/NotificationContext';
+import {Notification} from '../components/components/notification-renderer/NotificationRenderer';
+import {Theme} from "../theme/Theme";
+import {API} from "./APIGen";
+import axios, {AxiosError} from "axios";
 
 type LoaderOptions = 'Audio' | 'BallTriangle' | 'Bars' | 'Circles' | 'Grid' | 'Hearts' | 'Oval' | 'Puff'
     | 'Rings' | 'TailSpin' | 'ThreeDots' | 'Watch' | 'RevolvingDot' | 'Triangle' | 'Plane' | 'MutatingDots'
@@ -97,6 +99,25 @@ export class UIUtilities {
             } catch (e) {
                 console.error('Notification system failed to send', e);
             }
+        }
+    }
+
+    static async deleteWith409Support(handler: (id: string) => Promise<void>, param: string): Promise<boolean> {
+        try {
+            await handler(param);
+            return true;
+        } catch (e) {
+            if (axios.isAxiosError(e)) {
+                const ae: AxiosError = e;
+                if (ae.response && ae.response.status === 409) {
+                    throw new Error(ae.response.data.error.message);
+                } else {
+                    console.error('Failed to delete entity with ID', param, 'due to an unspecified error', e);
+                }
+            } else {
+                console.error('Failed to delete entity with ID', param, 'due to an unspecified, non axios error', e);
+            }
+            return false;
         }
     }
 
