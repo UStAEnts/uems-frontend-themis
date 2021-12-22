@@ -8,7 +8,6 @@ import {
     FallibleReactComponent,
     FallibleReactStateType,
 } from '../../../components/components/error-screen/FallibleReactComponent';
-import axios, {AxiosError} from "axios";
 import {UIUtilities} from "../../../utilities/UIUtilities";
 
 export type ViewVenuePropsType = {} & RouteComponentProps<{

@@ -2,7 +2,6 @@ import {faSkullCrossbones, IconDefinition} from '@fortawesome/free-solid-svg-ico
 import {NotificationContextType} from '../context/NotificationContext';
 import {Notification} from '../components/components/notification-renderer/NotificationRenderer';
 import {Theme} from "../theme/Theme";
-import {API} from "./APIGen";
 import axios, {AxiosError} from "axios";
 
 type LoaderOptions = 'Audio' | 'BallTriangle' | 'Bars' | 'Circles' | 'Grid' | 'Hearts' | 'Oval' | 'Puff'
