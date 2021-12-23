@@ -490,7 +490,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
         API.events.id.comments.post(this.state.event.id, {
             body: comment,
-            category: topicID,
+            topic: topicID,
             // TODO: move ot actual UI
             requiresAttention: false,
         }).then((id) => {
