@@ -278,7 +278,7 @@ export const IDOnlyResponseZod = z.array(z.string().optional());
 export type IDOnlyResponse = z.infer<typeof IDOnlyResponseZod>;
 export const CommentUpdateZod = z.object({
     body: z.string(),
-    category: z.string().optional(),
+    topic: z.string().optional(),
     requiresAttention: z.boolean(),
 });
 export type CommentUpdate = z.infer<typeof CommentUpdateZod>;
