@@ -432,6 +432,7 @@ export const EventResponseZod = EventCreationZod.omit({ venue: true, ents: true,
     venues: z.array(VenueResponseZod),
     ents: EntsStateResponseZod.optional(),
     state: StateResponseZod.optional(),
+    author: UserZod,
     id: z.string(),
 });
 export type EventResponse = z.infer<typeof EventResponseZod>;
