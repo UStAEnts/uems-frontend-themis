@@ -60,6 +60,7 @@ import './pages/index/flexboxgrid.css';
 import { ListFile } from './pages/file/list/ListFile';
 import { ViewFile } from './pages/file/view/ViewFile';
 import Axios from "axios";
+import Sidebar from "./components/components/sidebar/Sidebar";
 
 // Register EN locale for time ago components
 JavascriptTimeAgo.addLocale(en);
@@ -232,122 +233,123 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                                     processNotifications(this.state.notifications, this.state.animationStates)
                                 }
                             />
-                            <div className="sidebar-real">
-                                <img
-                                    src="/ents-crew-white.png"
-                                    className="header-image"
-                                    alt="UEMS Logo:
-                                    The text UEMS in a bold geometric font surrounded by a white outlined rectangle."
-                                />
-                                <div className="sidebar-content">
-                                    <NavLink to="/" exact className="entry">
-                                        <FontAwesomeIcon icon={faColumns} />
-                                        <span>Dashboard</span>
-                                    </NavLink>
+                            {/*<div className="sidebar-real">*/}
+                            {/*    <img*/}
+                            {/*        src="/ents-crew-white.png"*/}
+                            {/*        className="header-image"*/}
+                            {/*        alt="UEMS Logo:*/}
+                            {/*        The text UEMS in a bold geometric font surrounded by a white outlined rectangle."*/}
+                            {/*    />*/}
+                            {/*    <div className="sidebar-content">*/}
+                            {/*        <NavLink to="/" exact className="entry">*/}
+                            {/*            <FontAwesomeIcon icon={faColumns} />*/}
+                            {/*            <span>Dashboard</span>*/}
+                            {/*        </NavLink>*/}
 
-                                    {/* EVENTS */}
-                                    <NavLink to="/events" className="nav-link">
-                                        <div className="entry">
-                                            <FontAwesomeIcon icon={faCalendarTimes} />
-                                            <span>Events</span>
-                                        </div>
-                                    </NavLink>
-                                    <Switch>
-                                        <Route path="/events">
-                                            <div className="sub-entry">
-                                                <NavLink to="/events/create" exact className="entry">
-                                                    <FontAwesomeIcon icon={faPlusCircle} />
-                                                    <span>Add</span>
-                                                </NavLink>
-                                            </div>
-                                        </Route>
-                                    </Switch>
+                            {/*        /!* EVENTS *!/*/}
+                            {/*        <NavLink to="/events" className="nav-link">*/}
+                            {/*            <div className="entry">*/}
+                            {/*                <FontAwesomeIcon icon={faCalendarTimes} />*/}
+                            {/*                <span>Events</span>*/}
+                            {/*            </div>*/}
+                            {/*        </NavLink>*/}
+                            {/*        <Switch>*/}
+                            {/*            <Route path="/events">*/}
+                            {/*                <div className="sub-entry">*/}
+                            {/*                    <NavLink to="/events/create" exact className="entry">*/}
+                            {/*                        <FontAwesomeIcon icon={faPlusCircle} />*/}
+                            {/*                        <span>Add</span>*/}
+                            {/*                    </NavLink>*/}
+                            {/*                </div>*/}
+                            {/*            </Route>*/}
+                            {/*        </Switch>*/}
 
-                                    {/* VENUES */}
-                                    <NavLink to="/venues" className="nav-link">
-                                        <div className="entry">
-                                            <FontAwesomeIcon icon={faBuilding} />
-                                            <span>Venues</span>
-                                        </div>
-                                    </NavLink>
-                                    <Switch>
-                                        <Route path="/venues">
-                                            <div className="sub-entry">
-                                                <NavLink to="/venues/create" exact className="entry">
-                                                    <FontAwesomeIcon icon={faPlusCircle} />
-                                                    <span>Add</span>
-                                                </NavLink>
-                                            </div>
-                                        </Route>
-                                    </Switch>
+                            {/*        /!* VENUES *!/*/}
+                            {/*        <NavLink to="/venues" className="nav-link">*/}
+                            {/*            <div className="entry">*/}
+                            {/*                <FontAwesomeIcon icon={faBuilding} />*/}
+                            {/*                <span>Venues</span>*/}
+                            {/*            </div>*/}
+                            {/*        </NavLink>*/}
+                            {/*        <Switch>*/}
+                            {/*            <Route path="/venues">*/}
+                            {/*                <div className="sub-entry">*/}
+                            {/*                    <NavLink to="/venues/create" exact className="entry">*/}
+                            {/*                        <FontAwesomeIcon icon={faPlusCircle} />*/}
+                            {/*                        <span>Add</span>*/}
+                            {/*                    </NavLink>*/}
+                            {/*                </div>*/}
+                            {/*            </Route>*/}
+                            {/*        </Switch>*/}
 
-                                    {/* FILES */}
-                                    <NavLink to="/files" className="nav-link">
-                                        <div className="entry">
-                                            <FontAwesomeIcon icon={faFileContract} />
-                                            <span>Files</span>
-                                        </div>
-                                    </NavLink>
-                                    <Switch>
-                                        <Route path="/files">
-                                            <div className="sub-entry">
-                                                <NavLink to="/files/create" exact className="entry">
-                                                    <FontAwesomeIcon icon={faCloudUploadAlt} />
-                                                    <span>Upload</span>
-                                                </NavLink>
-                                            </div>
-                                        </Route>
-                                    </Switch>
+                            {/*        /!* FILES *!/*/}
+                            {/*        <NavLink to="/files" className="nav-link">*/}
+                            {/*            <div className="entry">*/}
+                            {/*                <FontAwesomeIcon icon={faFileContract} />*/}
+                            {/*                <span>Files</span>*/}
+                            {/*            </div>*/}
+                            {/*        </NavLink>*/}
+                            {/*        <Switch>*/}
+                            {/*            <Route path="/files">*/}
+                            {/*                <div className="sub-entry">*/}
+                            {/*                    <NavLink to="/files/create" exact className="entry">*/}
+                            {/*                        <FontAwesomeIcon icon={faCloudUploadAlt} />*/}
+                            {/*                        <span>Upload</span>*/}
+                            {/*                    </NavLink>*/}
+                            {/*                </div>*/}
+                            {/*            </Route>*/}
+                            {/*        </Switch>*/}
 
-                                    {/* ENTS */}
-                                    <NavLink to="/ents" className="nav-link">
-                                        <div className="entry">
-                                            <FontAwesomeIcon icon={faWrench} />
-                                            <span>Ents States</span>
-                                        </div>
-                                    </NavLink>
-                                    <Switch>
-                                        <Route path="/ents">
-                                            <div className="sub-entry">
-                                                <NavLink to="/ents/create" exact className="entry">
-                                                    <FontAwesomeIcon icon={faPlusCircle} />
-                                                    <span>Add</span>
-                                                </NavLink>
-                                            </div>
-                                        </Route>
-                                    </Switch>
+                            {/*        /!* ENTS *!/*/}
+                            {/*        <NavLink to="/ents" className="nav-link">*/}
+                            {/*            <div className="entry">*/}
+                            {/*                <FontAwesomeIcon icon={faWrench} />*/}
+                            {/*                <span>Ents States</span>*/}
+                            {/*            </div>*/}
+                            {/*        </NavLink>*/}
+                            {/*        <Switch>*/}
+                            {/*            <Route path="/ents">*/}
+                            {/*                <div className="sub-entry">*/}
+                            {/*                    <NavLink to="/ents/create" exact className="entry">*/}
+                            {/*                        <FontAwesomeIcon icon={faPlusCircle} />*/}
+                            {/*                        <span>Add</span>*/}
+                            {/*                    </NavLink>*/}
+                            {/*                </div>*/}
+                            {/*            </Route>*/}
+                            {/*        </Switch>*/}
 
-                                    {/* STATES */}
-                                    <NavLink to="/states" className="nav-link">
-                                        <div className="entry">
-                                            <FontAwesomeIcon icon={faTags} />
-                                            <span>States</span>
-                                        </div>
-                                    </NavLink>
-                                    <Switch>
-                                        <Route path="/states">
-                                            <div className="sub-entry">
-                                                <NavLink to="/states/create" exact className="entry">
-                                                    <FontAwesomeIcon icon={faPlusCircle} />
-                                                    <span>Add</span>
-                                                </NavLink>
-                                            </div>
-                                        </Route>
-                                    </Switch>
+                            {/*        /!* STATES *!/*/}
+                            {/*        <NavLink to="/states" className="nav-link">*/}
+                            {/*            <div className="entry">*/}
+                            {/*                <FontAwesomeIcon icon={faTags} />*/}
+                            {/*                <span>States</span>*/}
+                            {/*            </div>*/}
+                            {/*        </NavLink>*/}
+                            {/*        <Switch>*/}
+                            {/*            <Route path="/states">*/}
+                            {/*                <div className="sub-entry">*/}
+                            {/*                    <NavLink to="/states/create" exact className="entry">*/}
+                            {/*                        <FontAwesomeIcon icon={faPlusCircle} />*/}
+                            {/*                        <span>Add</span>*/}
+                            {/*                    </NavLink>*/}
+                            {/*                </div>*/}
+                            {/*            </Route>*/}
+                            {/*        </Switch>*/}
 
-                                    {/* EQUIPMENT */}
-                                    <NavLink to="/equipment" className="entry">
-                                        <FontAwesomeIcon icon={faBox} />
-                                        <span>Equipment</span>
-                                    </NavLink>
+                            {/*        /!* EQUIPMENT *!/*/}
+                            {/*        <NavLink to="/equipment" className="entry">*/}
+                            {/*            <FontAwesomeIcon icon={faBox} />*/}
+                            {/*            <span>Equipment</span>*/}
+                            {/*        </NavLink>*/}
 
-                                    {/* OPS PLANNING */}
-                                    <NavLink to="/ops-planning" className="entry">
-                                        <FontAwesomeIcon icon={faPaperPlane} />
-                                        <span>Ops Planning</span>
-                                    </NavLink>
-                                </div>
-                            </div>
+                            {/*        /!* OPS PLANNING *!/*/}
+                            {/*        <NavLink to="/ops-planning" className="entry">*/}
+                            {/*            <FontAwesomeIcon icon={faPaperPlane} />*/}
+                            {/*            <span>Ops Planning</span>*/}
+                            {/*        </NavLink>*/}
+                            {/*    </div>*/}
+                            {/*</div>*/}
+                            <Sidebar/>
 
                             <div className="sidebar-spacer" />
 
