@@ -644,7 +644,15 @@ export type APIType = {
                     patch: (id: string, comment: string, body: CommentUpdate)
                         => Promise<PatchEventsIdCommentsCommentAPIResponse>,
                     delete: (id: string, comment: string)
-                        => Promise<void>
+                        => Promise<void>,
+                    resolve: {
+                        post: (id: string, comment: string)
+                               => Promise<void>,
+                    },
+                    attention: {
+                        post: (id: string, comment: string)
+                               => Promise<void>,
+                    },
                 }
             },
             files: {
@@ -916,7 +924,37 @@ export const API: APIType = {
                             ),
                             '/events/{id}/comments/{comment}',
                             'Deletes the comment from the event',
-                        )
+                        ),
+                    resolve: {
+                        post: bind<void>(
+                            (
+                                uri: string,
+                                id: string,
+                                comment: string,
+                            ) => postRequest(
+                                uri,
+                                {},
+                                {id, comment},
+                            ),
+                            '/events/{id}/comments/{comment}/resolve',
+                            'Resolves the comment from the event',
+                        ),
+                    },
+                    attention: {
+                        post: bind<void>(
+                            (
+                                uri: string,
+                                id: string,
+                                comment: string,
+                            ) => postRequest(
+                                uri,
+                                {},
+                                {id, comment},
+                            ),
+                            '/events/{id}/comments/{comment}/attention',
+                            'Marks the comment is requiring attention from the event',
+                        ),
+                    },
                 }
             },
             files: {

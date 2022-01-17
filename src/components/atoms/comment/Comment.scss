@@ -4,6 +4,19 @@
   border: 1px solid #efefef;
   margin: 15px 0;
 
+  &.attention{
+    box-shadow: red 0px 0px 6px 1px;
+  }
+
+  .flags{
+    margin-top: 10px;
+    margin-right: 10px;
+
+    svg{
+      cursor: pointer;
+    }
+  }
+
   .left {
     flex-basis: 5.5pc;
     flex-grow: 0;
