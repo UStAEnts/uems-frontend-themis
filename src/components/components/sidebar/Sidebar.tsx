@@ -38,6 +38,9 @@ const MdiSendOutline = () => (<svg style={{width: '24px', height: '24px'}} viewB
     <path fill="currentColor"
           d="M4 6.03L11.5 9.25L4 8.25L4 6.03M11.5 14.75L4 17.97V15.75L11.5 14.75M2 3L2 10L17 12L2 14L2 21L23 12L2 3Z"/>
 </svg>);
+const MdiCardTextOutline = () => (<svg style={{width: '24px', height: '24px'}} viewBox="0 0 24 24">
+    <path fill="currentColor" d="M20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20M4,6V18H20V6H4M6,9H18V11H6V9M6,13H16V15H6V13Z" />
+</svg>)
 
 export default function Sidebar() {
     const location = useLocation();
@@ -125,6 +128,22 @@ export default function Sidebar() {
                     <span className={classes.name}>States</span>
                 </NavLink>
                 <NavLink to="/states/create" exact className={and(classes.navigationLink, classes.sub)}
+                         onClick={navLinkClick} activeClassName={classes.active}>
+                    <div className={classes.icon}>
+                        <MdiPlusCircleOutline/>
+                    </div>
+                    <span className={classes.name}>Create</span>
+                </NavLink>
+            </div>
+
+            <div className={and(classes.marker, ait(/\/topics\/?.*/))}>
+                <NavLink to="/topics" className={classes.navigationLink} onClick={navLinkClick} activeClassName={classes.active}>
+                    <div className={classes.icon}>
+                        <MdiCardTextOutline/>
+                    </div>
+                    <span className={classes.name}>Topics</span>
+                </NavLink>
+                <NavLink to="/topics/create" exact className={and(classes.navigationLink, classes.sub)}
                          onClick={navLinkClick} activeClassName={classes.active}>
                     <div className={classes.icon}>
                         <MdiPlusCircleOutline/>
