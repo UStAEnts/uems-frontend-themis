@@ -48,7 +48,7 @@ export function Comment(props: CommentPropsType) {
                 <div className="image">
                     <img
                         alt={`Profile for ${props.comment.poster.name}`}
-                        src={props.comment.poster.profile || 'https://placehold.it/200x200'}
+                        src={props.comment.poster.profile || '/default-icon.png'}
                     />
                 </div>
             </div>
