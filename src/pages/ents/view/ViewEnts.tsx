@@ -9,10 +9,12 @@ import {
     FallibleReactStateType
 } from "../../../components/components/error-screen/FallibleReactComponent";
 import {UIUtilities} from "../../../utilities/UIUtilities";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
 export type ViewEntsPropsType = {} & RouteComponentProps<{
     id: string,
-}>;
+}> & NotificationPropsType;
 
 export type ViewEntsStateType = {
     ents?: EntsStateResponse,
@@ -32,7 +34,7 @@ class ViewEntsClass extends FallibleReactComponent<ViewEntsPropsType, ViewEntsSt
             params: [this.props.match.params.id],
             stateName: 'ents',
             call: API.ents.id.get,
-        }], this.setState.bind(this));
+        }], this.setState.bind(this), () => UIUtilities.tryShowPartialWarning(this));
     }
 
     //
@@ -86,4 +88,4 @@ class ViewEntsClass extends FallibleReactComponent<ViewEntsPropsType, ViewEntsSt
     }
 }
 
-export const ViewEnts = withRouter(ViewEntsClass);
+export const ViewEnts = withNotificationContext(withRouter(ViewEntsClass));

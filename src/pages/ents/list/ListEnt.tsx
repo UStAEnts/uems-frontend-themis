@@ -3,14 +3,18 @@ import { API, EntsStateResponse } from '../../../utilities/APIGen';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
 import { loadAPIData } from "../../../utilities/DataUtilities";
 import { FallibleReactComponent, FallibleReactStateType } from "../../../components/components/error-screen/FallibleReactComponent";
+import {UIUtilities} from "../../../utilities/UIUtilities";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
-export type ListEntPropsType = {};
+export type ListEntPropsType = {} & NotificationPropsType;
 
 export type ListEntStateType = {
     ents?: EntsStateResponse[],
 } & FallibleReactStateType;
 
-export class ListEnt extends FallibleReactComponent<ListEntPropsType, ListEntStateType> {
+
+class ListEntClass extends FallibleReactComponent<ListEntPropsType, ListEntStateType> {
 
     static displayName = 'ListEnt';
 
@@ -25,7 +29,7 @@ export class ListEnt extends FallibleReactComponent<ListEntPropsType, ListEntSta
             params: [],
             stateName: 'ents',
             call: API.ents.get,
-        }], this.setState.bind(this));
+        }], this.setState.bind(this), () => UIUtilities.tryShowPartialWarning(this));
     }
 
     realRender() {
@@ -49,3 +53,5 @@ export class ListEnt extends FallibleReactComponent<ListEntPropsType, ListEntSta
         );
     }
 }
+
+export const ListEnt = withNotificationContext(ListEntClass);

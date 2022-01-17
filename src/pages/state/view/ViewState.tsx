@@ -9,10 +9,12 @@ import {
 } from '../../../components/components/error-screen/FallibleReactComponent';
 import { loadAPIData } from '../../../utilities/DataUtilities';
 import {UIUtilities} from "../../../utilities/UIUtilities";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
 export type ViewStatePropsType = {} & RouteComponentProps<{
     id: string,
-}>;
+}> & NotificationPropsType;
 
 export type ViewStateStateType = {
     state?: StateResponse,
@@ -44,6 +46,7 @@ class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsTy
                 },
             ],
             this.setState.bind(this),
+            () => UIUtilities.tryShowPartialWarning(this),
         );
     }
 
@@ -94,4 +97,4 @@ class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsTy
 
 }
 
-export const ViewState = withRouter(ExperimentalViewStateClass);
+export const ViewState = withNotificationContext(withRouter(ExperimentalViewStateClass));

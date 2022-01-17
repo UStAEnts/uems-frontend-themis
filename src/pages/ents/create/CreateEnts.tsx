@@ -64,6 +64,8 @@ class CreateEntsClass extends React.Component<CreateEntsPropsType, CreateEntsSta
             color: this.state.ents.color as string,
             name: this.state.ents.name as string, // This is verified in the for loop above but the typing doesnt work
         }).then((id) => {
+            if (id.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
                 UIUtilities.tryShowNotification(
                     this.props.notificationContext,

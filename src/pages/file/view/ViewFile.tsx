@@ -69,6 +69,7 @@ class ViewFileClass extends FallibleReactComponent<ViewFilePropsType, ViewFileSt
                 },
             ],
             this.setState.bind(this),
+            () => UIUtilities.tryShowPartialWarning(this),
         );
     }
 

@@ -6,14 +6,17 @@ import {
     FallibleReactComponent,
     FallibleReactStateType,
 } from '../../../components/components/error-screen/FallibleReactComponent';
+import {UIUtilities} from "../../../utilities/UIUtilities";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
-export type ListVenuePropsType = {};
+export type ListVenuePropsType = {} & NotificationPropsType;
 
 export type ListVenueStateType = {
     venues?: VenueResponse[],
 } & FallibleReactStateType;
 
-export class ListVenue extends FallibleReactComponent<ListVenuePropsType, ListVenueStateType> {
+class ListVenueClass extends FallibleReactComponent<ListVenuePropsType, ListVenueStateType> {
 
     static displayName = 'ListVenue';
 
@@ -31,6 +34,7 @@ export class ListVenue extends FallibleReactComponent<ListVenuePropsType, ListVe
                 call: API.venues.get,
             }],
             this.setState.bind(this),
+            () => UIUtilities.tryShowPartialWarning(this),
         );
     }
 
@@ -55,3 +59,5 @@ export class ListVenue extends FallibleReactComponent<ListVenuePropsType, ListVe
         );
     }
 }
+
+export const ListVenue = withNotificationContext(ListVenueClass);

@@ -12,8 +12,11 @@ import {
     FallibleReactStateType
 } from "../../../components/components/error-screen/FallibleReactComponent";
 import { loadAPIData } from "../../../utilities/DataUtilities";
+import {UIUtilities} from "../../../utilities/UIUtilities";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
+import {NotificationPropsType} from "../../../context/NotificationContext";
 
-export type CalendarPropsType = {};
+export type CalendarPropsType = {} & NotificationPropsType;
 
 export type CalendarStateType = {
     /**
@@ -22,7 +25,8 @@ export type CalendarStateType = {
     events?: EventResponse[],
 } & FallibleReactStateType;
 
-export class Events extends FallibleReactComponent<CalendarPropsType, CalendarStateType> {
+
+class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStateType> {
 
     static displayName = 'Calendar';
 
@@ -49,7 +53,7 @@ export class Events extends FallibleReactComponent<CalendarPropsType, CalendarSt
             call: API.events.get,
             stateName: 'events',
             params: [],
-        }], this.setState.bind(this));
+        }], this.setState.bind(this), () => UIUtilities.tryShowPartialWarning(this));
     }
 
     realRender() {
@@ -106,3 +110,4 @@ export class Events extends FallibleReactComponent<CalendarPropsType, CalendarSt
     }
 
 }
+export const Events = withNotificationContext(EventsClass);

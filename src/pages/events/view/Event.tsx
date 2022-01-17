@@ -83,6 +83,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
      */
     componentDidMount() {
         API.topics.get().then((data) => {
+            if(data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 topics: data.result,
@@ -95,6 +97,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         });
 
         API.events.id.signups.get(this.props.match.params.id).then((data) => {
+            if(data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 signups: data.result,
@@ -107,6 +111,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         });
 
         API.events.id.comments.get(this.props.match.params.id).then((data) => {
+            if(data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 comments: data.result,
@@ -133,6 +139,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // })
 
         API.events.id.files.get(this.props.match.params.id).then((data) =>{
+            if(data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 files: data.result,
@@ -164,6 +172,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // });
 
         API.venues.get().then((data) => {
+            if(data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 venues: data.result,
@@ -191,6 +201,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // });
 
         API.ents.get().then((data) => {
+            if(data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 entsStates: data.result,
@@ -218,6 +230,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // });
 
         API.states.get().then((data) => {
+            if(data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 buildingStates: data.result,
@@ -245,7 +259,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // });
 
         API.events.id.get(this.props.match.params.id).then((data) => {
-            console.log(data);
+            if(data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
                 ...oldState,
@@ -470,7 +485,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         <div key={`signup.${user.id}.${signupID}`} className="signup">
             <Link className="user" to={`/users/${user.id}`}>
                 <div className="profile">
-                    <img alt={`Profile for ${user.name}`} src={user.profile ?? 'https://placehold.it/200'} />
+                    <img alt={`Profile for ${user.name}`} src={user.profile ?? '/default-icon.png'} />
                 </div>
                 <div className="name">{user.name}</div>
             </Link>
