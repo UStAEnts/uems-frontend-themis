@@ -3,14 +3,17 @@ import { API, TopicResponse } from '../../../utilities/APIGen';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
 import { FallibleReactComponent, FallibleReactStateType } from "../../../components/components/error-screen/FallibleReactComponent";
 import { loadAPIData } from "../../../utilities/DataUtilities";
+import {UIUtilities} from "../../../utilities/UIUtilities";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
-export type ListTopicPropsType = {};
+export type ListTopicPropsType = {} & NotificationPropsType;
 
 export type ListTopicStateType = {
     topics?: TopicResponse[],
 } & FallibleReactStateType;
 
-export class ListTopic extends FallibleReactComponent<ListTopicPropsType, ListTopicStateType> {
+class ListTopicClass extends FallibleReactComponent<ListTopicPropsType, ListTopicStateType> {
 
     static displayName = 'ListTopic';
 
@@ -28,6 +31,7 @@ export class ListTopic extends FallibleReactComponent<ListTopicPropsType, ListTo
                 params: [],
             }],
             this.setState.bind(this),
+            () => UIUtilities.tryShowPartialWarning(this),
         );
     }
 
@@ -52,3 +56,5 @@ export class ListTopic extends FallibleReactComponent<ListTopicPropsType, ListTo
         );
     }
 }
+
+export const ListTopic = withNotificationContext(ListTopicClass);

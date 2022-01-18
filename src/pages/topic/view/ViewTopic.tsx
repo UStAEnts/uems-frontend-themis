@@ -9,10 +9,12 @@ import {
 } from '../../../components/components/error-screen/FallibleReactComponent';
 import { loadAPIData } from '../../../utilities/DataUtilities';
 import {UIUtilities} from "../../../utilities/UIUtilities";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
 export type ViewTopicPropsType = {} & RouteComponentProps<{
     id: string,
-}>;
+}> & NotificationPropsType;
 
 export type ViewTopicStateType = {
     topic?: TopicResponse,
@@ -35,6 +37,7 @@ class ViewTopicClass extends FallibleReactComponent<ViewTopicPropsType, ViewTopi
                 params: [this.props.match.params.id],
             }],
             this.setState.bind(this),
+            () => UIUtilities.tryShowPartialWarning(this),
         );
     }
 
@@ -84,7 +87,7 @@ class ViewTopicClass extends FallibleReactComponent<ViewTopicPropsType, ViewTopi
                                 name: 'Dave Example',
                                 id: 'fakeid',
                                 username: 'dexmp',
-                                profile: 'https://placehold.it/200/F0F0F0',
+                                profile: '/default-icon.png',
                             },
                         },
                     ]}
@@ -100,4 +103,4 @@ class ViewTopicClass extends FallibleReactComponent<ViewTopicPropsType, ViewTopi
 
 }
 
-export const ViewTopic = withRouter(ViewTopicClass);
+export const ViewTopic = withNotificationContext(withRouter(ViewTopicClass));

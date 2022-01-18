@@ -1,0 +1,124 @@
+$sidebarWidth: 9%;
+$sidebarMinWidth: 10pc;
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: $sidebarWidth;
+  min-width: $sidebarMinWidth;
+  height: 100vh;
+  z-index: 50;
+
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2em;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background: #f6f6f6;
+  padding: 20px;
+  transition: align-items 2s 2s linear;
+
+  a {
+    color: initial !important;
+    text-decoration: none;
+  }
+
+  &.expanded {
+    align-items: flex-start;
+
+    img.header {
+      align-self: center;
+    }
+
+    .navigationLink {
+      .name {
+        width: 100%;
+        // display: inline-block;
+      }
+    }
+
+    .marker .sub {
+      width: unset;
+    }
+  }
+
+  .spacer {
+    height: 2pc;
+  }
+
+  img.header {
+    width: 40px;
+  }
+
+  .center {
+    display: flex;
+    align-items: center;
+  }
+
+  .marker {
+    &.active {
+      .sub {
+        max-height: 120px;
+      }
+    }
+
+    .sub {
+      width: 0;
+      transition: max-height 1s ease-in-out;
+      max-height: 0px;
+      overflow: hidden;
+
+      font-size: 0.9em;
+      margin-left: 37px;
+      margin-top: -10px;
+    }
+  }
+
+  .navigationLink {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+
+    &.menu {
+      margin-bottom: 20px;
+    }
+
+    &.active {
+      .icon {
+        margin-right: 7px;
+        background: #ebebeb;
+      }
+
+      .name {
+        font-weight: bold;
+        margin-right: 0;
+      }
+    }
+
+    // background: #f5f5f5;
+    .icon {
+      flex-shrink: 0;
+      border-radius: 5px;
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      justify-items: center;
+      align-content: center;
+      transition: background 0.5s ease-in-out, margin-right 0.5s ease-in-out;
+    }
+
+    .name {
+      width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      display: inline-block;
+      margin-right: 7px;
+      transition: width 1s ease-in-out, font-weight 0.5s ease-in-out, margin-right 0.5s ease-in-out;
+      // display: none;
+      // padding-right: 10px;
+      // margin-left: 10px;
+    }
+  }
+}

@@ -27,6 +27,16 @@ export type CommentListPropsType = {
      * If the list should be shown without a compose box
      */
     withoutBox?: boolean,
+    /**
+     * Handler function for when the comment is marked as resolved
+     * @param id the id of the comment marked
+     */
+    onCommentResolved?: (id: string) => void,
+    /**
+     * Handler function for when the comment is marked as requiring attention
+     * @param id the id of the comment marked
+     */
+    onCommentMarked?: (id: string) => void,
 };
 
 type TimeSortableElement = {
@@ -59,7 +69,12 @@ export class CommentList extends React.Component<CommentListPropsType, {}> {
     render() {
         const comments = this.props.comments.map((e) => ({
             time: e.posted,
-            component: <Comment comment={e} key={e.id} />,
+            component: (<Comment
+                comment={e}
+                key={e.id}
+                onCommentMarked={this.props.onCommentMarked}
+                onCommentResolved={this.props.onCommentResolved}
+            />),
         } as TimeSortableElement));
 
         const updates = (this.props.updates ?? []).map((e) => ({

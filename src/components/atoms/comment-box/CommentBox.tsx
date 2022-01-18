@@ -127,13 +127,13 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                                 ? (
                                     <img
                                         alt={`Profile for ${this.context.user.value.name}`}
-                                        src={this.context.user.value.profile || 'https://placehold.it/200x200'}
+                                        src={this.context.user.value.profile || '/default-icon.png'}
                                     />
                                 )
                                 : (
                                     <img
                                         alt="Profile for unknown user"
-                                        src="https://placehold.it/200x200?text=Broken%3F"
+                                        src="/default-icon.png"
                                     />
                                 )
                         }

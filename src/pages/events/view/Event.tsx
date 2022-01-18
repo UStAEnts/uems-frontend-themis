@@ -1,24 +1,40 @@
 import React from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import {Link, RouteComponentProps, withRouter} from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
 import moment from 'moment';
 import ReactTimeAgo from 'react-time-ago';
-import { faFileCode, faNetworkWired, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { withNotificationContext } from '../../../components/WithNotificationContext';
-import { NotificationContextType } from '../../../context/NotificationContext';
-import { FileList } from '../../../components/atoms/file-bar/FileBar';
-import { CommentList } from '../../../components/components/comment-list/CommentList';
-import { EditableProperty } from '../../../components/components/editable-property/EditableProperty';
-import { Theme } from '../../../theme/Theme';
-import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
-import { API, CommentResponse, EntsStateResponse, EventPropertyChangeResponse, EventResponse, EventUpdate, FileResponse, SignupResponse, StateResponse, TopicResponse, User, VenueResponse, } from '../../../utilities/APIGen';
-import { Button } from '../../../components/atoms/button/Button';
-import { GlobalContext } from '../../../context/GlobalContext';
+import {faFileCode, faNetworkWired, faSkullCrossbones, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {withNotificationContext} from '../../../components/WithNotificationContext';
+import {NotificationContextType} from '../../../context/NotificationContext';
+import {FileList} from '../../../components/atoms/file-bar/FileBar';
+import {CommentList} from '../../../components/components/comment-list/CommentList';
+import {EditableProperty} from '../../../components/components/editable-property/EditableProperty';
+import {Theme} from '../../../theme/Theme';
+import {KeyValueOption, Select} from '../../../components/atoms/select/Select';
+import {
+    API,
+    CommentResponse,
+    EntsStateResponse,
+    EventPropertyChangeResponse,
+    EventResponse,
+    EventUpdate,
+    FileResponse,
+    SignupResponse,
+    StateResponse,
+    TopicResponse,
+    User,
+    VenueResponse,
+} from '../../../utilities/APIGen';
+import {Button} from '../../../components/atoms/button/Button';
+import {GlobalContext} from '../../../context/GlobalContext';
 import './Event.scss';
-import { FallibleReactComponent, FallibleReactStateType } from "../../../components/components/error-screen/FallibleReactComponent";
-import { UIUtilities } from "../../../utilities/UIUtilities";
+import {
+    FallibleReactComponent,
+    FallibleReactStateType
+} from "../../../components/components/error-screen/FallibleReactComponent";
+import {UIUtilities} from "../../../utilities/UIUtilities";
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
@@ -83,6 +99,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
      */
     componentDidMount() {
         API.topics.get().then((data) => {
+            if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 topics: data.result,
@@ -95,6 +113,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         });
 
         API.events.id.signups.get(this.props.match.params.id).then((data) => {
+            if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 signups: data.result,
@@ -107,6 +127,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         });
 
         API.events.id.comments.get(this.props.match.params.id).then((data) => {
+            if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 comments: data.result,
@@ -132,7 +154,9 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         //     }));
         // })
 
-        API.events.id.files.get(this.props.match.params.id).then((data) =>{
+        API.events.id.files.get(this.props.match.params.id).then((data) => {
+            if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 files: data.result,
@@ -164,6 +188,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // });
 
         API.venues.get().then((data) => {
+            if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 venues: data.result,
@@ -191,6 +217,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // });
 
         API.ents.get().then((data) => {
+            if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 entsStates: data.result,
@@ -218,6 +246,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // });
 
         API.states.get().then((data) => {
+            if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             this.setState((oldState) => ({
                 ...oldState,
                 buildingStates: data.result,
@@ -245,7 +275,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // });
 
         API.events.id.get(this.props.match.params.id).then((data) => {
-            console.log(data);
+            if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             // TODO: add schema validation for data returned by the server
             this.setState((oldState) => ({
                 ...oldState,
@@ -301,20 +332,20 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         }
         console.log(filtered);
 
-        if(Object.prototype.hasOwnProperty.call(changeProps, 'start')){
-            changeProps.start = Math.round(Number(changeProps.start) /1000);
+        if (Object.prototype.hasOwnProperty.call(changeProps, 'start')) {
+            changeProps.start = Math.round(Number(changeProps.start) / 1000);
         }
-        if(Object.prototype.hasOwnProperty.call(changeProps, 'end')){
+        if (Object.prototype.hasOwnProperty.call(changeProps, 'end')) {
             changeProps.end = Math.round(Number(changeProps.end) / 1000);
         }
-        if(Object.prototype.hasOwnProperty.call(changeProps, 'attendance')){
+        if (Object.prototype.hasOwnProperty.call(changeProps, 'attendance')) {
             changeProps.attendance = Number(changeProps.attendance);
         }
         // TODO: REBUILD VENUE SELECTOR
         // if (Object.prototype.hasOwnProperty.call(filtered, 'venue')) {
         //     filtered.venue = this.state.venues?.find((e) => e.id === changeProps.venue);
         // }
-        const updatedEvent: EventResponse = { ...this.state.event, ...filtered };
+        const updatedEvent: EventResponse = {...this.state.event, ...filtered};
 
         API.events.id.patch(this.state.event.id, changeProps).then(() => {
             // The response only contains an ID so we need to spread the updated parameters on top of the existing ones
@@ -393,7 +424,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
         const stateID = this.state.event.id;
         UIUtilities.deleteWith409Support(() => API.events.id.signups.id.delete(stateID, id)).then((b) => {
-            if(!b) throw new Error();
+            if (!b) throw new Error();
             this.setState((oldState) => ({
                 signups: (oldState.signups ?? []).filter((e) => e.id !== id),
             }));
@@ -470,11 +501,11 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         <div key={`signup.${user.id}.${signupID}`} className="signup">
             <Link className="user" to={`/users/${user.id}`}>
                 <div className="profile">
-                    <img alt={`Profile for ${user.name}`} src={user.profile ?? 'https://placehold.it/200'} />
+                    <img alt={`Profile for ${user.name}`} src={user.profile ?? '/default-icon.png'}/>
                 </div>
                 <div className="name">{user.name}</div>
             </Link>
-            <div className="spacer" />
+            <div className="spacer"/>
             {/* TODO: FIGURE OUT PERMISSIONS SO THIS IS NOT AVAILABLE TO EVERYONE */}
             <div className="remove">
                 <FontAwesomeIcon
@@ -484,6 +515,39 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
             </div>
         </div>
     );
+
+    private markComment = (type: 'resolve' | 'mark') => {
+        return (comment: string) => {
+            if (this.state.event === undefined) return;
+
+            (type === 'resolve' ? API.events.id.comments.id.resolve : API.events.id.comments.id.attention).post(
+                this.state.event.id,
+                comment,
+            ).then(() => {
+                if (this.state.comments) {
+                    const commentClone = [...this.state.comments];
+                    const commentElement = commentClone.find((e) => e.id === comment);
+
+                    if (commentElement) {
+                        commentElement.requiresAttention = type === 'mark';
+                        this.setState((s) => ({
+                            ...s,
+                            comments: commentClone,
+                        }));
+                    }
+                }
+            }).catch((e) => {
+                if (this.props.notificationContext) {
+                    this.props.notificationContext.showNotification(
+                        'Could not resolve comment',
+                        `Failed to resolve comment due to an error! ${e.message}`,
+                        faSkullCrossbones,
+                        Theme.FAILURE,
+                    );
+                }
+            })
+        }
+    }
 
     private sendComment = (comment: string, topicID: string) => {
         if (this.state.event === undefined) return;
@@ -565,13 +629,13 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                             }),
                         }}
                     >
-                        <h1 style={{ display: 'inline-block' }}>{this.state.event.name}</h1>
+                        <h1 style={{display: 'inline-block'}}>{this.state.event.name}</h1>
                     </EditableProperty>
                     <div className="properties-bar">
                         <div className="property creation">
                             <span className="label">Created</span>
                             <span className="value">
-                                <ReactTimeAgo date={this.state.event.start * 1000} />
+                                <ReactTimeAgo date={this.state.event.start * 1000}/>
                             </span>
                         </div>
                         <div className="property updates">
@@ -584,7 +648,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                     {/* TODO: add file loading */}
                     {
                         this.state.files
-                            ? (<FileList files={this.state.files} />)
+                            ? (<FileList files={this.state.files}/>)
                             : undefined
                     }
                     <Button
@@ -600,6 +664,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                                     updates={this.state.changelog}
                                     topics={this.state.topics ?? []}
                                     onCommentSent={this.sendComment}
+                                    onCommentResolved={this.markComment('resolve').bind(this)}
+                                    onCommentMarked={this.markComment('mark').bind(this)}
                                 />
                             )
                             : undefined
@@ -686,13 +752,13 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                                     {moment.unix(this.state.event.start).format('dddd Do MMMM (YYYY), HH:mm')}
                                 </EditableProperty>
                             </div>
-                            <div className="bar" />
+                            <div className="bar"/>
                             <div className="duration">
                                 {moment.duration(
                                     moment.unix(this.state.event.start).diff(moment.unix(this.state.event.end)),
                                 ).humanize()}
                             </div>
-                            <div className="bar" />
+                            <div className="bar"/>
                             <div className="label">
                                 Booking End
                             </div>
@@ -742,7 +808,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                         />
                     </div>
                 </div>
-                <div className="rightbar-spacer" />
+                <div className="rightbar-spacer"/>
             </div>
         ) : (
             <div className="event-view loading-pane">

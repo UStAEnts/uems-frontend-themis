@@ -9,10 +9,12 @@ import {
     FallibleReactStateType,
 } from '../../../components/components/error-screen/FallibleReactComponent';
 import {UIUtilities} from "../../../utilities/UIUtilities";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
 export type ViewVenuePropsType = {} & RouteComponentProps<{
     id: string,
-}>;
+}> & NotificationPropsType;
 
 export type ViewVenueStateType = {
     venue?: VenueResponse,
@@ -43,6 +45,7 @@ class ViewVenueClass extends FallibleReactComponent<ViewVenuePropsType, ViewVenu
                 },
             ],
             this.setState.bind(this),
+            () => UIUtilities.tryShowPartialWarning(this),
         );
     }
 
@@ -100,4 +103,4 @@ class ViewVenueClass extends FallibleReactComponent<ViewVenuePropsType, ViewVenu
     }
 }
 
-export const ViewVenue = withRouter(ViewVenueClass);
+export const ViewVenue = withNotificationContext(withRouter(ViewVenueClass));

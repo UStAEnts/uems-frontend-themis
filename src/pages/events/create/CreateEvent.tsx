@@ -67,17 +67,26 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
 
     componentDidMount() {
         API.ents.get().then(
-            (d) => failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'ents')(d.result),
+            (d) => {
+                if(d.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+                failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'ents')(d.result)
+            },
         ).catch(() => {
             this.showFailNotification('Failed to load data', 'Could not load ents state data');
         });
         API.states.get().then(
-            (d) => failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'states')(d.result),
+            (d) => {
+                if(d.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+                failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'states')(d.result)
+            },
         ).catch(() => () => {
             this.showFailNotification('Failed to load data', 'Could not load event state data');
         });
         API.venues.get().then(
-            (d) => failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'venues')(d.result),
+            (d) => {
+                if(d.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+                failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'venues')(d.result)
+            },
         ).catch(() => () => {
             this.showFailNotification('Failed to load data', 'Could not load venue data');
         });
@@ -146,6 +155,8 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
         };
 
         API.events.post(event).then((id) => {
+            if(id.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+
             if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
                 UIUtilities.tryShowNotification(
                     this.props.notificationContext,

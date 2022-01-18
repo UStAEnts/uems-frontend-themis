@@ -1,18 +1,30 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Markdown from 'markdown-to-jsx';
 import ReactTimeAgo from 'react-time-ago';
 import ReactTooltip from 'react-tooltip';
-import { v4 } from 'uuid';
+import {v4} from 'uuid';
 
 import './Comment.scss';
-import { CommentResponse } from '../../../utilities/APIGen';
+import {CommentResponse} from '../../../utilities/APIGen';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faCheckCircle, faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 
 export type CommentPropsType = {
     /**
      * The comment that this block will be representing
      */
     comment: CommentResponse,
+    /**
+     * Handler function for when the comment is marked as resolved
+     * @param id the id of the comment marked
+     */
+    onCommentResolved?: (id: string) => void,
+    /**
+     * Handler function for when the comment is marked as requiring attention
+     * @param id the id of the comment marked
+     */
+    onCommentMarked?: (id: string) => void,
 }
 
 /**
@@ -26,7 +38,7 @@ export function Comment(props: CommentPropsType) {
     const [id] = React.useState(v4().toString());
 
     return (
-        <div className="comment">
+        <div className={"comment " + (props.comment.requiresAttention ? 'attention' : '')}>
             <div className="left">
                 <ReactTooltip
                     place="top"
@@ -48,7 +60,7 @@ export function Comment(props: CommentPropsType) {
                 <div className="image">
                     <img
                         alt={`Profile for ${props.comment.poster.name}`}
-                        src={props.comment.poster.profile || 'https://placehold.it/200x200'}
+                        src={props.comment.poster.profile || '/default-icon.png'}
                     />
                 </div>
             </div>
@@ -61,14 +73,29 @@ export function Comment(props: CommentPropsType) {
                             {props.comment.poster.username}
                         </div>
                     </Link>
-                    <div className="spacer" />
+                    <div className="spacer"/>
                     <div className="time">
-                        <ReactTimeAgo locale="en" date={props.comment.posted * 1000} />
+                        <ReactTimeAgo locale="en" date={props.comment.posted * 1000}/>
                     </div>
                 </div>
                 <div className="bottom content">
                     <Markdown>{props.comment.body}</Markdown>
                 </div>
+            </div>
+            <div className="flags">
+                <ReactTooltip
+                    place="top"
+                    type="dark"
+                    effect="float"
+                    id={`cb-attention-${id}`}
+                >Mark as {props.comment.requiresAttention ? 'resolved' : 'requiring attention'}</ReactTooltip>
+                {
+                    props.comment.requiresAttention
+                        ? (<FontAwesomeIcon data-tip data-for={`cb-attention-${id}`} icon={faCheckCircle}
+                                            onClick={() => props.onCommentResolved?.(props.comment.id)}/>)
+                        : (<FontAwesomeIcon data-tip data-for={`cb-attention-${id}`} icon={faExclamationTriangle}
+                                            onClick={() => props.onCommentMarked?.(props.comment.id)}/>)
+                }
             </div>
         </div>
     );

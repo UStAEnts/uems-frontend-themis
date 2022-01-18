@@ -6,14 +6,17 @@ import {
     FallibleReactStateType,
 } from '../../../components/components/error-screen/FallibleReactComponent';
 import { loadAPIData } from '../../../utilities/DataUtilities';
+import {UIUtilities} from "../../../utilities/UIUtilities";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
-export type ListStatePropsType = {};
+export type ListStatePropsType = {} & NotificationPropsType;
 
 export type ListStateStateType = {
     states?: StateResponse[],
 } & FallibleReactStateType;
 
-export class ListState extends FallibleReactComponent<ListStatePropsType, ListStateStateType> {
+class ListStateClass extends FallibleReactComponent<ListStatePropsType, ListStateStateType> {
 
     static displayName = 'ListState';
 
@@ -31,6 +34,7 @@ export class ListState extends FallibleReactComponent<ListStatePropsType, ListSt
                 params: [],
             }],
             this.setState.bind(this),
+            () => UIUtilities.tryShowPartialWarning(this),
         );
     }
 
@@ -55,3 +59,5 @@ export class ListState extends FallibleReactComponent<ListStatePropsType, ListSt
         );
     }
 }
+
+export const ListState = withNotificationContext(ListStateClass);

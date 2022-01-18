@@ -5,14 +5,16 @@ import { Theme } from "../../../theme/Theme";
 import { UIUtilities } from "../../../utilities/UIUtilities";
 import { loadAPIData } from "../../../utilities/DataUtilities";
 import { FallibleReactComponent, FallibleReactStateType } from "../../../components/components/error-screen/FallibleReactComponent";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {withNotificationContext} from "../../../components/WithNotificationContext";
 
-export type ListFilePropsType = {};
+export type ListFilePropsType = {} & NotificationPropsType;
 
 export type ListFileStateType = {
     files?: FileResponse[],
 } & FallibleReactStateType;
 
-export class ListFile extends FallibleReactComponent<ListFilePropsType, ListFileStateType> {
+class ListFileClass extends FallibleReactComponent<ListFilePropsType, ListFileStateType> {
 
     static displayName = 'ListFile';
 
@@ -30,6 +32,7 @@ export class ListFile extends FallibleReactComponent<ListFilePropsType, ListFile
                 params: [],
             }],
             this.setState.bind(this),
+            () => UIUtilities.tryShowPartialWarning(this),
         );
     }
 
@@ -65,3 +68,5 @@ export class ListFile extends FallibleReactComponent<ListFilePropsType, ListFile
         );
     }
 }
+
+export const ListFile = withNotificationContext(ListFileClass);

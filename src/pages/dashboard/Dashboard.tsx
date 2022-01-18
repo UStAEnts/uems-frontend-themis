@@ -19,17 +19,17 @@ import {
     SuccessfulAPIResponse,
     VenueResponse
 } from '../../utilities/APIGen';
-import { failEarlyStateSet } from '../../utilities/AccessUtilities';
-import { NotificationPropsType } from '../../context/NotificationContext';
-import { UIUtilities } from '../../utilities/UIUtilities';
+import {failEarlyStateSet} from '../../utilities/AccessUtilities';
+import {NotificationPropsType} from '../../context/NotificationContext';
+import {UIUtilities} from '../../utilities/UIUtilities';
 import './Dashboard.scss';
-import { Theme } from '../../theme/Theme';
-import { Tag } from '../../components/atoms/tag/Tag';
-import { Button } from '../../components/atoms/button/Button';
-import { ValueSquare } from '../../components/atoms/value-square/ValueSquare';
-import { GenericList, genericRender } from '../../components/components/generic-list/GenericList';
-import { RenderUtilities } from '../../utilities/RenderUtilities';
-import { withNotificationContext } from "../../components/WithNotificationContext";
+import {Theme} from '../../theme/Theme';
+import {Tag} from '../../components/atoms/tag/Tag';
+import {Button} from '../../components/atoms/button/Button';
+import {ValueSquare} from '../../components/atoms/value-square/ValueSquare';
+import {GenericList, genericRender} from '../../components/components/generic-list/GenericList';
+import {RenderUtilities} from '../../utilities/RenderUtilities';
+import {withNotificationContext} from "../../components/WithNotificationContext";
 
 export type DashboardPropsType = {} & NotificationPropsType;
 
@@ -60,14 +60,14 @@ type EventDataPoint = {
 };
 
 const EventStackTooltip: React.FunctionComponent<TooltipProps> = (
-    { active, payload },
+    {active, payload},
 ) => {
     if (!active) return null;
     if (!payload) return null;
     if (payload.length < 1) return null;
 
     const data: EventDataPoint = payload[0].payload;
-    const { events } = data;
+    const {events} = data;
 
     return (
         <div className="event-stack-tooltip">
@@ -81,9 +81,9 @@ const EventStackTooltip: React.FunctionComponent<TooltipProps> = (
                         {event.name}
                         <br/>
                         {event.venues.map((e) => e.name).join(', ')}
-                        <br />
-                        <Tag tag={event.ents} />
-                        <Tag tag={event.state} />
+                        <br/>
+                        <Tag tag={event.ents}/>
+                        <Tag tag={event.state}/>
                     </div>
                 ))}
             </div>
@@ -95,7 +95,8 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
 
     static displayName = 'Dashboard';
 
-    static extract<T extends SuccessfulAPIResponse>(data: T): T['result'] {
+    extract<T extends SuccessfulAPIResponse>(data: T): T['result'] {
+        if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
         return Promise.resolve(data.result);
     }
 
@@ -110,19 +111,19 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
     }
 
     componentDidMount() {
-        API.events.get().then(DashboardClass.extract)
+        API.events.get().then(this.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'events'))
             .then(this.processEvents)
             .catch(() => UIUtilities.failedLoad(this.props.notificationContext, 'the events could not be loaded'));
-        API.venues.get().then(DashboardClass.extract)
+        API.venues.get().then(this.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'venues'))
             .then(this.processEvents)
             .catch(() => UIUtilities.failedLoad(this.props.notificationContext, 'the venues could not be loaded'));
-        API.ents.get().then(DashboardClass.extract)
+        API.ents.get().then(this.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'entsState'))
             .then(this.processEvents)
             .catch(() => UIUtilities.failedLoad(this.props.notificationContext, 'the ents could not be loaded'));
-        API.states.get().then(DashboardClass.extract)
+        API.states.get().then(this.extract)
             .then(failEarlyStateSet(this.state, this.setState.bind(this), 'buildingState'))
             .then(this.processEvents)
             .catch(() => UIUtilities.failedLoad(this.props.notificationContext, 'the states could not be loaded'));
@@ -215,7 +216,7 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
         // UNSAFE: what if we are done?
 
         const lines = lineGroup.map((e) => (
-            <Line dataKey={`${prefix}${e.name}`} name={e.name} strokeWidth={2} type="monotone" stroke={nextColor()} />
+            <Line dataKey={`${prefix}${e.name}`} name={e.name} strokeWidth={2} type="monotone" stroke={nextColor()}/>
         ));
 
         const limit = (new Date().getTime() / 1000) + 604800; // + 7 days in seconds
@@ -295,7 +296,7 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
                                         <LineChart
                                             data={this.state.processed.eventsByDate.raw}
                                         >
-                                            <Legend />
+                                            <Legend/>
                                             <Line
                                                 dataKey="y"
                                                 name="Total Events"
@@ -311,9 +312,9 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
                                                 tickFormatter={(value) => moment.unix(value).format('DD/MM')}
                                             />
                                             <Tooltip
-                                                content={<EventStackTooltip />}
+                                                content={<EventStackTooltip/>}
                                             />
-                                            <CartesianGrid />
+                                            <CartesianGrid/>
                                         </LineChart>
                                     </ResponsiveContainer>
                                 )

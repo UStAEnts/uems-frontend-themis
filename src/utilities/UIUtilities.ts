@@ -1,4 +1,4 @@
-import {faSkullCrossbones, IconDefinition} from '@fortawesome/free-solid-svg-icons';
+import {faAdjust, faSkullCrossbones, IconDefinition} from '@fortawesome/free-solid-svg-icons';
 import {NotificationContextType} from '../context/NotificationContext';
 import {Notification} from '../components/components/notification-renderer/NotificationRenderer';
 import {Theme} from "../theme/Theme";
@@ -9,6 +9,24 @@ type LoaderOptions = 'Audio' | 'BallTriangle' | 'Bars' | 'Circles' | 'Grid' | 'H
     | 'None' | 'NotSpecified';
 
 export class UIUtilities {
+
+    static tryShowPartialWarning(
+        props: { notificationContext?: NotificationContextType } | { props: { notificationContext?: NotificationContextType } },
+    ) {
+        let context: NotificationContextType | undefined;
+        if (Object.prototype.hasOwnProperty.call(props, 'notificationContext')) context = (props as any).notificationContext;
+        else context = (props as any).props.notificationContext;
+
+        UIUtilities.tryShowNotification(
+            context,
+            'Data might be incomplete',
+            'Some queries are only returning partial results. This means some data may be corrupted and cannot' +
+            ' return successfully. Please inform a system admin as soon as possible to manually correct invalid' +
+            ' data.',
+            faAdjust,
+            Theme.TEAL,
+        );
+    }
 
     static tryShowNotification(
         context: NotificationContextType | undefined,
