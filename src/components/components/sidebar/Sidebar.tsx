@@ -1,6 +1,5 @@
 import classes from './Sidebar.module.scss';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import React, {MouseEventHandler, ReactEventHandler} from "react";
+import React, {MouseEventHandler} from "react";
 import {NavLink, useLocation} from 'react-router-dom';
 
 const and = (...c: (string | undefined)[]) => c.filter((e) => e !== undefined).join(' ');
@@ -62,7 +61,7 @@ export default function Sidebar() {
 
     return (
         <div className={and(classes.sidebar, classes.expanded)}>
-            <img className={classes.header} src={"/ents-crew-white.png"} style={{filter: 'invert(1)'}}/>
+            <img className={classes.header} src={"/ents-crew-white.png"} style={{filter: 'invert(1)'}} alt={"UEMS Logo: the text UEMS in a geometric font at the bottom of a black stroked rectangle"}/>
             <div className={classes.spacer}/>
             <NavLink to="/" exact className={classes.navigationLink} onClick={navLinkClick}
                      activeClassName={classes.active}>

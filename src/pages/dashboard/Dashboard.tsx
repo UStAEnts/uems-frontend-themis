@@ -30,7 +30,6 @@ import {ValueSquare} from '../../components/atoms/value-square/ValueSquare';
 import {GenericList, genericRender} from '../../components/components/generic-list/GenericList';
 import {RenderUtilities} from '../../utilities/RenderUtilities';
 import {withNotificationContext} from "../../components/WithNotificationContext";
-import {faAdjust} from "@fortawesome/free-solid-svg-icons";
 
 export type DashboardPropsType = {} & NotificationPropsType;
 
