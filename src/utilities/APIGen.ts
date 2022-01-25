@@ -320,6 +320,7 @@ export const EventUpdateZod = z.object({
     state: z.string().optional(),
     attendance: z.number().optional(),
     color: z.string().optional(),
+    reserved: z.boolean().optional(),
 });
 export type EventUpdate = z.infer<typeof EventUpdateZod>;
 export const TopicUpdateZod = z.object({
