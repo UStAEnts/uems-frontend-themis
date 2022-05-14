@@ -1,18 +1,18 @@
-import React from 'react';
-import {Link, RouteComponentProps, withRouter} from 'react-router-dom';
+import React, { FunctionComponent } from 'react';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
 import moment from 'moment';
 import ReactTimeAgo from 'react-time-ago';
-import {faFileCode, faNetworkWired, faSkullCrossbones, faTimes} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {withNotificationContext} from '../../../components/WithNotificationContext';
-import {NotificationContextType} from '../../../context/NotificationContext';
-import {FileList} from '../../../components/atoms/file-bar/FileBar';
-import {CommentList} from '../../../components/components/comment-list/CommentList';
-import {EditableProperty} from '../../../components/components/editable-property/EditableProperty';
-import {Theme} from '../../../theme/Theme';
-import {KeyValueOption, Select} from '../../../components/atoms/select/Select';
+import { faFileCode, faNetworkWired, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { withNotificationContext } from '../../../components/WithNotificationContext';
+import { NotificationContextType } from '../../../context/NotificationContext';
+import { FileList } from '../../../components/atoms/file-bar/FileBar';
+import { CommentList } from '../../../components/components/comment-list/CommentList';
+import { EditableProperty } from '../../../components/components/editable-property/EditableProperty';
+import { Theme } from '../../../theme/Theme';
+import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
 import {
     API,
     CommentResponse,
@@ -27,17 +27,27 @@ import {
     User,
     VenueResponse,
 } from '../../../utilities/APIGen';
-import {Button} from '../../../components/atoms/button/Button';
-import {GlobalContext} from '../../../context/GlobalContext';
+import { Button } from '../../../components/atoms/button/Button';
+import { GlobalContext } from '../../../context/GlobalContext';
 import './Event.scss';
 import {
     FallibleReactComponent,
     FallibleReactStateType
 } from "../../../components/components/error-screen/FallibleReactComponent";
-import {UIUtilities} from "../../../utilities/UIUtilities";
+import { UIUtilities } from "../../../utilities/UIUtilities";
+
+export type SimpleEventProps = {
+    notificationContext?: NotificationContextType,
+    /**
+     * The ID of the event to be rendered. This will be looked up from the API endpoint
+     */
+    id: string,
+    onChange?: (event: EventResponse) => void,
+};
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
+    onChange?: (event: EventResponse) => void,
 } & RouteComponentProps<{
     /**
      * The ID of the event to be rendered. This will be looked up from the API endpoint
@@ -78,20 +88,25 @@ export type EventStateType = {
     chosenRole?: string,
 } & FallibleReactStateType;
 
-class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
+class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 
     static displayName = 'Event';
 
     static contextType = GlobalContext;
 
-    constructor(props: Readonly<EventPropsType>) {
+    constructor(props: Readonly<SimpleEventProps>) {
         super(props);
 
         this.state = {
-            id: this.props.match.params.id,
+            id: this.props.id,
             chosenRole: 'Other',
             loading: true,
         };
+    }
+
+    shouldComponentUpdate(nextProps: Readonly<SimpleEventProps>, nextState: Readonly<EventStateType>, nextContext: any): boolean {
+        if (nextProps.id !== this.props.id) return true;
+        return super.shouldComponentUpdate?.(nextProps, nextState, nextContext) ?? true;
     }
 
     /**
@@ -112,7 +127,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
             this.failedLoad(`Could not load topic list: ${err.message}`);
         });
 
-        API.events.id.signups.get(this.props.match.params.id).then((data) => {
+        API.events.id.signups.get(this.props.id).then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
 
             this.setState((oldState) => ({
@@ -126,7 +141,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
             this.failedLoad(`Could not load signups: ${err.message}`);
         });
 
-        API.events.id.comments.get(this.props.match.params.id).then((data) => {
+        API.events.id.comments.get(this.props.id).then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
 
             this.setState((oldState) => ({
@@ -154,7 +169,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         //     }));
         // })
 
-        API.events.id.files.get(this.props.match.params.id).then((data) => {
+        API.events.id.files.get(this.props.id).then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
 
             this.setState((oldState) => ({
@@ -274,7 +289,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         //     this.failedLoad(`Could not load list of ents states: ${err.message}`);
         // });
 
-        API.events.id.get(this.props.match.params.id).then((data) => {
+        API.events.id.get(this.props.id).then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
 
             // TODO: add schema validation for data returned by the server
@@ -345,7 +360,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         // if (Object.prototype.hasOwnProperty.call(filtered, 'venue')) {
         //     filtered.venue = this.state.venues?.find((e) => e.id === changeProps.venue);
         // }
-        const updatedEvent: EventResponse = {...this.state.event, ...filtered};
+        const updatedEvent: EventResponse = { ...this.state.event, ...filtered };
 
         API.events.id.patch(this.state.event.id, changeProps).then(() => {
             // The response only contains an ID so we need to spread the updated parameters on top of the existing ones
@@ -353,6 +368,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                 ...oldState,
                 event: updatedEvent,
             }));
+
+            if (this.props.onChange) this.props.onChange(updatedEvent);
         }).catch((err) => {
             // TODO: figure out how to raise errors and display them properly!
             console.error(err);
@@ -501,11 +518,11 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         <div key={`signup.${user.id}.${signupID}`} className="signup">
             <Link className="user" to={`/users/${user.id}`}>
                 <div className="profile">
-                    <img alt={`Profile for ${user.name}`} src={user.profile ?? '/default-icon.png'}/>
+                    <img alt={`Profile for ${user.name}`} src={user.profile ?? '/default-icon.png'} />
                 </div>
                 <div className="name">{user.name}</div>
             </Link>
-            <div className="spacer"/>
+            <div className="spacer" />
             {/* TODO: FIGURE OUT PERMISSIONS SO THIS IS NOT AVAILABLE TO EVERYONE */}
             <div className="remove">
                 <FontAwesomeIcon
@@ -629,13 +646,13 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                             }),
                         }}
                     >
-                        <h1 style={{display: 'inline-block'}}>{this.state.event.name}</h1>
+                        <h1 style={{ display: 'inline-block' }}>{this.state.event.name}</h1>
                     </EditableProperty>
                     <div className="properties-bar">
                         <div className="property creation">
                             <span className="label">Created</span>
                             <span className="value">
-                                <ReactTimeAgo date={this.state.event.start * 1000}/>
+                                <ReactTimeAgo date={this.state.event.start * 1000} />
                             </span>
                         </div>
                         <div className="property updates">
@@ -648,7 +665,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                     {/* TODO: add file loading */}
                     {
                         this.state.files
-                            ? (<FileList files={this.state.files}/>)
+                            ? (<FileList files={this.state.files} />)
                             : undefined
                     }
                     <Button
@@ -752,13 +769,13 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                                     {moment.unix(this.state.event.start).format('dddd Do MMMM (YYYY), HH:mm')}
                                 </EditableProperty>
                             </div>
-                            <div className="bar"/>
+                            <div className="bar" />
                             <div className="duration">
                                 {moment.duration(
                                     moment.unix(this.state.event.start).diff(moment.unix(this.state.event.end)),
                                 ).humanize()}
                             </div>
-                            <div className="bar"/>
+                            <div className="bar" />
                             <div className="label">
                                 Booking End
                             </div>
@@ -808,7 +825,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                         />
                     </div>
                 </div>
-                <div className="rightbar-spacer"/>
+                <div className="rightbar-spacer" />
             </div>
         ) : (
             <div className="event-view loading-pane">
@@ -824,8 +841,18 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
 }
 
+const RouteredEvent: FunctionComponent<EventPropsType> = ({ match, notificationContext, onChange }) => {
+    const copy: SimpleEventProps = {
+        id: match.params.id,
+        notificationContext,
+        onChange,
+    };
+    return (<Event {...copy} />);
+}
+
 /**
  * Bind the event page with the router so we can access the ID if the path
  */
 // @ts-ignore
-export default withRouter(withNotificationContext(Event));
+export default withRouter(withNotificationContext(RouteredEvent));
+export const BasicEvent = Event;
