@@ -39,6 +39,7 @@ import {ListEnt} from './pages/ents/list/ListEnt';
 import App from './pages/App';
 import {Events} from './pages/events/list/Events';
 import Event from './pages/events/view/Event';
+import {OpsPlanning} from './pages/workflows/ops-planning/OpsPlanning';
 
 import 'react-dates/initialize';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
@@ -400,6 +401,10 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
                                     </Route>
                                     <Route path="/events" exact>
                                         <Events/>
+                                    </Route>
+
+                                    <Route path="/workflow/ops" exact>
+                                        <OpsPlanning/>
                                     </Route>
 
                                     <Route path="/" exact>
