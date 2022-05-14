@@ -682,6 +682,10 @@ export type APIType = {
                         => Promise<void>
                 }
             }
+        },
+        review: {
+            get: ()
+                => Promise<GetEventAPIResponse>,
         }
     },
     files: {
@@ -754,7 +758,11 @@ export type APIType = {
                 get: (id: string)
                     => Promise<GetStatesIdEventsAPIResponse>
             }
-        }
+        },
+        review: {
+            get: ()
+                => Promise<GetStatesAPIResponse>,
+        },
     },
     topics: {
         get: ()
@@ -1083,6 +1091,19 @@ export const API: APIType = {
                         )
                 }
             }
+        },
+        review: {
+            get: bind<GetEventAPIResponse>(
+                (
+                    uri: string,
+                ) => getRequest<GetEventAPIResponse>(
+                    uri,
+                    {},
+                    GetEventAPIResponseZod,
+                ),
+                '/events/review',
+                'Retrieves the event',
+            ),
         }
     },
     files: {
@@ -1416,6 +1437,20 @@ export const API: APIType = {
                         'Retrieves all events with this state',
                     )
             }
+        },
+        review: {
+            get:
+                bind<GetStatesAPIResponse>(
+                    (
+                        uri: string,
+                    ) => getRequest<GetStatesAPIResponse>(
+                        uri,
+                        {},
+                        GetStatesAPIResponseZod,
+                    ),
+                    '/states/review',
+                    'Retrieves all review states',
+                )
         }
     },
     topics: {
