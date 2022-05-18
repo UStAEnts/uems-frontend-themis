@@ -620,6 +620,12 @@ export const GetVenuesIdEventsAPIResponseZod = SuccessfulAPIResponseZod.extend({
     result: z.array(EventResponseZod),
 });
 export type GetVenuesIdEventsAPIResponse = z.infer<typeof GetVenuesIdEventsAPIResponseZod>;
+
+export const GetReviewStatesAPIResponseZod = SuccessfulAPIResponseZod.extend({
+    result: IDOnlyResponseZod,
+});
+export type GetReviewStatesAPIResponse = z.infer<typeof GetReviewStatesAPIResponseZod>;
+
 //=============
 export type APIType = {
     events: {
@@ -761,7 +767,7 @@ export type APIType = {
         },
         review: {
             get: ()
-                => Promise<GetStatesAPIResponse>,
+                => Promise<GetReviewStatesAPIResponse>,
         },
     },
     topics: {
@@ -1440,13 +1446,13 @@ export const API: APIType = {
         },
         review: {
             get:
-                bind<GetStatesAPIResponse>(
+                bind<GetReviewStatesAPIResponse>(
                     (
                         uri: string,
-                    ) => getRequest<GetStatesAPIResponse>(
+                    ) => getRequest<GetReviewStatesAPIResponse>(
                         uri,
                         {},
-                        GetStatesAPIResponseZod,
+                        GetReviewStatesAPIResponseZod,
                     ),
                     '/states/review',
                     'Retrieves all review states',
