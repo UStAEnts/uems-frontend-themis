@@ -167,7 +167,7 @@ export default function Sidebar() {
                 </NavLink>
             </div>
 
-            <NavLink to="/ops-planning" exact className={classes.navigationLink} onClick={navLinkClick} activeClassName={classes.active}>
+            <NavLink to="/workflow/ops" exact className={classes.navigationLink} onClick={navLinkClick} activeClassName={classes.active}>
                 <div className={classes.icon}>
                     <MdiSendOutline/>
                 </div>
