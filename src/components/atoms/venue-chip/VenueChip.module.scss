@@ -1,0 +1,15 @@
+.venueChip {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 100px;
+  margin: 2px;
+
+  .top {
+    font-weight: bold;
+  }
+
+  .bottom {
+    margin-top: 1px;
+    font-size: 0.4em;
+  }
+}
