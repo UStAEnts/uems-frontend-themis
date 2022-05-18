@@ -704,6 +704,19 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
                         {/*)}*/}
                     </div>
                     <div className="entry">
+                        <div className="title">Reservation</div>
+                        <EditableProperty
+                            name="Reserved"
+                            config={{
+                                type: 'checkbox',
+                                value: this.state.event.reserved ?? false,
+                                onChange: this.changeProperty('reserved'),
+                            }}
+                        >
+                            {this.state.event.reserved ? 'Space reserved' : 'Unreserved'}
+                        </EditableProperty>
+                    </div>
+                    <div className="entry">
                         <div className="title">Projected Attendance</div>
                         <EditableProperty
                             name="attendance"
