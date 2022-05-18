@@ -203,7 +203,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
 
                 <LinkedTD to={`/events/${event.id}`}>{event.name}</LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
-                    {event.venues.map((e) => (<VenueChip venue={e}/>))}
+                    {event.venues.map((e) => (<VenueChip venue={e} key={e.id}/>))}
                 </LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
                     {moment.unix(event.start).format(' dddd Do MMMM (YYYY), HH:mm ')}
