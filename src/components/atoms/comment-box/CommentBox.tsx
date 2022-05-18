@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import { faComment } from '@fortawesome/free-solid-svg-icons';
+import {Link} from 'react-router-dom';
+import {faComment} from '@fortawesome/free-solid-svg-icons';
 
-import { TextField } from '../text-field/TextField';
-import { Button } from '../button/Button';
+import {TextField} from '../text-field/TextField';
+import {Button} from '../button/Button';
 
 import '../comment/Comment.scss';
-import { KeyValueOption, Select } from '../select/Select';
-import { GlobalContext } from '../../../context/GlobalContext';
-import { TopicResponse } from '../../../utilities/APIGen';
+import {KeyValueOption, Select} from '../select/Select';
+import {GlobalContext} from '../../../context/GlobalContext';
+import {TopicResponse} from '../../../utilities/APIGen';
 
 export type CommentBoxPropsType = {
     /**
@@ -145,13 +145,16 @@ export class CommentBox extends React.Component<CommentBoxPropsType, CommentBoxS
                         {
                             this.context.user.value
                                 ? (
-                                    <Link className="poster" to={`/user/${this.context.user.value.username}`}>
+                                    <div className="poster">
+                                        {/*TODO: SEE https://app.asana.com/0/1199734926192621/1202299888223891/f*/}
+                                        {/*<Link className="poster" to={`/user/${this.context.user.value.username}`}>*/}
+                                        {/*</Link>*/}
                                         <div className="name">{this.context.user.value.name}</div>
                                         <div className="username">
                                             @
                                             {this.context.user.value.username}
                                         </div>
-                                    </Link>
+                                    </div>
                                 )
                                 : (
                                     <div className="poster">
