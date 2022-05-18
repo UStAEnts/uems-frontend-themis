@@ -1,18 +1,18 @@
 import React from "react";
 
 import styles from './OpsPlanning.module.scss';
-import { BasicEvent } from "../../events/view/Event";
-import { API, EventResponse, StateResponse } from "../../../utilities/APIGen";
-import { UIUtilities } from "../../../utilities/UIUtilities";
-import { NotificationPropsType } from "../../../context/NotificationContext";
-import { faSkullCrossbones } from "@fortawesome/free-solid-svg-icons";
-import { Theme } from "../../../theme/Theme";
+import {BasicEvent} from "../../events/view/Event";
+import {API, EventResponse, StateResponse} from "../../../utilities/APIGen";
+import {UIUtilities} from "../../../utilities/UIUtilities";
+import {NotificationPropsType} from "../../../context/NotificationContext";
+import {faSkullCrossbones} from "@fortawesome/free-solid-svg-icons";
+import {Theme} from "../../../theme/Theme";
 
 type OpsPlanningProps = {} & NotificationPropsType;
 
 type OpsPlanningState = {
     events?: EventResponse[],
-    states?: StateResponse[],
+    states?: string[],
     selected?: string,
 };
 
@@ -61,7 +61,7 @@ class OpsPlanningClass extends React.Component<OpsPlanningProps, OpsPlanningStat
             console.log(data.result);
             this.setState((oldState) => ({
                 ...oldState,
-                states: data.result,
+                states: data.result as string[],
             }));
         }).catch((err: Error) => {
             console.error('Failed to load states data');
@@ -75,7 +75,7 @@ class OpsPlanningClass extends React.Component<OpsPlanningProps, OpsPlanningStat
         console.log('filtering events', updated, this.state.states);
         if (this.state.states === undefined) return;
         if (updated.state === undefined) return;
-        if (!this.state.states.map((e) => e.id).includes(updated.state.id)) {
+        if (!this.state.states.map((e) => e).includes(updated.state.id)) {
             this.setState((e) => {
                 if (e === undefined) return e;
                 return {
@@ -105,23 +105,26 @@ class OpsPlanningClass extends React.Component<OpsPlanningProps, OpsPlanningStat
     private makeCard(event: EventResponse) {
         return (
             <div className={styles.card} onClick={() => {
-                this.setState((s) => ({ ...s, selected: event.id }))
+                this.setState((s) => ({...s, selected: event.id}))
             }} key={`evt-card-${event.id}`}>
                 <div className={styles.inner}>
                     <strong>{event.name}</strong>
                     <div>
                         <strong>Start </strong><span>{event.start}</span>
-                        <br />
+                        <br/>
                         <strong>End </strong><span>{event.end}</span>
-                        <br />
+                        <br/>
                         <span className={styles.venues}>{event.venues.map((e) => e.name).join(', ')}</span>
+                        <br/>
+                        {!event.reserved ? ['Space is not reserved', <br/>] : ''}
+                        {this.state.states !== undefined && event.state !== undefined && this.state.states.includes(event.state.id) ? 'In review' : ''}
                     </div>
                 </div>
                 <div className={styles.lower}>
                     <div
-                        style={{ backgroundColor: event.state?.color ?? 'black' }}>{event.state?.name ?? 'Not Assigned'}</div>
+                        style={{backgroundColor: event.state?.color ?? 'black'}}>{event.state?.name ?? 'Not Assigned'}</div>
                     <div
-                        style={{ backgroundColor: event.ents?.color ?? 'black' }}>{event.ents?.name ?? 'Not Assigned'}</div>
+                        style={{backgroundColor: event.ents?.color ?? 'black'}}>{event.ents?.name ?? 'Not Assigned'}</div>
                 </div>
             </div>
         )
