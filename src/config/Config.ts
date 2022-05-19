@@ -49,7 +49,7 @@ const config = ((p) => {
         default:
             return development;
     }
-})((process.env.REACT_APP_STAGE || '').toLowerCase());
+})((typeof(process) === 'undefined' ? '' : (process.env.REACT_APP_STAGE || '')).toLowerCase());
 
 /**
  * The final configuration merging the default values with the results of {@link config} as overrides on top
