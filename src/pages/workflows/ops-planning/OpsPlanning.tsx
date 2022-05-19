@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from './OpsPlanning.module.scss';
 import {BasicEvent} from "../../events/view/Event";
-import {API, EventResponse, StateResponse} from "../../../utilities/APIGen";
+import {API, EventResponse} from "../../../utilities/APIGen";
 import {UIUtilities} from "../../../utilities/UIUtilities";
 import {NotificationPropsType} from "../../../context/NotificationContext";
 import {faSkullCrossbones} from "@fortawesome/free-solid-svg-icons";
@@ -24,23 +24,6 @@ class OpsPlanningClass extends React.Component<OpsPlanningProps, OpsPlanningStat
         this.filterEvents = this.filterEvents.bind(this);
         this.state = {};
     }
-
-    /**
-     * Summary: this page is a single workflow for an ops planning meeting
-     *  - Show all events that are pending approval (how?)
-     *  - For each event show events in other venues at the same time
-     *  - Show any clashes
-     *
-     *  TODO:
-     *    * [x] Users need to be able to configure which state IDs match review states
-     *    * [x ]New endpoint for fetching review events which uses these states
-     *    * How should gateway persist data? MongoDB? Should this be on a microservice?
-     *      * Needs some kind of shared store and we shouldn't add new modules, so mongo will have to do...
-     *      * Can link this into logging as well
-     *      * Gateway already uses mongo for sessions - need a new collection and maybe move collection
-     *    * What to do when states are deleted?
-     */
-
 
     componentDidMount() {
         API.events.review.get().then((data) => {
