@@ -1,20 +1,20 @@
 import * as React from 'react';
 import Loader from 'react-loader-spinner';
-import { Calendar as CalendarElement } from '../../../components/components/calendar/Calendar';
-import { TabPane } from '../../../components/components/tab-pane/TabPane';
-import { EventTable } from '../../../components/components/event-table/EventTable';
-import { Theme } from '../../../theme/Theme';
+import {TabPane} from '../../../components/components/tab-pane/TabPane';
+import {EventTable} from '../../../components/components/event-table/EventTable';
+import {Theme} from '../../../theme/Theme';
 
 import './Events.scss';
-import { API, EventResponse } from '../../../utilities/APIGen';
+import {API, EventResponse} from '../../../utilities/APIGen';
 import {
     FallibleReactComponent,
     FallibleReactStateType
 } from "../../../components/components/error-screen/FallibleReactComponent";
-import { loadAPIData } from "../../../utilities/DataUtilities";
+import {loadAPIData} from "../../../utilities/DataUtilities";
 import {UIUtilities} from "../../../utilities/UIUtilities";
 import {withNotificationContext} from "../../../components/WithNotificationContext";
 import {NotificationPropsType} from "../../../context/NotificationContext";
+import {CalendarRedo} from "../../../components/atoms/calendar/Calendar";
 
 export type CalendarPropsType = {} & NotificationPropsType;
 
@@ -38,17 +38,6 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
      * Load the events from the API endpoint and update the state with the properties or populate the error state
      */
     private loadComments() {
-        // API.events.get().then((events) => {
-        //     this.setState({
-        //         events: events.result,
-        //     });
-        // }).catch((err: Error) => {
-        //     this.setState((oldState) => ({
-        //         ...oldState,
-        //         error: `Failed to load the events due to ${err.message}`,
-        //     }));
-        // });
-
         loadAPIData<CalendarStateType>([{
             call: API.events.get,
             stateName: 'events',
@@ -82,12 +71,13 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
                 className="events-page"
             >
                 <TabPane
+                    style={{flexGrow: 1}}
                     panes={[
                         {
                             key: 'calendar',
                             content: (
                                 this.state.events
-                                    ? <CalendarElement events={this.state.events} />
+                                    ? <CalendarRedo events={this.state.events} days={5}/>
                                     : loadOrError
                             ),
                             name: 'Calendar',
@@ -96,7 +86,7 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
                             name: 'Table',
                             content: (
                                 this.state.events
-                                    ? <EventTable events={this.state.events} />
+                                    ? <EventTable events={this.state.events}/>
                                     : loadOrError
                             ),
                             key: 'table',
@@ -110,4 +100,5 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
     }
 
 }
+
 export const Events = withNotificationContext(EventsClass);
