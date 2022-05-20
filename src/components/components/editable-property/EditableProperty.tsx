@@ -1,4 +1,4 @@
-import React, {createRef, Ref, RefObject} from 'react';
+import React, {createRef, RefObject} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import DatePicker from 'react-flatpickr';
@@ -13,7 +13,6 @@ import {OptionType} from '../../atoms/icon-picker/EntrySelector';
 import {failEarlyStateSet} from '../../../utilities/AccessUtilities';
 import {IconSelector} from '../../atoms/icon-picker/IconPicker';
 import './EditableProperty.scss';
-import {create} from "domain";
 
 export type CheckboxType = {
     type: 'checkbox',

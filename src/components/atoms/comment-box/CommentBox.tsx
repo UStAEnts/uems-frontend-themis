@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {Link} from 'react-router-dom';
 import {faComment} from '@fortawesome/free-solid-svg-icons';
 
 import {TextField} from '../text-field/TextField';
