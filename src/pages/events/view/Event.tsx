@@ -107,7 +107,11 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 
     shouldComponentUpdate(nextProps: Readonly<SimpleEventProps>, nextState: Readonly<EventStateType>, nextContext: any): boolean {
         if (nextProps.id !== this.props.id) return true;
-        return super.shouldComponentUpdate?.(nextProps, nextState, nextContext) ?? true;
+        if (super.shouldComponentUpdate) {
+            return super.shouldComponentUpdate(nextProps, nextState, nextContext) ?? true;
+        }
+
+        return true;
     }
 
     /**
