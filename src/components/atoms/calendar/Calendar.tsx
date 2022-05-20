@@ -38,12 +38,12 @@ function blockWidth(scale: number = 1, amount: number = 1, days: number = 5) {
     return `calc(((100% - 4pc) / ${days * (1 / scale)}) * ${amount})`;
 }
 
-const EventBlock: React.FunctionComponent<{ event: PositionedEvent, startOfCalendar: Moment }> = (props) => {
-    const start = moment.unix(props.event.event.start);
-    const end = moment.unix(props.event.event.end);
-    const dayOffset = start.diff(props.startOfCalendar, 'days');
-    const hourOffset = start.hour() + (start.minute() / 60);
-    const duration = end.diff(start, 'minutes') / 60;
+const EventBlock: React.FunctionComponent<{ event: PositionedEvent, startOfCalendar: Moment, days: number }> = (props) => {
+    // const start = moment.unix(props.event.event.start);
+    // const end = moment.unix(props.event.event.end);
+    const dayOffset = props.event.startMoment.diff(props.startOfCalendar, 'days');
+    const hourOffset = props.event.startMoment.hour() + (props.event.startMoment.minute() / 60);
+    const duration = props.event.endMoment.diff(props.event.startMoment, 'minutes') / 60;
 
     let internals: React.ReactNode[] = [];
     if (!props.event.parent) {
@@ -62,10 +62,10 @@ const EventBlock: React.FunctionComponent<{ event: PositionedEvent, startOfCalen
         href={EVENT_VIEW.make(props.event.parent ?? props.event.event.id)}
         className={styles.event}
         style={{
-            left: dayToLeft(dayOffset, props.event.offset, props.event.split),
+            left: dayToLeft(dayOffset, props.event.offset, props.event.split, props.days),
             top: hourToTop(hourOffset),
             height: hoursToHeight(duration),
-            width: blockWidth(props.event.split, props.event.width),
+            width: blockWidth(props.event.split, props.event.width, props.days),
             ...colourOverride,
         }}
     >
@@ -94,6 +94,9 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
             events: CalendarRedo.position(props.events),
             startDate: moment.unix((props.startDate ?? moment().startOf('week').toDate()).getTime() / 1000).hour(0).minute(0).seconds(0).millisecond(0),
         };
+
+        console.log(props.events);
+        console.log(this.state.events);
     }
 
     private static position(events: EventResponse[]): PositionedEvent[] {
@@ -115,15 +118,15 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
                     console.log('multi day', em, overlap);
                     const original = em.endMoment.clone();
                     em.endMoment = em.startMoment.clone().hours(23).minute(59).seconds(59).millisecond(9999);
-                    em.event.end = em.endMoment.unix();
+                    // em.event.end = em.endMoment.unix();
 
                     const newStart = em.endMoment.clone().hours(0).minute(0).seconds(0).millisecond(0);
 
                     const n: PositionedEvent = {
                         event: {
                             ...e,
-                            start: newStart.unix(),
-                            end: original.unix(),
+                            // start: newStart.unix(),
+                            // end: original.unix(),
                             name: '*' + e.name,
                         },
                         width: 10,
@@ -157,7 +160,6 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
                 if (now.parent) continue;
 
                 if (now.event.start > prev.event.start && now.event.start <= prev.event.end) {
-                    console.log(now.event.start, prev.event.start, now.event.start - prev.event.start);
                     if (now.event.start - prev.event.start <= 30 * 60) {
                         prev.width *= (2 / 3);
                         now.width = prev.width;
@@ -184,6 +186,7 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
                 event.width = elements.find((e) => e.event.id === event.parent)?.width ?? 10;
                 event.offset = elements.find((e) => e.event.id === event.parent)?.offset ?? 0;
             }
+
         }
 
         return elements;
@@ -199,13 +202,19 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
                             {i % 12 === 0 ? 12 : i % 12} {i > 12 ? 'PM' : 'AM'}
                                 </span>
                     </div>,
-                    <div className={styles.long} style={{gridArea: `${i + 1}/2/${i + 2}/7`}}/>
+                    <div className={styles.long} style={{gridArea: `${i + 1}/2/${i + 2}/${this.props.days + 2}`}}/>
                 ]).flat(),
                 ...Array(this.props.days).fill(0).map((_, i) => (
                     <div className={styles.vertical} style={{gridArea: `1/${i + 2}/25/${i + 3}`}}/>
                 ))
             ];
         }
+
+        const startOfRange = this.state.startDate.unix();
+        const endOfRange = this.state.startDate.clone().add(7, 'days').unix();
+        const matches = this.state.events.filter((e) => e.startMoment.unix() >= startOfRange && e.startMoment.unix() < endOfRange);
+        console.log(this.state.startDate.toISOString(), matches.length, matches);
+
         return (
             <div className={styles.calendar}>
                 <div className={styles.buttons}>
@@ -223,18 +232,26 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
                 {Array(this.props.days).fill(0).map((_, i) => (
                     <div className={classes(styles.topOne, styles.top)} style={{gridArea: `1/${i + 2}/2/${i + 3}`}}>
                         <div>
-                            <div className={styles.number}>{this.state.startDate.clone().add(i, 'day').date()}</div>
+                            <div className={styles.number}>
+                                <span>{this.state.startDate.clone().add(i, 'day').format('dd')}</span>
+                                {this.state.startDate.clone().add(i, 'day').date()}
+                            </div>
                             <div
                                 className={styles.day}>{this.state.startDate.clone().add(i, 'day').format('MMMM')}</div>
                         </div>
                     </div>
                 ))}
 
-                <div className={styles.content}>
-                    {this.state.events.map((e) =>
+                <div className={styles.content} style={{
+                    gridArea: `2/1/3/${this.props.days+2}`,
+                    gridTemplateColumns: `4pc repeat(${this.props.days}, 1fr)`
+                }}>
+                    {matches.map((e) =>
                         <EventBlock
+                            key={e.event.id + (e.parent ?? '')}
                             event={e}
                             startOfCalendar={this.state.startDate}
+                            days={this.props.days}
                         />)}
                     {this._cachedLayout}
                 </div>

@@ -77,7 +77,7 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
                             key: 'calendar',
                             content: (
                                 this.state.events
-                                    ? <CalendarRedo events={this.state.events} days={5}/>
+                                    ? <CalendarRedo events={this.state.events} days={7}/>
                                     : loadOrError
                             ),
                             name: 'Calendar',

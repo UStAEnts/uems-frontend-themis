@@ -7,7 +7,7 @@
   // TODO: When this is 100% the calendar is *slightly* taller than the page, when 1920x1080
   height: 96%;
   display: grid;
-  grid-template-columns: 4pc repeat(5, 1fr);
+  grid-template-columns: 4pc repeat(7, 1fr);
   grid-template-rows: 3pc 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
@@ -90,10 +90,8 @@
         content: " ";
         bottom: calc(-1 * (100%/24));
         position: absolute;
-        width: calc((100% - 4pc)/5);
         box-sizing: border-box;
         z-index: 0;
-        //left: calc(4pc + 1 * ((100% - 4pc) / 5));
         border-bottom: 1px solid gainsboro;
         border-right: 1px solid gainsboro;
       }
@@ -131,27 +129,15 @@
       .number {
         font-size: 1.6em;
         font-weight: bold;
+
+        >span{
+          position: absolute;
+          font-size: 0.5em;
+          margin-top: 11px;
+          margin-left: -17px;
+        }
       }
     }
   }
 
-  .topOne {
-    grid-area: 1 / 2 / 2 / 3;
-  }
-
-  .topTwo {
-    grid-area: 1 / 3 / 2 / 4;
-  }
-
-  .topThree {
-    grid-area: 1 / 4 / 2 / 5;
-  }
-
-  .topFour {
-    grid-area: 1 / 5 / 2 / 6;
-  }
-
-  .topFive {
-    grid-area: 1 / 6 / 2 / 7;
-  }
 }
