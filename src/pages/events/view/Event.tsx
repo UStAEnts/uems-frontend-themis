@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FunctionComponent} from 'react';
 import {Link, RouteComponentProps, withRouter} from 'react-router-dom';
 import Loader from 'react-loader-spinner';
 
@@ -35,9 +35,20 @@ import {
     FallibleReactStateType
 } from "../../../components/components/error-screen/FallibleReactComponent";
 import {UIUtilities} from "../../../utilities/UIUtilities";
+import {RemovableVenueChip} from "../../../components/atoms/venue-chip/VenueChip";
+
+export type SimpleEventProps = {
+    notificationContext?: NotificationContextType,
+    /**
+     * The ID of the event to be rendered. This will be looked up from the API endpoint
+     */
+    id: string,
+    onChange?: (event: EventResponse) => void,
+};
 
 export type EventPropsType = {
     notificationContext?: NotificationContextType,
+    onChange?: (event: EventResponse) => void,
 } & RouteComponentProps<{
     /**
      * The ID of the event to be rendered. This will be looked up from the API endpoint
@@ -78,20 +89,29 @@ export type EventStateType = {
     chosenRole?: string,
 } & FallibleReactStateType;
 
-class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
+class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 
     static displayName = 'Event';
 
     static contextType = GlobalContext;
 
-    constructor(props: Readonly<EventPropsType>) {
+    constructor(props: Readonly<SimpleEventProps>) {
         super(props);
 
         this.state = {
-            id: this.props.match.params.id,
+            id: this.props.id,
             chosenRole: 'Other',
             loading: true,
         };
+    }
+
+    shouldComponentUpdate(nextProps: Readonly<SimpleEventProps>, nextState: Readonly<EventStateType>, nextContext: any): boolean {
+        if (nextProps.id !== this.props.id) return true;
+        if (super.shouldComponentUpdate) {
+            return super.shouldComponentUpdate(nextProps, nextState, nextContext) ?? true;
+        }
+
+        return true;
     }
 
     /**
@@ -112,7 +132,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
             this.failedLoad(`Could not load topic list: ${err.message}`);
         });
 
-        API.events.id.signups.get(this.props.match.params.id).then((data) => {
+        API.events.id.signups.get(this.props.id).then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
 
             this.setState((oldState) => ({
@@ -126,7 +146,7 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
             this.failedLoad(`Could not load signups: ${err.message}`);
         });
 
-        API.events.id.comments.get(this.props.match.params.id).then((data) => {
+        API.events.id.comments.get(this.props.id).then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
 
             this.setState((oldState) => ({
@@ -139,22 +159,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load comments: ${err.message}`);
         });
-        // Axios.get(
-        //     urljoin(
-        //         Config.BASE_GATEWAY_URI,
-        //         'events',
-        //         encodeURIComponent(this.props.match.params.id),
-        //         'comments',
-        //     ),
-        // ).then((data) => {
-        //     // TODO: add schema validation for data returned by the server
-        //     this.setState((oldState) => ({
-        //         ...oldState,
-        //         comments: data.data.result,
-        //     }));
-        // })
 
-        API.events.id.files.get(this.props.match.params.id).then((data) => {
+        API.events.id.files.get(this.props.id).then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
 
             this.setState((oldState) => ({
@@ -167,25 +173,6 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load event: ${err.message}`);
         });
-        // Axios.get(
-        //     urljoin(
-        //         Config.BASE_GATEWAY_URI,
-        //         'events',
-        //         encodeURIComponent(this.props.match.params.id),
-        //         'files',
-        //     ),
-        // ).then((data) => {
-        //     // TODO: add schema validation for data returned by the server
-        //     this.setState((oldState) => ({
-        //         ...oldState,
-        //         files: data.data.result,
-        //     }));
-        // }).catch((err: Error) => {
-        //     console.error('Failed to load event data');
-        //     console.error(err);
-        //
-        //     this.failedLoad(`Could not load event: ${err.message}`);
-        // });
 
         API.venues.get().then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
@@ -200,21 +187,6 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load list of venues: ${err.message}`);
         });
-        // Axios.get(urljoin(
-        //     Config.BASE_GATEWAY_URI,
-        //     'venues',
-        // )).then((data) => {
-        //     // TODO: add schema validation for data returned by the server
-        //     this.setState((oldState) => ({
-        //         ...oldState,
-        //         venues: data.data.result,
-        //     }));
-        // }).catch((err: Error) => {
-        //     console.error('Failed to load event data');
-        //     console.error(err);
-        //
-        //     this.failedLoad(`Could not load list of venues: ${err.message}`);
-        // });
 
         API.ents.get().then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
@@ -229,21 +201,6 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load list of ents states: ${err.message}`);
         });
-        // Axios.get(urljoin(
-        //     Config.BASE_GATEWAY_URI,
-        //     'ents',
-        // )).then((data) => {
-        //     // TODO: add schema validation for data returned by the server
-        //     this.setState((oldState) => ({
-        //         ...oldState,
-        //         entsStates: data.data.result,
-        //     }));
-        // }).catch((err: Error) => {
-        //     console.error('Failed to load event data');
-        //     console.error(err);
-        //
-        //     this.failedLoad(`Could not load list of ents states: ${err.message}`);
-        // });
 
         API.states.get().then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
@@ -258,23 +215,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
             this.failedLoad(`Could not load list of ents states: ${err.message}`);
         });
-        // Axios.get(urljoin(
-        //     Config.BASE_GATEWAY_URI,
-        //     'states',
-        // )).then((data) => {
-        //     // TODO: add schema validation for data returned by the server
-        //     this.setState((oldState) => ({
-        //         ...oldState,
-        //         buildingStates: data.data.result,
-        //     }));
-        // }).catch((err: Error) => {
-        //     console.error('Failed to load event data');
-        //     console.error(err);
-        //
-        //     this.failedLoad(`Could not load list of ents states: ${err.message}`);
-        // });
 
-        API.events.id.get(this.props.match.params.id).then((data) => {
+        API.events.id.get(this.props.id).then((data) => {
             if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
 
             // TODO: add schema validation for data returned by the server
@@ -353,6 +295,8 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                 ...oldState,
                 event: updatedEvent,
             }));
+
+            if (this.props.onChange) this.props.onChange(updatedEvent);
         }).catch((err) => {
             // TODO: figure out how to raise errors and display them properly!
             console.error(err);
@@ -615,7 +559,32 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
         ).flat();
     }
 
+    private editVenues = (action: 'add' | 'remove', ids: string[]) => {
+        if (this.state.event === undefined) return;
+
+        const edit: any = {};
+        if (action === 'add') edit.addVenues = ids;
+        else edit.removeVenues = ids;
+
+        const replacement = {...this.state.event};
+        if (action === 'remove') replacement.venues = replacement.venues.filter((e) => !ids.includes(e.id));
+        else replacement.venues = [...replacement.venues, ...(this.state.venues?.filter((e) => ids.includes(e.id)) ?? [])];
+
+        API.events.id.patch(this.state.event.id, edit).then(() => {
+            this.setState((oldState) => ({
+                ...oldState,
+                event: replacement,
+            }));
+
+            if (this.props.onChange) this.props.onChange(replacement);
+        }).catch((err) => {
+            console.error(err);
+            this.failedLoad('Could not save the event!');
+        });
+    }
+
     realRender() {
+        const venueIDs = this.state.event?.venues.map((e) => e.id) ?? [];
         return this.state.event ? (
             <div className="event-view loaded">
                 <div className="real">
@@ -674,17 +643,35 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
                 <div className="rightbar-real">
                     <div className="entry">
                         <div className="title">Venue</div>
-                        {/*TODO: rebuild venue selector for checkboxes*/}
-                        {/*{this.generateEditableProperty(*/}
-                        {/*    this.state.venues?.map((e: VenueResponse) => ({*/}
-                        {/*        text: e.name,*/}
-                        {/*        value: e.id,*/}
-                        {/*        additional: e,*/}
-                        {/*    })),*/}
-                        {/*    'Venue',*/}
-                        {/*    this.state.event.venue?.name,*/}
-                        {/*    'venue',*/}
-                        {/*)}*/}
+                        <EditableProperty
+                            name="Add New Venue"
+                            config={{
+                                type: 'select',
+                                options: (this.state.venues ?? [])
+                                    .filter((e) => !venueIDs.includes(e.id))
+                                    .map((e) => ({text: e.name, value: e.id})),
+                                onChange: (result) => typeof (result) === 'string' ? this.editVenues('add', [result])
+                                    : this.editVenues('add', [result.value]),
+                            }}
+                        >
+                            {(this.state.event.venues ?? []).map((e) =>
+                                <RemovableVenueChip venue={e} key={e.id}
+                                                    onRemove={() => this.editVenues('remove', [e.id])}/>
+                            )}
+                        </EditableProperty>
+                    </div>
+                    <div className="entry">
+                        <div className="title">Reservation</div>
+                        <EditableProperty
+                            name="Reserved"
+                            config={{
+                                type: 'checkbox',
+                                value: this.state.event.reserved ?? false,
+                                onChange: this.changeProperty('reserved'),
+                            }}
+                        >
+                            {this.state.event.reserved ? 'Space reserved' : 'Unreserved'}
+                        </EditableProperty>
                     </div>
                     <div className="entry">
                         <div className="title">Projected Attendance</div>
@@ -824,8 +811,18 @@ class Event extends FallibleReactComponent<EventPropsType, EventStateType> {
 
 }
 
+const RouteredEvent: FunctionComponent<EventPropsType> = ({match, notificationContext, onChange}) => {
+    const copy: SimpleEventProps = {
+        id: match.params.id,
+        notificationContext,
+        onChange,
+    };
+    return (<Event {...copy} />);
+}
+
 /**
  * Bind the event page with the router so we can access the ID if the path
  */
 // @ts-ignore
-export default withRouter(withNotificationContext(Event));
+export default withRouter(withNotificationContext(RouteredEvent));
+export const BasicEvent = Event;

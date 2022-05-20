@@ -320,6 +320,7 @@ export const EventUpdateZod = z.object({
     state: z.string().optional(),
     attendance: z.number().optional(),
     color: z.string().optional(),
+    reserved: z.boolean().optional(),
 });
 export type EventUpdate = z.infer<typeof EventUpdateZod>;
 export const TopicUpdateZod = z.object({
@@ -619,6 +620,12 @@ export const GetVenuesIdEventsAPIResponseZod = SuccessfulAPIResponseZod.extend({
     result: z.array(EventResponseZod),
 });
 export type GetVenuesIdEventsAPIResponse = z.infer<typeof GetVenuesIdEventsAPIResponseZod>;
+
+export const GetReviewStatesAPIResponseZod = SuccessfulAPIResponseZod.extend({
+    result: IDOnlyResponseZod,
+});
+export type GetReviewStatesAPIResponse = z.infer<typeof GetReviewStatesAPIResponseZod>;
+
 //=============
 export type APIType = {
     events: {
@@ -681,6 +688,10 @@ export type APIType = {
                         => Promise<void>
                 }
             }
+        },
+        review: {
+            get: ()
+                => Promise<GetEventAPIResponse>,
         }
     },
     files: {
@@ -753,7 +764,11 @@ export type APIType = {
                 get: (id: string)
                     => Promise<GetStatesIdEventsAPIResponse>
             }
-        }
+        },
+        review: {
+            get: ()
+                => Promise<GetReviewStatesAPIResponse>,
+        },
     },
     topics: {
         get: ()
@@ -1082,6 +1097,19 @@ export const API: APIType = {
                         )
                 }
             }
+        },
+        review: {
+            get: bind<GetEventAPIResponse>(
+                (
+                    uri: string,
+                ) => getRequest<GetEventAPIResponse>(
+                    uri,
+                    {},
+                    GetEventAPIResponseZod,
+                ),
+                '/events/review',
+                'Retrieves the event',
+            ),
         }
     },
     files: {
@@ -1415,6 +1443,20 @@ export const API: APIType = {
                         'Retrieves all events with this state',
                     )
             }
+        },
+        review: {
+            get:
+                bind<GetReviewStatesAPIResponse>(
+                    (
+                        uri: string,
+                    ) => getRequest<GetReviewStatesAPIResponse>(
+                        uri,
+                        {},
+                        GetReviewStatesAPIResponseZod,
+                    ),
+                    '/states/review',
+                    'Retrieves all review states',
+                )
         }
     },
     topics: {

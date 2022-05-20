@@ -1,0 +1,54 @@
+.opsPlanning {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+
+  .sidebar {
+    height: 100%;
+    overflow-y: auto;
+    flex-basis: 15%;
+    flex-shrink: 0;
+    flex-grow: 0;
+    background: #fbfbfb;
+    border-right: 1px solid gainsboro;
+    max-height: 100vh;
+
+    .card {
+      border-bottom: 1px solid gainsboro;
+
+      .inner {
+        padding: 15px;
+
+        > strong {
+          display: block;
+          font-size: 1.3em;
+          padding-bottom: 5px;
+        }
+
+        .venues {
+          display: block;
+          margin-top: 5px;
+        }
+      }
+
+      .lower {
+        display: flex;
+        flex-direction: row;
+
+        > div {
+          padding: 5px;
+          text-align: center;
+          flex-basis: 50%;
+          color: white;
+          background: red;
+        }
+      }
+    }
+  }
+
+  .content {
+    height: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+}

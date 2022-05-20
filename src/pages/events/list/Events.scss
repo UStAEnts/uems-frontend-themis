@@ -1,5 +1,9 @@
 .events-page{
   padding: 20px;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 
   .loading-pane{
     text-align: center;

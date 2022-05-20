@@ -139,3 +139,8 @@ export class UIUtilities {
     }
 
 }
+
+
+export function classes(...classes: (string|undefined)[]){
+    return classes.filter((e) => e !== undefined).join(' ');
+}

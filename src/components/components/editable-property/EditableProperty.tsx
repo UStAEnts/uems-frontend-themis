@@ -1,18 +1,24 @@
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import React, {createRef, RefObject} from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import DatePicker from 'react-flatpickr';
-import { TwitterPicker } from 'react-color';
-import { KeyValueOption, Select } from '../../atoms/select/Select';
-import { Button } from '../../atoms/button/Button';
-import { Theme } from '../../../theme/Theme';
+import {TwitterPicker} from 'react-color';
+import {KeyValueOption, Select} from '../../atoms/select/Select';
+import {Button} from '../../atoms/button/Button';
+import {Theme} from '../../../theme/Theme';
 
 import InputUtilities from '../../../utilities/InputUtilities';
-import { TextField, TextFieldPropsType } from '../../atoms/text-field/TextField';
-import { OptionType } from '../../atoms/icon-picker/EntrySelector';
-import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
-import { IconSelector } from '../../atoms/icon-picker/IconPicker';
+import {TextField, TextFieldPropsType} from '../../atoms/text-field/TextField';
+import {OptionType} from '../../atoms/icon-picker/EntrySelector';
+import {failEarlyStateSet} from '../../../utilities/AccessUtilities';
+import {IconSelector} from '../../atoms/icon-picker/IconPicker';
 import './EditableProperty.scss';
+
+export type CheckboxType = {
+    type: 'checkbox',
+    onChange?: (value: boolean) => void,
+    value: boolean,
+}
 
 export type IconType = {
     type: 'icon',
@@ -54,7 +60,7 @@ export type EditablePropertyPropsType = {
      * An editable property must contain one or more children which are rendered by default when not in edit mode
      */
     children: React.ReactNode | React.ReactNode[],
-    config: SelectType | DateType | TextType | ColorType | IconType,
+    config: SelectType | DateType | TextType | ColorType | IconType | CheckboxType,
 }
 
 export type EditablePropertyStateType = {
@@ -73,9 +79,12 @@ export type EditablePropertyStateType = {
 export class EditableProperty extends React.Component<EditablePropertyPropsType, EditablePropertyStateType> {
 
     static displayName = 'EditableProperty';
+    private inputRef: RefObject<HTMLInputElement>;
 
     constructor(props: Readonly<EditablePropertyPropsType>) {
         super(props);
+
+        this.inputRef = createRef();
 
         this.state = {
             editMode: false,
@@ -132,6 +141,7 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
             input: value,
         }));
     }
+
     /**
      * If the selected property has been updated, it will disable editing and then call the onChange listener if one
      * has been provided
@@ -163,6 +173,9 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
         if (this.props.config.type === 'color' && this.state.selectProperty) {
             if (this.props.config.onChange) this.props.config.onChange(this.state.selectProperty as string);
         }
+        if (this.props.config.type === 'checkbox' && this.state.input !== undefined) {
+            if (this.props.config.onChange) this.props.config.onChange(this.state.input as boolean);
+        }
     }
 
     private renderIcon = () => (
@@ -180,6 +193,24 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
             }}
             color={this.state.selectProperty as (string | undefined)}
         />
+    );
+
+    private renderCheckbox = (box: CheckboxType) => (
+        <>
+        <input type="checkbox"
+               id={`editable-checkbox-${btoa(this.props.name)}`}
+               checked={this.state.input ?? box.value}
+               ref={this.inputRef}
+               onChange={() => {
+                   console.log(this.inputRef, this.inputRef.current?.checked ?? false);
+                   this.setState((oldState) => ({
+                       ...oldState,
+                       input: this.inputRef.current?.checked ?? false
+                   }));
+               }}
+        />
+            <label htmlFor={`editable-checkbox-${btoa(this.props.name)}`}>{this.props.name}</label>
+        </>
     );
 
     private renderSelect = (select: SelectType) => {
@@ -246,6 +277,8 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                 );
             case 'icon':
                 return (this.renderIcon());
+            case 'checkbox':
+                return (this.renderCheckbox(this.props.config))
             default:
                 return undefined;
         }
@@ -292,7 +325,7 @@ export class EditableProperty extends React.Component<EditablePropertyPropsType,
                     onKeyPress={InputUtilities.higherOrderPress(InputUtilities.SPACE, this.enableEditing, this)}
                     onClick={this.enableEditing}
                 >
-                    <FontAwesomeIcon icon={faEdit} />
+                    <FontAwesomeIcon icon={faEdit}/>
                     (Edit...)
                 </span>
             </div>

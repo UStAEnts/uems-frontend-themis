@@ -20,6 +20,7 @@ import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { ColorUtilities } from "../../../utilities/ColorUtilities";
 import { KeyValueOption } from "../../atoms/select/Select";
 import { API, EntsStateResponse, EventResponse, StateResponse, VenueResponse } from "../../../utilities/APIGen";
+import VenueChip from "../../atoms/venue-chip/VenueChip";
 
 export type EventTablePropsType = {
     /**
@@ -201,7 +202,9 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 </LinkedTD>
 
                 <LinkedTD to={`/events/${event.id}`}>{event.name}</LinkedTD>
-                <LinkedTD to={`/events/${event.id}`}>{event.venues.map((e) => e.name).join(', ')}</LinkedTD>
+                <LinkedTD to={`/events/${event.id}`}>
+                    {event.venues.map((e) => (<VenueChip venue={e} key={e.id}/>))}
+                </LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
                     {moment.unix(event.start).format(' dddd Do MMMM (YYYY), HH:mm ')}
                     &#8594;

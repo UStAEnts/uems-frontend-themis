@@ -200,7 +200,7 @@ export class TabPane extends React.Component<TabPanePropsType, TabPaneStateType>
         }
 
         return (
-            <div className="tabbed-pane">
+            <div className="tabbed-pane" style={this.props.style}>
                 <div className="tabs">
                     {tabs}
                 </div>

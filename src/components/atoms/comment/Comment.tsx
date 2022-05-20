@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {Link} from 'react-router-dom';
 import Markdown from 'markdown-to-jsx';
 import ReactTimeAgo from 'react-time-ago';
 import ReactTooltip from 'react-tooltip';
@@ -66,13 +65,16 @@ export function Comment(props: CommentPropsType) {
             </div>
             <div className="right">
                 <div className="top">
-                    <Link className="poster" to={`/user/${props.comment.poster.username}`}>
+                    <div className="poster">
+                        {/*TODO: SEE https://app.asana.com/0/1199734926192621/1202299888223891/f*/}
+                        {/*<Link className="poster" to={`/user/${props.comment.poster.username}`}>*/}
+                        {/*</Link>*/}
                         <div className="name">{props.comment.poster.name}</div>
                         <div className="username">
                             @
                             {props.comment.poster.username}
                         </div>
-                    </Link>
+                    </div>
                     <div className="spacer"/>
                     <div className="time">
                         <ReactTimeAgo locale="en" date={props.comment.posted * 1000}/>
