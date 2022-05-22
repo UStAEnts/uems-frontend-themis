@@ -20,7 +20,7 @@ export type FilterConfiguration = {
     /**
      * The initial value with which to populate the field
      */
-    initial?: number | string | Date,
+    initial?: number | string | { startDate: Date, endDate: Date },
     /**
      * The options to be displayed in  the options menu if relevant
      */
@@ -381,18 +381,29 @@ export class Filter extends React.Component<FilterPropsType, FilterStateType> {
             spreadProperties = this.state.dateFilterStates[key];
         }
 
+        let initial = undefined;
+        let initialEnd = undefined;
+        if (typeof(date.initial) === 'object'){
+            initial = moment(date.initial.startDate);
+            initialEnd = moment(date.initial.endDate);
+        }
+
         return (
             <div key={key} className="indv-filter">
                 <div className="label">{date.name}</div>
                 <DateRangePicker
-                    startDate={moment.unix(0)}
+                    startDate={initial}
+                    endDate={initialEnd}
                     enableOutsideDays
                     isOutsideRange={() => false}
-                    endDate={null}
-                    onDatesChange={(change) => this.updateDateInput(key, change.startDate, change.endDate)}
+                    onDatesChange={(change) => {
+                        //@ts-ignore : TODO: deal with this later?
+                        this.updateDateInput(key, change.startDate, change.endDate)
+                    }}
                     onFocusChange={(focus) => this.updateDateFocus(key, focus)}
                     startDateId="start-date-id"
                     endDateId="end-date-id"
+                    displayFormat="DD/MM/yyyy"
                     /* eslint-disable-next-line react/jsx-props-no-spreading */
                     {...spreadProperties}
                 />
