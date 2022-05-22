@@ -11,6 +11,7 @@ type CalendarProps = {
     startDate?: Date,
     days: number,
     events: EventResponse[],
+    onDateChange?: (start: Moment, end: Moment) => void,
 }
 
 type CalendarState = {
@@ -213,19 +214,26 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
         const startOfRange = this.state.startDate.unix();
         const endOfRange = this.state.startDate.clone().add(7, 'days').unix();
         const matches = this.state.events.filter((e) => e.startMoment.unix() >= startOfRange && e.startMoment.unix() < endOfRange);
-        console.log(this.state.startDate.toISOString(), matches.length, matches);
 
         return (
             <div className={styles.calendar}>
                 <div className={styles.buttons}>
-                    <div className={styles.button} onClick={() => this.setState((s) => ({
-                        ...s,
-                        startDate: s.startDate.clone().subtract(7, 'days')
-                    }))}>
+                    <div className={styles.button}
+                         onClick={() => this.setState((s) => {
+                             const newDate = s.startDate.clone().subtract(7, 'days');
+                             if (this.props.onDateChange) this.props.onDateChange(newDate, newDate.clone().add(String(this.props.days), 'days'));
+
+                             return {...s, startDate: newDate};
+                         })}>
                         <FontAwesomeIcon icon={faArrowLeft}/>
                     </div>
                     <div className={styles.button}
-                         onClick={() => this.setState((s) => ({...s, startDate: s.startDate.clone().add(7, 'days')}))}>
+                         onClick={() => this.setState((s) => {
+                             const newDate = s.startDate.clone().add(7, 'days');
+                             if (this.props.onDateChange) this.props.onDateChange(newDate, newDate.clone().add(String(this.props.days), 'days'));
+
+                             return {...s, startDate: newDate};
+                         })}>
                         <FontAwesomeIcon icon={faArrowRight}/>
                     </div>
                 </div>
@@ -243,7 +251,7 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
                 ))}
 
                 <div className={styles.content} style={{
-                    gridArea: `2/1/3/${this.props.days+2}`,
+                    gridArea: `2/1/3/${this.props.days + 2}`,
                     gridTemplateColumns: `4pc repeat(${this.props.days}, 1fr)`
                 }}>
                     {matches.map((e) =>
