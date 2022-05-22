@@ -629,7 +629,7 @@ export type GetReviewStatesAPIResponse = z.infer<typeof GetReviewStatesAPIRespon
 //=============
 export type APIType = {
     events: {
-        get: ()
+        get: (params?: URLSearchParams)
             => Promise<GetEventAPIResponse>,
         post: (body: EventCreation)
             => Promise<CreateEventAPIResponse>,
@@ -809,9 +809,9 @@ export const API: APIType = {
         get:
             bind<GetEventAPIResponse>(
                 (
-                    uri: string,
+                    uri: string, parameters: URLSearchParams = new URLSearchParams(),
                 ) => getRequest<GetEventAPIResponse>(
-                    uri,
+                    uri + '?' + parameters.toString(),
                     {},
                     GetEventAPIResponseZod,
                 ),
