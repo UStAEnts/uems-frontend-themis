@@ -27,6 +27,7 @@ export type EventTablePropsType = {
      * The list of events to display in this table
      */
     events: EventResponse[],
+    filters?: { [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus },
 }
 
 export type EventTableStateType = {
@@ -55,7 +56,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         super(props);
 
         this.state = {
-            filters: {},
+            filters: props.filters ?? {},
             loaded: {},
         };
 
@@ -306,6 +307,16 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 type: 'date',
             },
         };
+
+        if (this.state.filters.date){
+            const version = (this.state.filters.date as DateFilterStatus);
+            if (version.startDate && version.endDate) {
+                filters.date.initial = {
+                    startDate: version.startDate.toDate(),
+                    endDate: version.endDate.toDate()
+                };
+            }
+        }
 
         if (this.state.loaded.ents) {
             const entsFilter: KeyValueOption[] = this.state.loaded.ents.map((e) => ({
