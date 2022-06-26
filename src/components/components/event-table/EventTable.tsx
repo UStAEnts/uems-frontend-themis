@@ -1,12 +1,12 @@
 /* eslint-disable */
 import React from 'react';
 import ReactTimeAgo from "react-time-ago";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Theme } from "../../../theme/Theme";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Theme} from "../../../theme/Theme";
 import {
     DateFilterStatus,
     Filter,
-    FilterConfiguration,
+    FilterConfiguration, FilterPropsType,
     NumberFilterStatus,
     SearchFilterStatus,
     SelectFilterStatus
@@ -14,12 +14,12 @@ import {
 
 import './EventTable.scss';
 import moment from "moment";
-import { LinkedTD } from "../../atoms/LinkedTD";
-import { Redirect } from "react-router";
-import { IconName } from '@fortawesome/free-solid-svg-icons';
-import { ColorUtilities } from "../../../utilities/ColorUtilities";
-import { KeyValueOption } from "../../atoms/select/Select";
-import { API, EntsStateResponse, EventResponse, StateResponse, VenueResponse } from "../../../utilities/APIGen";
+import {LinkedTD} from "../../atoms/LinkedTD";
+import {Redirect} from "react-router";
+import {IconName} from '@fortawesome/free-solid-svg-icons';
+import {ColorUtilities} from "../../../utilities/ColorUtilities";
+import {KeyValueOption} from "../../atoms/select/Select";
+import {API, EntsStateResponse, EventResponse, StateResponse, VenueResponse} from "../../../utilities/APIGen";
 import VenueChip from "../../atoms/venue-chip/VenueChip";
 
 export type EventTablePropsType = {
@@ -27,14 +27,15 @@ export type EventTablePropsType = {
      * The list of events to display in this table
      */
     events: EventResponse[],
-    filters?: { [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus },
+    filters?: { [key: string]: FilterConfiguration },
+    onFiltersChange?: FilterPropsType['onFilterChange'],
 }
 
 export type EventTableStateType = {
     /**
      * A set of filters to apply to the table
      */
-    filters: { [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus },
+    filters: { [key: string]: FilterConfiguration },
     /**
      * If set the {@link Redirect} element will be rendered which will force the page to redirect to the path set here.
      * This makes it easy to trigger a redirect without having to be in the render function
@@ -70,7 +71,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
     componentDidMount() {
         API.venues.get().then((venues) => {
             this.setState((oldState) => {
-                const clone = { ...oldState };
+                const clone = {...oldState};
 
                 clone.loaded.venues = venues.result;
 
@@ -82,7 +83,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         });
         API.states.get().then((states) => {
             this.setState((oldState) => {
-                const clone = { ...oldState };
+                const clone = {...oldState};
 
                 clone.loaded.states = states.result;
 
@@ -94,7 +95,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
         });
         API.ents.get().then((ents) => {
             this.setState((oldState) => {
-                const clone = { ...oldState };
+                const clone = {...oldState};
 
                 clone.loaded.ents = ents.result;
 
@@ -152,10 +153,10 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 status = (
                     <div
                         className="ents-state unknown"
-                        style={{ backgroundColor: entsStatus.color }}
+                        style={{backgroundColor: entsStatus.color}}
                     >
                         {entsStatus.icon
-                            ? <FontAwesomeIcon icon={entsStatus.icon as IconName} />
+                            ? <FontAwesomeIcon icon={entsStatus.icon as IconName}/>
                             : undefined}
                         {entsStatus.name}
                     </div>
@@ -169,7 +170,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                         className={`ents-state ${entsStatus.name}`}
                     >
                         {entsStatus.icon
-                            ? <FontAwesomeIcon icon={entsStatus.icon as IconName} />
+                            ? <FontAwesomeIcon icon={entsStatus.icon as IconName}/>
                             : undefined}
                         {entsStatus.name}
                     </div>
@@ -212,7 +213,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                     {moment.unix(event.end).format(' dddd Do MMMM (YYYY), HH:mm ')}
                 </LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
-                    <ReactTimeAgo date={event.start} />
+                    <ReactTimeAgo date={event.start}/>
                 </LinkedTD>
                 <LinkedTD to={`/events/${event.id}`}>
                     {this.makeEntsStatus(event.ents)}
@@ -242,50 +243,52 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      */
     private filter(event: EventResponse) {
         if ('name' in this.state.filters) {
-            const filter = this.state.filters.name as SearchFilterStatus;
+            const filter = this.state.filters.name;
 
-            if (!event.name.toLowerCase().includes(filter.content.toLowerCase())) return false;
+            if (!event.name.toLowerCase().includes((filter.value as string).toLowerCase())) return false;
         }
 
         if ('date' in this.state.filters) {
-            const filter = this.state.filters.date as DateFilterStatus;
+            const filter = this.state.filters.date;
 
-            if (filter.startDate !== null) {
-                if (filter.startDate.isAfter(moment.unix(event.start))) return false;
+            if (filter.value && typeof (filter.value) === 'object' && 'startDate' in filter.value) {
+                if (filter.value.startDate !== null) {
+                    if (moment(filter.value.startDate).isAfter(moment.unix(event.start))) return false;
+                }
             }
 
-            if (filter.endDate !== null) {
-                if (filter.endDate.isBefore(moment.unix(event.end))) return false;
+            if (filter.value && typeof (filter.value) === 'object' && 'endDate' in filter.value) {
+                if (moment(filter.value.endDate).isBefore(moment.unix(event.end))) return false;
             }
         }
 
         if ('state' in this.state.filters) {
-            const filter = this.state.filters.state as SelectFilterStatus;
+            const filter = this.state.filters.state;
 
-            if (typeof (filter.selectedOption) === 'string') return true;
+            if (typeof (filter.value) === 'string') return true;
 
-            if (filter.selectedOption.value !== 'any') {
-                if (event.state?.name.toLowerCase() !== (filter.selectedOption.additional as StateResponse).name.toLowerCase()) return false;
+            if (typeof (filter.value) === 'object' && 'value' in filter.value && filter.value.value !== 'any') {
+                if (event.state?.name.toLowerCase() !== (filter.value.additional as StateResponse).name.toLowerCase()) return false;
             }
         }
 
         if ('ents' in this.state.filters) {
-            const filter = this.state.filters.ents as SelectFilterStatus;
+            const filter = this.state.filters.ents;
 
-            if (typeof (filter.selectedOption) === 'string') return true;
+            if (typeof (filter.value) === 'string') return true;
 
-            if (filter.selectedOption.value !== 'any') {
-                if (event.ents?.name.toLowerCase() !== (filter.selectedOption.additional as EntsStateResponse).name.toLowerCase()) return false;
+            if (typeof (filter.value) === 'object' && 'value' in filter.value && filter.value.value !== 'any') {
+                if (event.ents?.name.toLowerCase() !== (filter.value.additional as EntsStateResponse).name.toLowerCase()) return false;
             }
         }
 
         if ('venues' in this.state.filters) {
-            const filter = this.state.filters.venues as SelectFilterStatus;
+            const filter = this.state.filters.venues;
 
-            if (typeof (filter.selectedOption) === 'string') return true;
+            if (typeof (filter.value) === 'string') return true;
 
-            if (filter.selectedOption.value !== 'any') {
-                if(!event.venues.map((e) => e.name.toLowerCase()).includes((filter.selectedOption.additional as VenueResponse).name.toLowerCase())) return false;
+            if (typeof (filter.value) === 'object' && 'value' in filter.value && filter.value.value !== 'any') {
+                if (!event.venues.map((e) => e.name.toLowerCase()).includes((filter.value.additional as VenueResponse).name.toLowerCase())) return false;
                 // if (event.venue?.name.toLowerCase() !== (filter.selectedOption.additional as VenueResponse).name.toLowerCase()) return false;
             }
         }
@@ -308,13 +311,15 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             },
         };
 
-        if (this.state.filters.date){
-            const version = (this.state.filters.date as DateFilterStatus);
-            if (version.startDate && version.endDate) {
-                filters.date.initial = {
-                    startDate: version.startDate.toDate(),
-                    endDate: version.endDate.toDate()
-                };
+        if (this.state.filters.date) {
+            const version = (this.state.filters.date);
+            if (typeof (version.value) === 'object' && 'startDate' in version.value) {
+                if (version.value.startDate && version.value.endDate) {
+                    filters.date.value = {
+                        startDate: version.value.startDate,
+                        endDate: version.value.endDate
+                    };
+                }
             }
         }
 
@@ -375,19 +380,19 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             };
         }
 
-
         return (
             <div className="events-table">
                 {this.state.forcedRedirect
-                    ? <Redirect to={this.state.forcedRedirect} />
+                    ? <Redirect to={this.state.forcedRedirect}/>
                     : undefined}
                 <Filter
                     filters={filters}
                     onFilterChange={
                         (filters) => {
-                            console.log('STATE CHANGE');
                             this.setState({
                                 filters,
+                            }, () => {
+                                if (this.props.onFiltersChange) this.props.onFiltersChange(this.state.filters);
                             })
                         }
                     }
@@ -395,7 +400,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
                 <table>
                     <thead>
                     <tr>
-                        <th className="icon-column" />
+                        <th className="icon-column"/>
                         <th className="name-column">Name</th>
                         <th className="venue-column">Venue</th>
                         <th className="time-column">Time</th>
