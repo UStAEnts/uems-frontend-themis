@@ -96,11 +96,17 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
 
         // When the site mounts we need to fetch information about the user
         Axios.get('/api/whoami').then((data) => {
+            const roles: string[] = [];
+            if(data.data.isAdmin) roles.push('admin');
+            if(data.data.isOps) roles.push('ops');
+            if(data.data.isEnts) roles.push('ents');
+
             this.setUser({
                 username: data.data.username,
                 id: data.data.username,
                 name: data.data.name,
                 profile: data.data.profile,
+                roles,
             });
         }).catch((err) => {
             console.error('Failed to fetch user information', err);
@@ -113,7 +119,7 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
         Object.values(this.state.timeouts).map(clearTimeout);
     }
 
-    private setUser = (user?: User) => {
+    private setUser = (user?: User & {roles: string[]}) => {
         this.setState((oldState) => ({
             ...oldState,
             user,

@@ -6,9 +6,10 @@ export type ReadableContextType = {
 }
 
 export type GlobalContextType = {
+    // TODO: should this be mixed into the User type?
     user: {
-        value?: User,
-        set: (value?: User) => void,
+        value?: User & {roles: string[]},
+        set: (value?: User & {roles: string[]}) => void,
     },
 }
 
