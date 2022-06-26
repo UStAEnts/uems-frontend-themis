@@ -198,15 +198,22 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
             this._cachedLayout = [
                 ...Array(24).fill(0).map((_, i) => [
                     <div className={styles.short} style={{gridArea: `${i + 1}/1/${i + 2}/2`}}
-                         data-wtf={`${i + 1}/1/${i + 2}/2`}>
+                         data-wtf={`${i + 1}/1/${i + 2}/2`}
+                         key={`short.deco.${i}`}>
                             <span>
                             {i % 12 === 0 ? 12 : i % 12} {i > 12 ? 'PM' : 'AM'}
                                 </span>
                     </div>,
-                    <div className={styles.long} style={{gridArea: `${i + 1}/2/${i + 2}/${this.props.days + 2}`}}/>
+                    <div className={styles.long}
+                         style={{gridArea: `${i + 1}/2/${i + 2}/${this.props.days + 2}`}}
+                         key={`long.deco.${i}`}
+                    />
                 ]).flat(),
                 ...Array(this.props.days).fill(0).map((_, i) => (
-                    <div className={styles.vertical} style={{gridArea: `1/${i + 2}/25/${i + 3}`}}/>
+                    <div className={styles.vertical}
+                         style={{gridArea: `1/${i + 2}/25/${i + 3}`}}
+                         key={`vertical.deco.${i}`}
+                    />
                 ))
             ];
         }
@@ -238,7 +245,10 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
                     </div>
                 </div>
                 {Array(this.props.days).fill(0).map((_, i) => (
-                    <div className={classes(styles.topOne, styles.top)} style={{gridArea: `1/${i + 2}/2/${i + 3}`}}>
+                    <div className={classes(styles.topOne, styles.top)}
+                         style={{gridArea: `1/${i + 2}/2/${i + 3}`}}
+                         key={`day.${i}`}
+                    >
                         <div>
                             <div className={styles.number}>
                                 <span>{this.state.startDate.clone().add(i, 'day').format('dd')}</span>
