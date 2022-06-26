@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { CSSProperties } from 'react';
+import {CSSProperties} from 'react';
 
 import './TextField.scss';
 import '../text-area/TextArea.scss';
 import DatePicker from 'react-flatpickr';
+import {classes} from "../../../utilities/UIUtilities";
+import styles from './TextField.module.scss';
 
 export type BaseConfiguration = {
     /**
@@ -29,6 +31,10 @@ export type BaseConfiguration = {
      * Any additional style properties to be added to the field
      */
     style?: CSSProperties,
+    /**
+     * Additional class names to add to the element
+     */
+    className?: string,
 }
 
 export type TextAreaConfiguration = {
@@ -95,6 +101,10 @@ export type TextFieldStateType = {
      * The current contents of the text field
      */
     contents: string | Date | number,
+    /**
+     * If the input currently has focus
+     */
+    focus: boolean,
 };
 
 export class TextField extends React.Component<TextFieldPropsType, TextFieldStateType> {
@@ -132,7 +142,7 @@ export class TextField extends React.Component<TextFieldPropsType, TextFieldStat
     constructor(props: Readonly<TextFieldPropsType>) {
         super(props);
 
-        this.state = { contents: (this.props.initialContent || '') };
+        this.state = {contents: (this.props.initialContent || ''), focus: false};
     }
 
     /**
@@ -205,76 +215,154 @@ export class TextField extends React.Component<TextFieldPropsType, TextFieldStat
     )
 
     render() {
-        let input;
-
-        switch (this.props.type) {
-            case 'datetime':
-                input = this.buildDateTimeInput(this.props);
-                break;
-            case 'number':
-                input = this.buildNumberInput(this.props);
-                break;
-            case 'text':
-                input = this.buildTextInput(this.props);
-                break;
-            case 'textarea':
-                input = this.buildTextArea(this.props);
-                break;
-            default:
-                input = undefined;
-                break;
+        // New type until the full migration is done
+        if (this.props.type === 'text') {
+            return (
+                <div className={classes(
+                    styles.wrapper,
+                    this.state.focus ? styles['wrapper--focus'] : undefined,
+                    this.props.className
+                )} style={this.props.style}>
+                    <input type='text'
+                           onFocus={() => this.setState((s) => ({...s, focus: true}))}
+                           onBlur={() => this.setState((s) => ({...s, focus: false}))}
+                           value={this.state.contents as string}
+                           name={this.props.name}
+                           required={this.props.required}
+                           onChange={this.handleChange}
+                    />
+                    {
+                        this.props.noLabel
+                            ? null
+                            :
+                            <label>{this.props.placeholder ?? this.props.name}{this.props.required ? ' *' : ''}</label>
+                    }
+                </div>
+            )
         }
+        if (this.props.type === 'number') {
+            return (
+                <div className={classes(
+                    styles.wrapper,
+                    this.state.focus ? styles['wrapper--focus'] : undefined,
+                    this.props.className
+                )} style={this.props.style}>
+                    <input type='number'
+                           onFocus={() => this.setState((s) => ({...s, focus: true}))}
+                           onBlur={() => this.setState((s) => ({...s, focus: false}))}
+                           value={this.state.contents as string}
+                           name={this.props.name}
+                           required={this.props.required}
+                           onChange={this.handleChange}
+                           min={this.props.min}
+                           max={this.props.max}
+                    />
+                    {
+                        this.props.noLabel
+                            ? null
+                            :
+                            <label>{this.props.placeholder ?? this.props.name}{this.props.required ? ' *' : ''}</label>
+                    }
+                </div>
+            )
+        }
+        if (this.props.type === 'textarea') {
+            return (
+                <div className={classes(
+                    styles.wrapper,
+                    this.state.focus ? styles['wrapper--focus'] : undefined,
+                    this.props.className
+                )} style={this.props.style}>
+                    <textarea onFocus={() => this.setState((s) => ({...s, focus: true}))}
+                              onBlur={() => this.setState((s) => ({...s, focus: false}))}
+                              value={this.state.contents as string}
+                              name={this.props.name}
+                              required={this.props.required}
+                              onChange={this.handleChange}
+                    ></textarea>
+                    {
+                        this.props.noLabel
+                            ? null
+                            :
+                            <label>{this.props.placeholder ?? this.props.name}{this.props.required ? ' *' : ''}</label>
+                    }
+                </div>
+            )
+        }
+        if (this.props.type === 'datetime') {
+            const config: DateTimeConfiguration = this.props;
 
-        // if (this.props.type === 'textarea') {
-        //     input = (
-        //         <textarea
-        //             id={this.props.name}
-        //             onChange={this.handleChange.bind(this)}
-        //             value={this.state.contents}
-        //         />
-        //     );
-        // } else {
-        //     input = (
-        //         <input
-        //             id={this.props.name}
-        //             type={this.props.type}
-        //             alt={this.props.name}
-        //             value={this.state.contents}
-        //             onChange={this.handleChange.bind(this)}
-        //             min={this.props.min}
-        //             max={this.props.max}
-        //         />
-        //     );
+            // TODO: you have to click this twice??
+            return (
+                <div className={classes(
+                    styles.wrapper,
+                    this.state.focus ? styles['wrapper--focus'] : undefined,
+                    this.props.className
+                )} style={this.props.style}>
+                    <DatePicker
+                        data-enable-time
+                        value={this.state.contents as Date}
+                        options={{
+                            dateFormat: 'D J M Y @ H:i',
+                        }}
+                        onChange={(change) => this.handleBasicChange(change[0])}
+                        // min={config.min}
+                        // max={config.max}
+                        alt={config.placeholder ?? config.name}
+                        //@ts-ignore
+                        onFocus={() => this.setState((s) => ({...s, focus: true}))}
+                        //@ts-ignore
+                        onBlur={() => this.setState((s) => ({...s, focus: false}))}
+                    />
+                    {
+                        this.props.noLabel
+                            ? null
+                            :
+                            <label>{this.props.placeholder ?? this.props.name}{this.props.required ? ' *' : ''}</label>
+                    }
+                </div>
+            )
+        }
+        // let input;
+        //
+        // switch (this.props.type) {
+        //     case 'datetime':
+        //         input = this.buildDateTimeInput(this.props);
+        //         break;
+        //     default:
+        //         input = undefined;
+        //         break;
         // }
-
-        const sublabel = this.props.required
-            ? <small className="required">* Required</small>
-            : undefined;
-
-        // Only render the label if we have opted to include the label
-        // Include required even if we've opted to not have the label. If they are that concerned
-        // they can hide it with CSS
-        const label = this.props.noLabel
-            ? sublabel
-            : (
-                <label
-                    htmlFor={this.props.name}
-                    className={this.state.contents === '' || this.state.contents === undefined ? '' : 'contains'}
-                >
-                    {this.props.placeholder || this.props.name}
-                    {' '}
-                    {sublabel}
-                </label>
-            );
-
-        return (
-            <div className={`text-field${this.props.type === 'textarea' ? ' text-area' : ''}`} style={this.props.style}>
-                {input}
-                <span className="highlight" />
-                <span className="bar" />
-                {label}
-            </div>
-        );
+        //
+        // const sublabel = this.props.required
+        //     ? <small className="required">* Required</small>
+        //     : undefined;
+        //
+        // // Only render the label if we have opted to include the label
+        // // Include required even if we've opted to not have the label. If they are that concerned
+        // // they can hide it with CSS
+        // const label = this.props.noLabel
+        //     ? sublabel
+        //     : (
+        //         <label
+        //             htmlFor={this.props.name}
+        //             className={this.state.contents === '' || this.state.contents === undefined ? '' : 'contains'}
+        //         >
+        //             {this.props.placeholder || this.props.name}
+        //             {' '}
+        //             {sublabel}
+        //         </label>
+        //     );
+        //
+        // const cl = classes('text-field', this.props.className);
+        // return (
+        //     <div className={cl} style={this.props.style}>
+        //         {input}
+        //         <span className="highlight"/>
+        //         <span className="bar"/>
+        //         {label}
+        //     </div>
+        // );
     }
 
 }

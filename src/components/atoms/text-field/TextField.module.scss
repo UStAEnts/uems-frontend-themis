@@ -1,0 +1,71 @@
+.wrapper {
+  --gray: rgb(155, 155, 155);
+
+  position: relative;
+  border: 1px solid var(--gray);
+  display: block;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.1s linear, border-width 0.1s linear, margin 0.1s linear;
+  margin: 5px 1px;
+}
+
+.wrapper--focus {
+  border-color: purple;
+  border-width: 2px;
+  margin: 5px 0;
+}
+
+.wrapper>label {
+  display: inline-block;
+  font-family: 'Ubuntu', sans-serif;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  color: var(--gray);
+  font-size: 0.9em;
+  transition: top 0.1s linear, left 0.1s linear, font-size 0.1s linear, color 0.1s linear;
+  pointer-events: none;
+}
+
+input:focus~label,
+textarea:focus~label,
+select:focus~label {
+  font-size: 0.7em;
+  top: -10px;
+  left: 7px;
+  padding: 4px 5px;
+  background: white;
+  color: purple;
+}
+
+input:not(:placeholder-shown)~label,
+textarea:not(:placeholder-shown)~label,
+select:valid~label{
+  font-size: 0.7em;
+  top: -10px;
+  left: 7px;
+  padding: 4px 5px;
+  background: white;
+}
+
+.wrapper>input,
+.wrapper>textarea,
+.wrapper>select {
+  padding: 13px;
+  border: none;
+  border-radius: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wrapper>input:focus,
+.wrapper>textarea:focus,
+.wrapper>select:focus {
+  outline: none;
+}
+
+.wrapper>select{
+  background: unset;
+  border-right: 7px solid transparent
+}
