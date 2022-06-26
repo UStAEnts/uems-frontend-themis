@@ -1,0 +1,89 @@
+.horizontal {
+  display: flex;
+  flex-direction: row;
+
+  .left {
+    flex-basis: 20%;
+    flex-grow: 0;
+
+    &.centered {
+      align-self: center;
+    }
+  }
+
+  .right {
+    flex-grow: 1;
+  }
+}
+
+.stageEntry {
+  border-bottom: 1px solid gainsboro;
+  padding: 10px;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  .remove{
+    align-self: center;
+  }
+
+  .additional {
+    font-size: 0.8rem;
+  }
+
+  .id{
+    font-style: italic;
+  }
+
+  .left {
+    flex-shrink: 1;
+    flex-basis: unset;
+
+    svg {
+      padding: 5px;
+      margin-right: 10px;
+    }
+  }
+
+  .right {
+    align-self: center;
+  }
+}
+
+.movement{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 2pc !important;
+  border-right: 1px solid gainsboro;
+  margin-right: 5px;
+
+  svg:first-child{
+    margin-bottom: 5px;
+  }
+}
+
+.stageSet{
+  display: flex;
+  flex-direction: column;
+
+  .add{
+    align-self: center;
+    border: none;
+    background: none;
+
+    svg {
+      --size: 20px;
+      width: var(--size);
+      height: var(--size);
+
+      color: orange;
+    }
+  }
+}
+
+.selected{
+  background-color: #eaeaea;
+}
