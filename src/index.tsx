@@ -49,7 +49,6 @@ import { ViewFile } from './pages/file/view/ViewFile';
 import Axios from "axios";
 import Sidebar from "./components/components/sidebar/Sidebar";
 import { EVENT_VIEW } from "./utilities/Routes";
-import AutomationEditor from "./pages/automations/AutomationEditor";
 import apiInstance, { User } from "./utilities/APIPackageGen";
 import axios from "axios";
 
