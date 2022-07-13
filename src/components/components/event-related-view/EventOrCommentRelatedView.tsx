@@ -11,7 +11,6 @@ import {
     faTrash
 } from '@fortawesome/free-solid-svg-icons';
 import { Redirect, withRouter } from 'react-router-dom';
-import { CommentResponse, EventResponse } from '../../../utilities/APIGen';
 import { Theme } from '../../../theme/Theme';
 import { EventTable } from '../event-table/EventTable';
 import { EditableProperty } from '../editable-property/EditableProperty';
@@ -25,6 +24,7 @@ import './EventOrCommentRelatedView.scss';
 import {NotificationContextType} from "../../../context/NotificationContext";
 import {withNotificationContext} from "../../WithNotificationContext";
 import {UIUtilities} from "../../../utilities/UIUtilities";
+import { CommentList as UEMSCommentList, EventList } from "../../../utilities/APIPackageGen";
 
 export type Override<T> = {
     property: Extract<keyof T, string>,
@@ -34,8 +34,8 @@ export type Override<T> = {
 export type EventRelatedViewPropsType<T, C> = {
     obj: T,
     configOverrides?: Override<T>[],
-    events?: EventResponse[],
-    comments?: CommentResponse[],
+    events?: EventList,
+    comments?: UEMSCommentList,
     patch: (changes: C) => void,
     nameKey?: Extract<keyof T, string>,
     excluded?: Extract<keyof T, string>[],
@@ -94,7 +94,7 @@ class EventOrCommentRelatedViewClass<T, C> extends React.Component<EventRelatedV
         this.state = {};
     }
 
-    private getFrequency = (events: EventResponse[]) => {
+    private getFrequency = (events: EventList) => {
         if (events.length < 2) {
             return 'n/a';
         }

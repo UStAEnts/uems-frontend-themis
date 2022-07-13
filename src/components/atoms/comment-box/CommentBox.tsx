@@ -7,20 +7,20 @@ import {Button} from '../button/Button';
 import '../comment/Comment.scss';
 import {KeyValueOption, Select} from '../select/Select';
 import {GlobalContext} from '../../../context/GlobalContext';
-import {TopicResponse} from '../../../utilities/APIGen';
+import { Topic, TopicList } from "../../../utilities/APIPackageGen";
 
 export type CommentBoxPropsType = {
     /**
      * The set of content classes through which the user can tag their messages
      */
-    contentClasses: TopicResponse[],
+    contentClasses: TopicList,
     /**
      * An external handler to be called when the user presses submit on their comment which should handle all functions
      * related to submitting
      * @param content the text content of the comment
      * @param type the optional content type that the user selected
      */
-    submitCommentHandler: (content: string, type: TopicResponse) => void;
+    submitCommentHandler: (content: string, type: Topic) => void;
 }
 
 export type CommentBoxStateType = {
@@ -35,7 +35,7 @@ export type CommentBoxStateType = {
     /**
      * The currently selected text class if relevant
      */
-    type?: TopicResponse,
+    type?: Topic,
 }
 
 /**

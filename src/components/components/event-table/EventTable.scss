@@ -4,6 +4,47 @@
   table {
     margin-top: 30px;
     width: 100%;
+    border-collapse: collapse;
+
+    tr {
+      text-align: left;
+      cursor: pointer;
+
+      a{
+        text-decoration: none;
+        color: initial;
+      }
+
+      &:hover{
+        background: lighten(gainsboro, 8%);
+      }
+    }
+
+    td,th{
+      padding: 10px 10px;
+      border-bottom: 1px solid gainsboro;
+
+    }
+
+    .name-column{
+      width: 28%;
+    }
+
+    .time-column{
+      width: 37%;
+    }
+
+    .icon-column{
+      width: 2%;
+    }
+
+    .venue-column{
+      width: 9%;
+    }
+
+    .status-column{
+      width: 8%;
+    }
   }
 
   .ents-state{

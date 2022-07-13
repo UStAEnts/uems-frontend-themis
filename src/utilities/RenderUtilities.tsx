@@ -1,14 +1,14 @@
-import { EventResponse } from "./APIGen";
 import ReactTimeAgo from "react-time-ago";
 import moment from "moment";
 import { ColorUtilities } from "./ColorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion, IconName } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
+import { UEMSEvent } from "../types/type-aliases";
 
 export class RenderUtilities {
 
-    static renderBasicEvent(event: EventResponse) {
+    static renderBasicEvent(event: UEMSEvent) {
         return (
             <div className="event-render">
                 <div className="name">{event.name}</div>

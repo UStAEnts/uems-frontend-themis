@@ -3,7 +3,6 @@ import { Redirect, withRouter } from 'react-router-dom';
 import { TwitterPicker } from 'react-color';
 import { faNetworkWired, faQuestionCircle, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificationContextType } from '../../../context/NotificationContext';
-import { API } from '../../../utilities/APIGen';
 import { TextField } from '../../../components/atoms/text-field/TextField';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { Button } from '../../../components/atoms/button/Button';
@@ -13,6 +12,7 @@ import { withNotificationContext } from '../../../components/WithNotificationCon
 import { OptionType } from '../../../components/atoms/icon-picker/EntrySelector';
 import { IconBox } from '../../../components/atoms/icon-box/IconBox';
 import { IconSelector } from '../../../components/atoms/icon-picker/IconPicker';
+import apiInstance from "../../../utilities/APIPackageGen";
 
 export type CreateEntsPropsType = {
     isPage?: boolean,
@@ -59,35 +59,26 @@ class CreateEntsClass extends React.Component<CreateEntsPropsType, CreateEntsSta
             }
         }
 
-        API.ents.post({
+        UIUtilities.load(this.props, apiInstance.ents().post({
             icon: (this.state.ents.icon as OptionType).identifier,
             color: this.state.ents.color as string,
             name: this.state.ents.name as string, // This is verified in the for loop above but the typing doesnt work
-        }).then((id) => {
-            if (id.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+        }), (e) => `Failed to submit your ent state! ${e}`)
+            .data((ids) => {
+                if (ids.length !== 1 || typeof (ids[0]) !== 'string') {
+                    UIUtilities.tryShowNotification(
+                        this.props.notificationContext,
+                        'Failed to save',
+                        `Received an error response: ID was not returned`,
+                        faNetworkWired,
+                        Theme.FAILURE,
+                    );
+                }
 
-            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
-                UIUtilities.tryShowNotification(
-                    this.props.notificationContext,
-                    'Failed to save',
-                    `Received an error response: ID was not returned`,
-                    faNetworkWired,
-                    Theme.FAILURE,
-                );
-            }
+                console.log(ids);
 
-            console.log(id);
-
-            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/ents/${id.result[0]}`);
-        }).catch((err) => {
-            UIUtilities.tryShowNotification(
-                this.props.notificationContext,
-                'Failed to save',
-                `Received an error response: ${err.message ?? 'unknown'}`,
-                faNetworkWired,
-                Theme.FAILURE,
-            );
-        });
+                failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/ents/${ids[0]}`);
+            });
     }
 
     render() {

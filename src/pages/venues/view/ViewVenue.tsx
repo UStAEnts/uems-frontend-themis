@@ -1,6 +1,5 @@
 import React from 'react';
 import {RouteComponentProps, withRouter} from 'react-router-dom';
-import {API, EventResponse, VenueResponse} from '../../../utilities/APIGen';
 import {loadAPIData} from '../../../utilities/DataUtilities';
 import {
     FallibleReactComponent,
@@ -10,14 +9,15 @@ import {UIUtilities} from "../../../utilities/UIUtilities";
 import {NotificationPropsType} from "../../../context/NotificationContext";
 import {withNotificationContext} from "../../../components/WithNotificationContext";
 import Venue from "./Venue";
+import apiInstance, { EventList, Venue as UEMSVenue } from "../../../utilities/APIPackageGen";
 
 export type ViewVenuePropsType = {} & RouteComponentProps<{
     id: string,
 }> & NotificationPropsType;
 
 export type ViewVenueStateType = {
-    venue?: VenueResponse,
-    events?: EventResponse[],
+    venue?: UEMSVenue,
+    events?: EventList,
 } & FallibleReactStateType;
 
 class ViewVenueClass extends FallibleReactComponent<ViewVenuePropsType, ViewVenueStateType> {
@@ -33,14 +33,14 @@ class ViewVenueClass extends FallibleReactComponent<ViewVenuePropsType, ViewVenu
         loadAPIData<ViewVenueStateType>(
             [
                 {
-                    call: API.venues.id.get,
+                    call: apiInstance.venues().id(this.props.match.params.id).get,
                     stateName: 'venue',
-                    params: [this.props.match.params.id],
+                    params: [],
                 },
                 {
-                    call: API.venues.id.events.get,
+                    call: apiInstance.venues().id(this.props.match.params.id).events().get,
                     stateName: 'events',
-                    params: [this.props.match.params.id],
+                    params: [],
                 },
             ],
             this.setState.bind(this),

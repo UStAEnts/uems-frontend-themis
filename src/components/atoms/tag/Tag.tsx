@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import { EntsStateResponse, StateResponse } from '../../../utilities/APIGen';
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { ColorUtilities } from "../../../utilities/ColorUtilities";
+import { EntState, State } from "../../../utilities/APIPackageGen";
 
 export const Tag: React.FunctionComponent<{
-    tag?: EntsStateResponse | StateResponse,
+    tag?: EntState | State,
 }> = ({ tag }) => {
     if (!tag) return null;
     return (

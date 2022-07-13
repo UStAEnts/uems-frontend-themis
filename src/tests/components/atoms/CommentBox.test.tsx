@@ -32,6 +32,9 @@ describe('commentbox', () => {
                 {
                     id: '',
                     name: 'Something',
+                    color: '#ff00ff',
+                    icon: 'faTag',
+                    description: '',
                 },
             ]}
             submitCommentHandler={func}
@@ -54,6 +57,9 @@ describe('commentbox', () => {
                 {
                     id: '',
                     name: 'Something',
+                    color: '#ff00ff',
+                    icon: 'faTag',
+                    description: '',
                 },
             ]}
             submitCommentHandler={func}

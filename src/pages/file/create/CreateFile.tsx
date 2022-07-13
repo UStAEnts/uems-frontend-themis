@@ -3,7 +3,6 @@ import { Redirect, withRouter } from 'react-router-dom';
 import { faNetworkWired, faSkullCrossbones } from '@fortawesome/free-solid-svg-icons';
 import Axios from 'axios';
 import { NotificationContextType } from '../../../context/NotificationContext';
-import { API } from '../../../utilities/APIGen';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { Theme } from '../../../theme/Theme';
 import { UIUtilities } from '../../../utilities/UIUtilities';
@@ -12,6 +11,7 @@ import { withNotificationContext } from '../../../components/WithNotificationCon
 import { Button } from '../../../components/atoms/button/Button';
 import { FileUpload } from '../../../components/atoms/file-upload/FileUpload';
 import { TaskMeter } from '../../../components/components/task-meter/TaskMeter';
+import apiInstance from "../../../utilities/APIPackageGen";
 
 export type CreateFilePropsType = {
     isPage?: boolean,
@@ -74,12 +74,13 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
             }
         }
 
-        API.files.post({
+        UIUtilities.loadUnwrapped(this.props, apiInstance.files().post({
             name: this.state.file.name as string,
             filename: this.state.file.file.name,
             size: this.state.file.file.size,
             type: this.state.file.type as string,
-        }).then((id) => {
+        }), (e) => `Failed to create your file! The metadata was not created and no file was uploaded: ${e}`)
+            .data((id) => {
             if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
                 UIUtilities.tryShowNotification(
                     this.props.notificationContext,
@@ -113,15 +114,6 @@ class CreateFileClass extends React.Component<CreateFilePropsType, CreateFileSta
                     Theme.FAILURE,
                 );
             });
-
-        }).catch((err) => {
-            UIUtilities.tryShowNotification(
-                this.props.notificationContext,
-                'Failed to save',
-                `Received an error response: ${err.message ?? 'unknown'}`,
-                faNetworkWired,
-                Theme.FAILURE,
-            );
         });
     }
 

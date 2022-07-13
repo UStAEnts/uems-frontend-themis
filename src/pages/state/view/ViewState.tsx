@@ -1,6 +1,5 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { API, EventResponse, StateResponse, StateUpdate } from '../../../utilities/APIGen';
 import { failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import { EventOrCommentRelatedView } from '../../../components/components/event-related-view/EventOrCommentRelatedView';
 import {
@@ -11,14 +10,15 @@ import { loadAPIData } from '../../../utilities/DataUtilities';
 import {UIUtilities} from "../../../utilities/UIUtilities";
 import {NotificationPropsType} from "../../../context/NotificationContext";
 import {withNotificationContext} from "../../../components/WithNotificationContext";
+import apiInstance, { EventList, State } from "../../../utilities/APIPackageGen";
 
 export type ViewStatePropsType = {} & RouteComponentProps<{
     id: string,
 }> & NotificationPropsType;
 
 export type ViewStateStateType = {
-    state?: StateResponse,
-    events?: EventResponse[],
+    state?: State,
+    events?: EventList,
 };
 
 type ExperimentalStateType = ViewStateStateType & FallibleReactStateType;
@@ -35,14 +35,14 @@ class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsTy
         loadAPIData<ExperimentalStateType>(
             [
                 {
-                    call: API.states.id.get,
+                    call: apiInstance.states().id(this.props.match.params.id).get,
                     stateName: 'state',
-                    params: [this.props.match.params.id],
+                    params: [],
                 },
                 {
-                    call: API.states.id.events.get,
+                    call: apiInstance.states().id(this.props.match.params.id).events().get,
                     stateName: 'events',
-                    params: [this.props.match.params.id],
+                    params: [],
                 },
             ],
             this.setState.bind(this),
@@ -51,13 +51,14 @@ class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsTy
     }
 
     //
-    private patch = (update: StateUpdate) => {
+    private patch = (update: State) => {
         console.log(update);
-        API.states.id.patch(this.props.match.params.id, update).then(() => {
+        UIUtilities.load(this.props, apiInstance.states().id(this.props.match.params.id).patch(update), (e) => `Failed to update this state! ${e}`)
+            .data(() => {
             // To fix some typing
             if (!this.state.state) return;
 
-            const newState: StateResponse = {
+            const newState: State = {
                 ...this.state.state,
                 ...update,
             };
@@ -67,10 +68,7 @@ class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsTy
                 this.setState.bind(this),
                 'state',
             )(newState);
-        }).catch((err) => {
-            console.error(err);
-            // TODO: error handling w/ notifs
-        });
+        })
     }
 
     realRender(): React.ReactNode {
@@ -78,7 +76,7 @@ class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsTy
             return (
                 <EventOrCommentRelatedView
                     obj={this.state.state}
-                    patch={(changes: StateUpdate) => {
+                    patch={(changes: State) => {
                         this.patch(changes);
                     }}
                     excluded={[
@@ -87,7 +85,7 @@ class ExperimentalViewStateClass extends FallibleReactComponent<ViewStatePropsTy
                     events={this.state.events}
                     delete={{
                         redirect: '/states',
-                        onDelete: () => UIUtilities.deleteWith409Support(() => API.states.id.delete(this.props.match.params.id)),
+                        onDelete: () => UIUtilities.deleteWith409Support(() => apiInstance.states().id(this.props.match.params.id).delete()),
                     }}
                 />
             );

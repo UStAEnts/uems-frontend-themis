@@ -16,13 +16,13 @@ import './EventCard.scss';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { EventResponse, StateResponse } from '../../../utilities/APIGen';
+import { EventList, State } from "../../../utilities/APIPackageGen";
 
 export type EventCardPropsType = {
     /**
      * The event that this card should render
      */
-    event: EventResponse,
+    event: EventList[number],
     /**
      * If this is a collapsed box (less direct detail, smaller profile)
      */
@@ -79,7 +79,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
      * provide an icon value, or the icon provided in the props otherwise.
      * @param status the status to render
      */
-    private static getStateIcon(status?: StateResponse) {
+    private static getStateIcon(status?: State) {
         if (status === undefined) {
             return <FontAwesomeIcon icon={faQuestionCircle} size="xs" />;
         }
@@ -183,7 +183,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
                         </div>
                     </div>
                 </div>
-                <div className="lower" style={{ borderColor: this.props.event.color }}>
+                <div className="lower" /*style={{ borderColor: this.props.event.color }}*/>
                     <div className="lower-content collapsed">
                         <div className="entry">
                             <FontAwesomeIcon icon={faClock} color="#797979" size="lg" />
@@ -250,7 +250,7 @@ export class EventCard extends React.Component<EventCardPropsType, EventCardStat
                         </div>
                     </div>
                 </div>
-                <div className="lower" style={{ borderColor: this.props.event.color }}>
+                <div className="lower" /*style={{ borderColor: this.props.event.color }}*/>
                     <div className="row lower-content">
                         <div className="entry col-xs-4">
                             <FontAwesomeIcon icon={faClock} color="#797979" size="lg" />

@@ -104,6 +104,7 @@ export function failEarlyStateSet(obj: any, setState: (set: SetStateType<any>) =
             }
 
             entry[target] = value;
+            console.log(clone, entry, target, value, steps);
 
             return clone;
         });

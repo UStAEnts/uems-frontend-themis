@@ -1,5 +1,4 @@
 import React from 'react';
-import { API, StateResponse } from '../../../utilities/APIGen';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
 import {
     FallibleReactComponent,
@@ -9,11 +8,12 @@ import { loadAPIData } from '../../../utilities/DataUtilities';
 import {UIUtilities} from "../../../utilities/UIUtilities";
 import {NotificationPropsType} from "../../../context/NotificationContext";
 import {withNotificationContext} from "../../../components/WithNotificationContext";
+import apiInstance, { State } from "../../../utilities/APIPackageGen";
 
 export type ListStatePropsType = {} & NotificationPropsType;
 
 export type ListStateStateType = {
-    states?: StateResponse[],
+    states?: State[],
 } & FallibleReactStateType;
 
 class ListStateClass extends FallibleReactComponent<ListStatePropsType, ListStateStateType> {
@@ -29,9 +29,9 @@ class ListStateClass extends FallibleReactComponent<ListStatePropsType, ListStat
     componentDidMount() {
         loadAPIData<ListStateStateType>(
             [{
-                call: API.states.get,
+                call: apiInstance.states().get,
                 stateName: 'states',
-                params: [],
+                params: [{}],
             }],
             this.setState.bind(this),
             () => UIUtilities.tryShowPartialWarning(this),
@@ -41,7 +41,7 @@ class ListStateClass extends FallibleReactComponent<ListStatePropsType, ListStat
     realRender() {
         if (!this.state.states) return null;
 
-        const states: GenericRecord<StateResponse>[] = this.state.states.map((e) => ({
+        const states: GenericRecord<State>[] = this.state.states.map((e) => ({
             identifier: e.id,
             target: `/states/${e.id}`,
             value: e,
@@ -53,7 +53,7 @@ class ListStateClass extends FallibleReactComponent<ListStatePropsType, ListStat
                 <GenericList
                     records={states}
                     dontPad
-                    render={genericRender<StateResponse>()}
+                    render={genericRender<State>()}
                 />
             </div>
         );

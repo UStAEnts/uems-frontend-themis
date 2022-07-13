@@ -1,6 +1,7 @@
 import { cleanup } from '@testing-library/react';
 import { v4 } from 'uuid';
-import { EntsStateResponse, EventResponse, StateResponse, VenueResponse } from '../utilities/APIGen';
+import { EntState, State, Venue } from "../utilities/APIPackageGen";
+import { UEMSEvent } from "../types/type-aliases";
 
 export function promiseTimeout(func: Function, time: number) {
     return new Promise((resolve) => {
@@ -45,10 +46,10 @@ export const makeEvent = (
     start: number,
     hourDuration: number,
     attendance?: number,
-    venue?: VenueResponse,
+    venue?: Venue,
     id?: string,
-    state?: StateResponse,
-    ents?: EntsStateResponse,
+    state?: State,
+    ents?: EntState,
 ) => ({
     name,
     id: id ?? v4(),
@@ -58,9 +59,9 @@ export const makeEvent = (
     venues: [venue ?? randomVenue('vid')],
     state,
     ents,
-} as EventResponse);
+} as UEMSEvent);
 
-export const randomVenue = (name: string): VenueResponse => ({
+export const randomVenue = (name: string): Venue => ({
     user: {
         name: 'name',
         username: 'username',
@@ -69,18 +70,18 @@ export const randomVenue = (name: string): VenueResponse => ({
     id: v4(),
     capacity: 0,
     color: '#aeaeae',
-    date: new Date().getTime() / 1000,
+    // date: new Date().getTime() / 1000,
     name,
 });
 
-export const randomState = (name: string): StateResponse => ({
+export const randomState = (name: string): State => ({
     id: v4(),
     color: '#aeaeae',
     icon: 'coffee',
     name,
 });
 
-export const randomEnts = (name: string): EntsStateResponse => ({
+export const randomEnts = (name: string): EntState => ({
     id: v4(),
     color: '#eaeaea',
     icon: 'coffee',

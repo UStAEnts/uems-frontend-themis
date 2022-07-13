@@ -1,5 +1,4 @@
 import React from 'react';
-import { API, FileResponse } from '../../../utilities/APIGen';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
 import { Theme } from "../../../theme/Theme";
 import { UIUtilities } from "../../../utilities/UIUtilities";
@@ -7,11 +6,12 @@ import { loadAPIData } from "../../../utilities/DataUtilities";
 import { FallibleReactComponent, FallibleReactStateType } from "../../../components/components/error-screen/FallibleReactComponent";
 import {NotificationPropsType} from "../../../context/NotificationContext";
 import {withNotificationContext} from "../../../components/WithNotificationContext";
+import apiInstance, { UEMSFile } from "../../../utilities/APIPackageGen";
 
 export type ListFilePropsType = {} & NotificationPropsType;
 
 export type ListFileStateType = {
-    files?: FileResponse[],
+    files?: UEMSFile[],
 } & FallibleReactStateType;
 
 class ListFileClass extends FallibleReactComponent<ListFilePropsType, ListFileStateType> {
@@ -27,9 +27,9 @@ class ListFileClass extends FallibleReactComponent<ListFilePropsType, ListFileSt
     componentDidMount() {
         loadAPIData<ListFileStateType>(
             [{
-                call: API.files.get,
+                call: apiInstance.files().get,
                 stateName: 'files',
-                params: [],
+                params: [{}],
             }],
             this.setState.bind(this),
             () => UIUtilities.tryShowPartialWarning(this),
@@ -44,11 +44,13 @@ class ListFileClass extends FallibleReactComponent<ListFilePropsType, ListFileSt
             target: `/files/${e.id}`,
             value: {
                 name: e.name,
-                icon: e.private ? 'lock' : 'globe',
+                // TODO: private files?
+                icon: /*e.private*/false ? 'lock' : 'globe',
                 filename: e.filename,
                 size: UIUtilities.sizeToHuman(e.size),
                 id: e.id,
-                color: e.private ? Theme.RED_LIGHT : Theme.GRAY_LIGHT,
+                // TODO: private files?
+                color: /*e.private*/false ? Theme.RED_LIGHT : Theme.GRAY_LIGHT,
             },
         }));
 
@@ -58,11 +60,11 @@ class ListFileClass extends FallibleReactComponent<ListFilePropsType, ListFileSt
                 <GenericList
                     records={files}
                     dontPad
-                    searchable={(value: GenericRecord<FileResponse>) => ([
+                    searchable={(value: GenericRecord<UEMSFile>) => ([
                         value.value.filename,
                         value.value.name,
                     ])}
-                    render={genericRender<FileResponse>()}
+                    render={genericRender<UEMSFile>()}
                 />
             </div>
         );

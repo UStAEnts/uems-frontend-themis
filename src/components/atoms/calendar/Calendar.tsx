@@ -1,16 +1,16 @@
-import React, {CSSProperties} from "react";
+import React, { CSSProperties } from "react";
 import styles from "./Calendar.module.scss";
-import {classes} from "../../../utilities/UIUtilities";
-import moment, {Moment} from "moment";
-import {EventResponse} from "../../../utilities/APIGen";
-import {EVENT_VIEW} from "../../../utilities/Routes";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowLeft, faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import { classes } from "../../../utilities/UIUtilities";
+import moment, { Moment } from "moment";
+import { EVENT_VIEW } from "../../../utilities/Routes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { EventList } from "../../../utilities/APIPackageGen";
 
 type CalendarProps = {
     startDate?: Date,
     days: number,
-    events: EventResponse[],
+    events: EventList,
     onDateChange?: (start: Moment, end: Moment) => void,
 }
 
@@ -55,9 +55,9 @@ const EventBlock: React.FunctionComponent<{ event: PositionedEvent, startOfCalen
     }
 
     const colourOverride: CSSProperties = {};
-    if (props.event.event.color) {
-        colourOverride.backgroundColor = props.event.event.color;
-    }
+    // if (props.event.event.color) {
+    //     colourOverride.backgroundColor = props.event.event.color;
+    // }
 
     return (<a
         href={EVENT_VIEW.make(props.event.parent ?? props.event.event.id)}
@@ -76,7 +76,7 @@ const EventBlock: React.FunctionComponent<{ event: PositionedEvent, startOfCalen
 };
 
 type PositionedEvent = {
-    event: EventResponse,
+    event: EventList[number],
     startMoment: Moment,
     endMoment: Moment,
     offset: number,
@@ -100,7 +100,7 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
         console.log(this.state.events);
     }
 
-    private static position(events: EventResponse[]): PositionedEvent[] {
+    private static position(events: EventList): PositionedEvent[] {
         // Go day by day
         const grouped: Record<number, PositionedEvent[]> = {};
         for (const e of events) {
@@ -116,7 +116,6 @@ export class CalendarRedo extends React.Component<CalendarProps, CalendarState> 
             if (em.startMoment.day() !== em.endMoment.day()) {
                 const overlap = em.endMoment.diff(em.endMoment.clone().hours(0).minute(0).seconds(0).millisecond(0));
                 if (overlap !== 0) {
-                    console.log('multi day', em, overlap);
                     const original = em.endMoment.clone();
                     em.endMoment = em.startMoment.clone().hours(23).minute(59).seconds(59).millisecond(9999);
                     // em.event.end = em.endMoment.unix();

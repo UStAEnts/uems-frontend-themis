@@ -1,16 +1,16 @@
 import React from 'react';
-import { API, TopicResponse } from '../../../utilities/APIGen';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
 import { FallibleReactComponent, FallibleReactStateType } from "../../../components/components/error-screen/FallibleReactComponent";
 import { loadAPIData } from "../../../utilities/DataUtilities";
 import {UIUtilities} from "../../../utilities/UIUtilities";
 import {NotificationPropsType} from "../../../context/NotificationContext";
 import {withNotificationContext} from "../../../components/WithNotificationContext";
+import apiInstance, { Topic } from "../../../utilities/APIPackageGen";
 
 export type ListTopicPropsType = {} & NotificationPropsType;
 
 export type ListTopicStateType = {
-    topics?: TopicResponse[],
+    topics?: Topic[],
 } & FallibleReactStateType;
 
 class ListTopicClass extends FallibleReactComponent<ListTopicPropsType, ListTopicStateType> {
@@ -26,9 +26,9 @@ class ListTopicClass extends FallibleReactComponent<ListTopicPropsType, ListTopi
     componentDidMount() {
         loadAPIData<ListTopicStateType>(
             [{
-                call: API.topics.get,
+                call: apiInstance.topics().get,
                 stateName: 'topics',
-                params: [],
+                params: [{}],
             }],
             this.setState.bind(this),
             () => UIUtilities.tryShowPartialWarning(this),
@@ -38,7 +38,7 @@ class ListTopicClass extends FallibleReactComponent<ListTopicPropsType, ListTopi
     realRender() {
         if (!this.state.topics) return null;
 
-        const topics: GenericRecord<TopicResponse>[] = this.state.topics.map((e) => ({
+        const topics: GenericRecord<Topic>[] = this.state.topics.map((e) => ({
             identifier: e.id,
             target: `/topics/${e.id}`,
             value: e,
@@ -50,7 +50,7 @@ class ListTopicClass extends FallibleReactComponent<ListTopicPropsType, ListTopi
                 <GenericList
                     records={topics}
                     dontPad
-                    render={genericRender<TopicResponse>()}
+                    render={genericRender<Topic>()}
                 />
             </div>
         );

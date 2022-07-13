@@ -12,7 +12,7 @@ import { render, fireEvent } from '@testing-library/react';
 //   - ents
 //   - venues
 
-import { createMemoryHistory } from 'history';
+import {createMemoryHistory} from 'history';
 import { MemoryRouter, Router } from 'react-router-dom';
 import JavascriptTimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
@@ -20,9 +20,11 @@ import { makeEvent, promiseTimeout, randomEnts, randomState, randomVenue } from 
 import { EventTable } from '../../../components/components/event-table/EventTable';
 
 import 'react-dates/initialize';
-import { APIOverrides } from '../../../utilities/APIGen';
+// import { APIOverrides } from '../../../utilities/APIGen';
+const APIOverrides = [];
 
 beforeAll(() => {
+    // @ts-ignore
     JavascriptTimeAgo.addLocale(en);
 
     const success = (data: any) => ({ status: 'OK', result: data });
@@ -73,7 +75,7 @@ describe('<EventTable />', () => {
         it('renders linked events', async () => {
             const history = createMemoryHistory();
             const { queryByText, getByText } = render(
-                <Router history={history}>
+                <Router history={history as any}>
                     <EventTable
                         events={[
                             makeEvent('event1', new Date().getTime(), 1, 0, undefined, 'id1'),

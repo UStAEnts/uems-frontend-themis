@@ -1,5 +1,10 @@
 import React from 'react';
-import { faExclamationCircle, faNetworkWired, faSkullCrossbones, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import {
+    faExclamationCircle,
+    faNetworkWired,
+    faSkullCrossbones,
+    IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import { Redirect, withRouter } from 'react-router-dom';
 import { TextField } from '../../../components/atoms/text-field/TextField';
 import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
@@ -8,10 +13,10 @@ import { Theme } from '../../../theme/Theme';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
 import { NotificationContextType } from '../../../context/NotificationContext';
 import { Notification } from '../../../components/components/notification-renderer/NotificationRenderer';
-import { API, EntsStateResponse, EventCreation, StateResponse, VenueResponse } from '../../../utilities/APIGen';
 import { failEarlySet, failEarlyStateSet } from '../../../utilities/AccessUtilities';
 import './CreateEvent.scss';
 import { UIUtilities } from "../../../utilities/UIUtilities";
+import apiInstance, { EntState, POSTEventsBody, State, Venue } from "../../../utilities/APIPackageGen";
 
 export type CreateEventPropsType = {
     isPage?: boolean,
@@ -27,14 +32,14 @@ export type CreateEventStateType = {
         },
         attendance?: number,
         icon?: string,
-        state?: StateResponse,
-        ents?: EntsStateResponse,
-        venue?: VenueResponse,
+        state?: State,
+        ents?: EntState,
+        venue?: Venue,
     },
     loaded: {
-        venues: VenueResponse[],
-        states: StateResponse[],
-        ents: EntsStateResponse[],
+        venues: Venue[],
+        states: State[],
+        ents: EntState[],
     },
     uiProperties: {
         dateFocused: 'startDate' | 'endDate' | null,
@@ -66,30 +71,12 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
     }
 
     componentDidMount() {
-        API.ents.get().then(
-            (d) => {
-                if(d.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
-                failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'ents')(d.result)
-            },
-        ).catch(() => {
-            this.showFailNotification('Failed to load data', 'Could not load ents state data');
-        });
-        API.states.get().then(
-            (d) => {
-                if(d.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
-                failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'states')(d.result)
-            },
-        ).catch(() => () => {
-            this.showFailNotification('Failed to load data', 'Could not load event state data');
-        });
-        API.venues.get().then(
-            (d) => {
-                if(d.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
-                failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'venues')(d.result)
-            },
-        ).catch(() => () => {
-            this.showFailNotification('Failed to load data', 'Could not load venue data');
-        });
+        UIUtilities.load(this.props, apiInstance.ents().get({}))
+            .data(failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'ents'));
+        UIUtilities.load(this.props, apiInstance.states().get({}))
+            .data(failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'states'));
+        UIUtilities.load(this.props, apiInstance.venues().get({}))
+            .data(failEarlyStateSet(this.state, this.setState.bind(this), 'loaded', 'venues'));
     }
 
     private showNotification = (
@@ -142,11 +129,12 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
 
         if (this.state.eventProperties.dates.startDate.getTime() < new Date().getTime()) {
             warn('Invalid Start Date', 'Start date must be after right now');
+            return;
         }
 
-        const event: EventCreation = {
-            end: this.state.eventProperties.dates.endDate.getTime(),
-            start: this.state.eventProperties.dates.startDate.getTime(),
+        const event: POSTEventsBody = {
+            end: Math.floor(this.state.eventProperties.dates.endDate.getTime() / 1000),
+            start: Math.floor(this.state.eventProperties.dates.startDate.getTime() / 1000),
             name: this.state.eventProperties.name,
             ents: this.state.eventProperties.ents?.id,
             attendance: Number(this.state.eventProperties.attendance),
@@ -154,35 +142,26 @@ class CreateEventClass extends React.Component<CreateEventPropsType, CreateEvent
             venue: this.state.eventProperties.venue.id,
         };
 
-        API.events.post(event).then((id) => {
-            if(id.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+        UIUtilities.load(this.props, apiInstance.events().post(event), (e) => `Failed to create the event! ${e}`)
+            .data((id) => {
+                if (id.length !== 1 || typeof (id[0]) !== 'string') {
+                    UIUtilities.tryShowNotification(
+                        this.props.notificationContext,
+                        'Failed to save',
+                        `Received an error response: ID was not returned`,
+                        faNetworkWired,
+                        Theme.FAILURE,
+                    );
+                }
 
-            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
-                UIUtilities.tryShowNotification(
-                    this.props.notificationContext,
-                    'Failed to save',
-                    `Received an error response: ID was not returned`,
-                    faNetworkWired,
-                    Theme.FAILURE,
-                );
-            }
-
-            this.setState((old) => ({
-                ...old,
-                uiProperties: {
-                    redirect: `/events/${id.result[0]}`,
-                    dateFocused: null,
-                },
-            }));
-        }).catch((err) => {
-            // TODO: better error handling
-            this.showNotification(
-                'Failed to create event',
-                `There was an error when saving the event: ${err.message}`,
-                faSkullCrossbones,
-                Theme.FAILURE,
-            );
-        });
+                this.setState((old) => ({
+                    ...old,
+                    uiProperties: {
+                        redirect: `/events/${id[0]}`,
+                        dateFocused: null,
+                    },
+                }));
+            });
     }
 
     private showFailNotification = (title: string, message: string) => {

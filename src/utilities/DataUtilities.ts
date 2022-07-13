@@ -57,7 +57,7 @@ export function loadAPIData<T extends FallibleReactStateType>(
 
     for (const source of dataSources) {
         promises.push(new Promise((resolve, reject) => {
-            source.call.call(undefined, source.params).then((data) => {
+            source.call.call(undefined, ...source.params).then((data) => {
                 if (Object.prototype.hasOwnProperty.call(data, 'status') && data.status === 'PARTIAL'){
                     if(onPartial) onPartial();
                 }

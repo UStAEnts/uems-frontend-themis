@@ -1,10 +1,10 @@
 import React, {CSSProperties} from "react";
-import {VenueResponse} from "../../../utilities/APIGen";
 import styles from './VenueChip.module.scss';
 import {ColorUtilities} from "../../../utilities/ColorUtilities";
 import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimesCircle} from "@fortawesome/free-solid-svg-icons";
+import { Venue } from "../../../utilities/APIPackageGen";
 
 /**
  * The properties for a venue chip to render as a chip
@@ -13,7 +13,7 @@ type VenueChipType = {
     /**
      * The venue which should be rendered in the chip
      */
-    venue: VenueResponse,
+    venue: Venue,
     /**
      * If the element should be rendered as a link to the venue page
      */
@@ -38,11 +38,11 @@ type VenueChipType = {
  * @constructor
  */
 const VenueChip: React.FunctionComponent<VenueChipType> = ({venue, link, children, ...rest}) => {
-    const internal = [
-        (<div className={styles.top}>{venue.name}</div>),
-        (<div className={styles.bottom}>Capacity {venue.capacity}</div>),
-        children,
-    ];
+    const internal = <>
+        <div className={styles.top}>{venue.name}</div>
+        <div className={styles.bottom}>Capacity {venue.capacity}</div>
+        {children}
+    </>;
 
     const style = {
         backgroundColor: venue.color ?? '#000000',

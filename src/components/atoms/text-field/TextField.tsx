@@ -39,7 +39,7 @@ export type TextAreaConfiguration = {
      */
     initialContent?: string,
 
-    onChange: (value: string) => void,
+    onChange?: (value: string) => void,
 } & BaseConfiguration;
 
 export type TextInputConfiguration = {
@@ -50,7 +50,7 @@ export type TextInputConfiguration = {
      */
     initialContent?: string,
 
-    onChange: (value: string) => void,
+    onChange?: (value: string) => void,
 } & BaseConfiguration;
 
 export type NumberConfiguration = {
@@ -69,7 +69,7 @@ export type NumberConfiguration = {
      */
     initialContent?: number,
 
-    onChange: (value: number) => void,
+    onChange?: (value: number) => void,
 } & BaseConfiguration;
 
 export type DateTimeConfiguration = {
@@ -82,7 +82,7 @@ export type DateTimeConfiguration = {
     min?: Date,
     max?: Date,
 
-    onChange: (value: Date) => void,
+    onChange?: (value: Date) => void,
 } & BaseConfiguration;
 
 export type TextFieldPropsType = TextAreaConfiguration

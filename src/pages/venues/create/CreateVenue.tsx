@@ -9,7 +9,7 @@ import { Theme } from '../../../theme/Theme';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
 import { UIUtilities } from '../../../utilities/UIUtilities';
 import { NotificationContextType } from '../../../context/NotificationContext';
-import { API } from '../../../utilities/APIGen';
+import apiInstance from "../../../utilities/APIPackageGen";
 
 export type CreateVenuePropsType = {
     isPage?: boolean,
@@ -64,13 +64,13 @@ class CreateVenueClass extends React.Component<CreateVenuePropsType, CreateVenue
             return;
         }
 
-        API.venues.post({
-            color: this.state.venue.color,
+        UIUtilities.load(this.props, apiInstance.venues().post({
+            color: this.state.venue.color ?? '#000000',
             capacity: this.state.venue.capacity,
             name: this.state.venue.name,
-        }).then((id) => {
-            console.log(id);
-            if (id.result.length !== 1 || typeof (id.result[0]) !== 'string') {
+        }), (e) => `Failed to update your venue! ${e}`)
+            .data((id) => {
+            if (id.length !== 1 || typeof (id[0]) !== 'string') {
                 UIUtilities.tryShowNotification(
                     this.props.notificationContext,
                     'Failed to save',
@@ -82,17 +82,8 @@ class CreateVenueClass extends React.Component<CreateVenuePropsType, CreateVenue
 
             console.log(id);
 
-            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/venues/${id.result[0]}`);
-        }).catch((err) => {
-            console.error(err);
-            UIUtilities.tryShowNotification(
-                this.props.notificationContext,
-                'Failed to save',
-                `Received an error response: ${err.message ?? 'unknown'}`,
-                faNetworkWired,
-                Theme.FAILURE,
-            );
-        });
+            failEarlyStateSet(this.state, this.setState.bind(this), 'ui', 'redirect')(`/venues/${id[0]}`);
+        })
     }
 
     render() {

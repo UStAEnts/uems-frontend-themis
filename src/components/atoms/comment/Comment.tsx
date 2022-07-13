@@ -2,18 +2,18 @@ import * as React from 'react';
 import Markdown from 'markdown-to-jsx';
 import ReactTimeAgo from 'react-time-ago';
 import ReactTooltip from 'react-tooltip';
-import {v4} from 'uuid';
+import { v4 } from 'uuid';
 
 import './Comment.scss';
-import {CommentResponse} from '../../../utilities/APIGen';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCheckCircle, faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheckCircle, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { CommentList } from "../../../utilities/APIPackageGen";
 
 export type CommentPropsType = {
     /**
      * The comment that this block will be representing
      */
-    comment: CommentResponse,
+    comment: CommentList[number],
     /**
      * Handler function for when the comment is marked as resolved
      * @param id the id of the comment marked

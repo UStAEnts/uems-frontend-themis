@@ -1,5 +1,4 @@
 import React from 'react';
-import { API, VenueResponse } from '../../../utilities/APIGen';
 import { GenericList, GenericRecord, genericRender } from '../../../components/components/generic-list/GenericList';
 import { loadAPIData } from '../../../utilities/DataUtilities';
 import {
@@ -9,11 +8,12 @@ import {
 import {UIUtilities} from "../../../utilities/UIUtilities";
 import {NotificationPropsType} from "../../../context/NotificationContext";
 import {withNotificationContext} from "../../../components/WithNotificationContext";
+import apiInstance, { Venue } from "../../../utilities/APIPackageGen";
 
 export type ListVenuePropsType = {} & NotificationPropsType;
 
 export type ListVenueStateType = {
-    venues?: VenueResponse[],
+    venues?: Venue[],
 } & FallibleReactStateType;
 
 class ListVenueClass extends FallibleReactComponent<ListVenuePropsType, ListVenueStateType> {
@@ -29,9 +29,9 @@ class ListVenueClass extends FallibleReactComponent<ListVenuePropsType, ListVenu
     componentDidMount() {
         loadAPIData<ListVenueStateType>(
             [{
-                params: [],
+                params: [{}],
                 stateName: 'venues',
-                call: API.venues.get,
+                call: apiInstance.venues().get,
             }],
             this.setState.bind(this),
             () => UIUtilities.tryShowPartialWarning(this),
@@ -41,7 +41,7 @@ class ListVenueClass extends FallibleReactComponent<ListVenuePropsType, ListVenu
     realRender() {
         if (!this.state.venues) return null;
 
-        const venues: GenericRecord<VenueResponse>[] = this.state.venues.map((e) => ({
+        const venues: GenericRecord<Venue>[] = this.state.venues.map((e) => ({
             identifier: e.id,
             target: `/venues/${e.id}`,
             value: e,
@@ -53,7 +53,7 @@ class ListVenueClass extends FallibleReactComponent<ListVenuePropsType, ListVenu
                 <GenericList
                     records={venues}
                     dontPad
-                    render={genericRender<VenueResponse>(['user', 'date'])}
+                    render={genericRender<Venue>(['user'])}
                 />
             </div>
         );

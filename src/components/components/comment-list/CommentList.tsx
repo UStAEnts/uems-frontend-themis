@@ -3,22 +3,23 @@ import { ReactNode } from 'react';
 import { CommentBox } from '../../atoms/comment-box/CommentBox';
 import { Comment } from '../../atoms/comment/Comment';
 import { GlobalContext } from '../../../context/GlobalContext';
-import { CommentResponse, EventPropertyChangeResponse, TopicResponse } from '../../../utilities/APIGen';
 import { EventUpdate } from '../../atoms/update/EventUpdate';
+import { CommentList as UEMSCommentList, Topic } from '../../../utilities/APIPackageGen';
 
 export type CommentListPropsType = {
     /**
      * The list of comments which should be rendered in this list
      */
-    comments: CommentResponse[],
+    comments: UEMSCommentList,
     /**
      * The list of available topics
      */
-    topics: TopicResponse[],
+    topics: Topic[],
     /**
      * The list of updates if relevant
+     * TODO: this was a thing once
      */
-    updates?: EventPropertyChangeResponse[],
+    updates?: /*EventPropertyChangeResponse*/never[],
     /**
      * Handler function for comment submission
      */
@@ -62,7 +63,7 @@ export class CommentList extends React.Component<CommentListPropsType, {}> {
      * @param content the content of the comment
      * @param type the content type of this comment
      */
-    private handleSubmit(content: string, type: TopicResponse) {
+    private handleSubmit(content: string, type: Topic) {
         if (this.props.onCommentSent) this.props.onCommentSent(content, type.id);
     }
 
@@ -77,12 +78,13 @@ export class CommentList extends React.Component<CommentListPropsType, {}> {
             />),
         } as TimeSortableElement));
 
-        const updates = (this.props.updates ?? []).map((e) => ({
-            time: e.occurred,
-            component: <EventUpdate update={e} key={e.id} />,
-        } as TimeSortableElement));
+        // const updates = (this.props.updates ?? []).map((e) => ({
+        //     time: e.occurred,
+        //     component: <EventUpdate update={e} key={e.id} />,
+        // } as TimeSortableElement));
 
-        const joined = comments.concat(updates).sort(
+        // TODO: there were updates here once
+        const joined = comments/*.concat(updates)*/.sort(
             (a, b) => b.time - a.time,
         ).map((e) => e.component);
 
