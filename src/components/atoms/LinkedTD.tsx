@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 
 export type LinkedTDProps = {
-    to: string,
+	to: string;
 };
 
 /**
@@ -12,10 +12,11 @@ export type LinkedTDProps = {
  * @param children the children to put inside this TD element
  * @constructor
  */
-export const LinkedTD: React.FunctionComponent<LinkedTDProps> = ({ to, children }) => (
-    <td>
-        <Link to={to}>
-            {children}
-        </Link>
-    </td>
+export const LinkedTD: React.FunctionComponent<LinkedTDProps> = ({
+	to,
+	children,
+}) => (
+	<td>
+		<Link to={to}>{children}</Link>
+	</td>
 );

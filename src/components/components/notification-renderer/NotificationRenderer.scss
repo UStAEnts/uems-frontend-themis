@@ -1,97 +1,99 @@
 .notification-renderer {
-  position: fixed;
-  z-index: 10000;
-  margin: 5px 10px 10px;
+	position: fixed;
+	z-index: 10000;
+	margin: 5px 10px 10px;
 
-  &.top-left {
-    top: 0;
-    left: 0;
-  }
+	&.top-left {
+		top: 0;
+		left: 0;
+	}
 
-  &.top-right {
-    top: 0;
-    right: 0;
-  }
+	&.top-right {
+		top: 0;
+		right: 0;
+	}
 
-  &.bottom-left {
-    bottom: 0;
-    left: 0;
-  }
+	&.bottom-left {
+		bottom: 0;
+		left: 0;
+	}
 
-  &.bottom-right {
-    bottom: 0;
-    right: 0;
-  }
+	&.bottom-right {
+		bottom: 0;
+		right: 0;
+	}
 
-  .notification {
-    //padding: 20px;
-    background: rgba(33, 33, 33, 0.88);
-    color: white;
-    border-radius: 4px;
-    min-width: 20pc;
-    max-width: 20pc;
-    margin: 5px 0;
-    display: flex;
-    flex-direction: column;
+	.notification {
+		//padding: 20px;
+		background: rgba(33, 33, 33, 0.88);
+		color: white;
+		border-radius: 4px;
+		min-width: 20pc;
+		max-width: 20pc;
+		margin: 5px 0;
+		display: flex;
+		flex-direction: column;
 
-    transition: opacity 1s linear;
+		transition: opacity 1s linear;
 
-    &.leaving{
-      opacity: 0;
-    }
+		&.leaving {
+			opacity: 0;
+		}
 
-    .content, .rest{
-      display: flex;
-    }
+		.content,
+		.rest {
+			display: flex;
+		}
 
-    &.with-icon {
-      .content, .rest {
-        flex-direction: row;
-      }
-    }
+		&.with-icon {
+			.content,
+			.rest {
+				flex-direction: row;
+			}
+		}
 
-    &:not(.with-icon) {
-      .rest{
-        padding: 13px 10px;
-      }
-    }
+		&:not(.with-icon) {
+			.rest {
+				padding: 13px 10px;
+			}
+		}
 
-    .icon-box {
-      box-shadow: none;
-    }
+		.icon-box {
+			box-shadow: none;
+		}
 
-    .rest {
-      padding: 10px;
+		.rest {
+			padding: 10px;
 
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+			flex-grow: 1;
 
-      .left {
-        flex-grow: 1;
-      }
-    }
+			.left {
+				flex-grow: 1;
+			}
+		}
 
-    .accent {
-      width: 6px;
-      background: black;
-    }
+		.accent {
+			width: 6px;
+			background: black;
+		}
 
-    .title{
-      font-weight: bold;
-    }
+		.title {
+			font-weight: bold;
+		}
 
-    .action{
-      color: white !important;
-      background: #252525;
-      padding: 2px 10px 6px;
-      cursor: pointer;
+		.action {
+			color: white !important;
+			background: #252525;
+			padding: 2px 10px 6px;
+			cursor: pointer;
 
-      a{
-        color: white;
-        text-decoration: none;
-        font-size: 0.8em;
-      }
-    }
-  }
+			a {
+				color: white;
+				text-decoration: none;
+				font-size: 0.8em;
+			}
+		}
+	}
 }

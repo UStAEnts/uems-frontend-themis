@@ -1,35 +1,35 @@
 .tabbed-pane {
-  .tabs {
-    display: flex;
-    flex-direction: row;
+	.tabs {
+		display: flex;
+		flex-direction: row;
 
-    .tab {
-      padding: 10px;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      background: #ececec;
-      margin-right: 3px;
-      outline: none;
-      cursor: pointer;
+		.tab {
+			padding: 10px;
+			border-top-left-radius: 5px;
+			border-top-right-radius: 5px;
+			background: #ececec;
+			margin-right: 3px;
+			outline: none;
+			cursor: pointer;
 
-      &.active {
-        background: #bababa;
-        outline: none;
-        font-weight: bold;
-      }
-    }
-  }
+			&.active {
+				background: #bababa;
+				outline: none;
+				font-weight: bold;
+			}
+		}
+	}
 
-  .bodies {
-    border-top: 1px solid gainsboro;
-    height: 100%;
+	.bodies {
+		border-top: 1px solid gainsboro;
+		height: 100%;
 
-    .body {
-      display: none;
+		.body {
+			display: none;
 
-      &.active {
-        display: initial;
-      }
-    }
-  }
+			&.active {
+				display: initial;
+			}
+		}
+	}
 }

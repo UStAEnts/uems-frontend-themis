@@ -12,172 +12,153 @@ import '@testing-library/jest-dom/extend-expect';
 // - tab unmounting works
 
 const paneSetup: Pane[] = [
-    {
-        key: 'tab1',
-        name: 'Tab One',
-        content: (
-            <div>Content One</div>
-        ),
-    },
-    {
-        key: 'tab2',
-        name: 'Tab Two',
-        content: (
-            <div>Content Two</div>
-        ),
-    },
-    {
-        key: 'tab3',
-        name: 'Tab Three',
-        content: (
-            <div>Content Three</div>
-        ),
-    },
+	{
+		key: 'tab1',
+		name: 'Tab One',
+		content: <div>Content One</div>,
+	},
+	{
+		key: 'tab2',
+		name: 'Tab Two',
+		content: <div>Content Two</div>,
+	},
+	{
+		key: 'tab3',
+		name: 'Tab Three',
+		content: <div>Content Three</div>,
+	},
 ];
 
 describe('<TabPane />', () => {
+	describe('render', () => {
+		it('tabs are shown', async () => {
+			const { queryByText } = render(<TabPane panes={paneSetup} />);
 
-    describe('render', () => {
+			expect(queryByText(/tab one/gi)).not.toBeNull();
+			expect(queryByText(/tab two/gi)).not.toBeNull();
+			expect(queryByText(/tab three/gi)).not.toBeNull();
+		});
 
-        it('tabs are shown', async () => {
-            const { queryByText } = render(
-                <TabPane
-                    panes={paneSetup}
-                />,
-            );
+		it('active tab is shown', async () => {
+			await cleanDOMTest(() => {
+				const { queryByText } = render(<TabPane panes={paneSetup} />);
 
-            expect(queryByText(/tab one/ig)).not.toBeNull();
-            expect(queryByText(/tab two/ig)).not.toBeNull();
-            expect(queryByText(/tab three/ig)).not.toBeNull();
-        });
+				expect(queryByText(/tab one/gi)).not.toBeNull();
+				expect(queryByText(/tab two/gi)).not.toBeNull();
+				expect(queryByText(/tab three/gi)).not.toBeNull();
+				expect(queryByText(/content one/gi)).not.toBeNull();
+			});
 
-        it('active tab is shown', async () => {
-            await cleanDOMTest(() => {
-                const { queryByText } = render(
-                    <TabPane
-                        panes={paneSetup}
-                    />,
-                );
+			await cleanDOMTest(() => {
+				const setup = [
+					{ ...paneSetup[0] },
+					{
+						...paneSetup[1],
+						...{
+							initial: true,
+						},
+					},
+					{ ...paneSetup[2] },
+				];
 
-                expect(queryByText(/tab one/ig)).not.toBeNull();
-                expect(queryByText(/tab two/ig)).not.toBeNull();
-                expect(queryByText(/tab three/ig)).not.toBeNull();
-                expect(queryByText(/content one/ig)).not.toBeNull();
-            });
+				const { queryByText } = render(<TabPane panes={setup} />);
 
-            await cleanDOMTest(() => {
-                const setup = [
-                    { ...paneSetup[0] },
-                    {
-                        ...paneSetup[1],
-                        ...{
-                            initial: true,
-                        },
-                    },
-                    { ...paneSetup[2] },
-                ];
+				expect(queryByText(/tab one/gi)).not.toBeNull();
+				expect(queryByText(/tab two/gi)).not.toBeNull();
+				expect(queryByText(/tab three/gi)).not.toBeNull();
+				expect(queryByText(/content two/gi)).not.toBeNull();
+			});
+		});
+	});
 
-                const { queryByText } = render(
-                    <TabPane
-                        panes={setup}
-                    />,
-                );
+	describe('functional', () => {
+		it('tab switching works', async () => {
+			const { queryByText, getByText } = render(<TabPane panes={paneSetup} />);
 
-                expect(queryByText(/tab one/ig)).not.toBeNull();
-                expect(queryByText(/tab two/ig)).not.toBeNull();
-                expect(queryByText(/tab three/ig)).not.toBeNull();
-                expect(queryByText(/content two/ig)).not.toBeNull();
-            });
-        });
+			expect(queryByText(/tab one/gi)).not.toBeNull();
+			expect(queryByText(/tab two/gi)).not.toBeNull();
+			expect(queryByText(/tab three/gi)).not.toBeNull();
 
-    });
+			expect(getByText(/content one/gi).parentElement).toHaveClass('active');
+			expect(getByText(/content two/gi).parentElement).not.toHaveClass(
+				'active'
+			);
+			expect(getByText(/content three/gi).parentElement).not.toHaveClass(
+				'active'
+			);
 
-    describe('functional', () => {
+			await fireEvent.click(getByText(/tab two/gi));
 
-        it('tab switching works', async () => {
-            const { queryByText, getByText } = render(
-                <TabPane
-                    panes={paneSetup}
-                />,
-            );
+			expect(getByText(/content one/gi).parentElement).not.toHaveClass(
+				'active'
+			);
+			expect(getByText(/content two/gi).parentElement).toHaveClass('active');
+			expect(getByText(/content three/gi).parentElement).not.toHaveClass(
+				'active'
+			);
 
-            expect(queryByText(/tab one/ig)).not.toBeNull();
-            expect(queryByText(/tab two/ig)).not.toBeNull();
-            expect(queryByText(/tab three/ig)).not.toBeNull();
+			fireEvent.click(getByText(/tab three/gi));
+			expect(getByText(/content one/gi).parentElement).not.toHaveClass(
+				'active'
+			);
+			expect(getByText(/content two/gi).parentElement).not.toHaveClass(
+				'active'
+			);
+			expect(getByText(/content three/gi).parentElement).toHaveClass('active');
+		});
 
-            expect(getByText(/content one/ig).parentElement).toHaveClass('active');
-            expect(getByText(/content two/ig).parentElement).not.toHaveClass('active');
-            expect(getByText(/content three/ig).parentElement).not.toHaveClass('active');
+		it('tab switching works when unmounting', async () => {
+			const { queryByText, getByText } = render(
+				<TabPane panes={paneSetup} unmountHidden />
+			);
 
-            await fireEvent.click(getByText(/tab two/ig));
+			expect(queryByText(/tab one/gi)).not.toBeNull();
+			expect(queryByText(/tab two/gi)).not.toBeNull();
+			expect(queryByText(/tab three/gi)).not.toBeNull();
 
-            expect(getByText(/content one/ig).parentElement).not.toHaveClass('active');
-            expect(getByText(/content two/ig).parentElement).toHaveClass('active');
-            expect(getByText(/content three/ig).parentElement).not.toHaveClass('active');
+			expect(queryByText(/content one/gi)).not.toBeNull();
+			expect(queryByText(/content two/gi)).toBeNull();
+			expect(queryByText(/content three/gi)).toBeNull();
 
-            fireEvent.click(getByText(/tab three/ig));
-            expect(getByText(/content one/ig).parentElement).not.toHaveClass('active');
-            expect(getByText(/content two/ig).parentElement).not.toHaveClass('active');
-            expect(getByText(/content three/ig).parentElement).toHaveClass('active');
-        });
+			await fireEvent.click(getByText(/tab two/gi));
 
-        it('tab switching works when unmounting', async () => {
-            const { queryByText, getByText } = render(
-                <TabPane
-                    panes={paneSetup}
-                    unmountHidden
-                />,
-            );
+			expect(queryByText(/content one/gi)).toBeNull();
+			expect(queryByText(/content two/gi)).not.toBeNull();
+			expect(queryByText(/content three/gi)).toBeNull();
 
-            expect(queryByText(/tab one/ig)).not.toBeNull();
-            expect(queryByText(/tab two/ig)).not.toBeNull();
-            expect(queryByText(/tab three/ig)).not.toBeNull();
+			await fireEvent.click(getByText(/tab three/gi));
 
-            expect(queryByText(/content one/ig)).not.toBeNull();
-            expect(queryByText(/content two/ig)).toBeNull();
-            expect(queryByText(/content three/ig)).toBeNull();
+			expect(queryByText(/content one/gi)).toBeNull();
+			expect(queryByText(/content two/gi)).toBeNull();
+			expect(queryByText(/content three/gi)).not.toBeNull();
+		});
 
-            await fireEvent.click(getByText(/tab two/ig));
+		it('tab switching calls listener', async () => {
+			const fn = jest.fn();
 
-            expect(queryByText(/content one/ig)).toBeNull();
-            expect(queryByText(/content two/ig)).not.toBeNull();
-            expect(queryByText(/content three/ig)).toBeNull();
+			const { getByText } = render(
+				<TabPane
+					panes={paneSetup}
+					unmountHidden
+					listeners={{
+						onTabChange: fn,
+					}}
+				/>
+			);
 
-            await fireEvent.click(getByText(/tab three/ig));
+			expect(fn).not.toBeCalled();
 
-            expect(queryByText(/content one/ig)).toBeNull();
-            expect(queryByText(/content two/ig)).toBeNull();
-            expect(queryByText(/content three/ig)).not.toBeNull();
-        });
+			await fireEvent.click(getByText(/tab one/gi));
 
-        it('tab switching calls listener', async () => {
-            const fn = jest.fn();
+			expect(fn).toBeCalledWith(paneSetup[0], paneSetup[0]);
 
-            const { getByText } = render(
-                <TabPane
-                    panes={paneSetup}
-                    unmountHidden
-                    listeners={{
-                        onTabChange: fn,
-                    }}
-                />,
-            );
+			await fireEvent.click(getByText(/tab two/gi));
 
-            expect(fn).not.toBeCalled();
+			expect(fn).toBeCalledWith(paneSetup[0], paneSetup[1]);
 
-            await fireEvent.click(getByText(/tab one/ig));
+			await fireEvent.click(getByText(/tab three/gi));
 
-            expect(fn).toBeCalledWith(paneSetup[0], paneSetup[0]);
-
-            await fireEvent.click(getByText(/tab two/ig));
-
-            expect(fn).toBeCalledWith(paneSetup[0], paneSetup[1]);
-
-            await fireEvent.click(getByText(/tab three/ig));
-
-            expect(fn).toBeCalledWith(paneSetup[1], paneSetup[2]);
-        });
-
-    });
-
+			expect(fn).toBeCalledWith(paneSetup[1], paneSetup[2]);
+		});
+	});
 });

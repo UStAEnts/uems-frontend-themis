@@ -1,50 +1,48 @@
 .entry-selector {
+	width: 25pc;
+	max-height: 7pc;
+	//background: red;
+	overflow-y: auto;
+	padding: 10px;
 
-  width: 25pc;
-  max-height: 7pc;
-  //background: red;
-  overflow-y: auto;
-  padding: 10px;
+	background: rgb(255, 255, 255);
+	border: 0px solid rgba(0, 0, 0, 0.25);
+	box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 4px;
+	border-radius: 4px;
+	transition: max-height 0.3s ease-in-out;
 
-  background: rgb(255, 255, 255);
-  border: 0px solid rgba(0, 0, 0, 0.25);
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 4px;
-  border-radius: 4px;
-  transition: max-height 0.3s ease-in-out;
+	&.active {
+		max-height: 35pc;
+	}
 
-  &.active {
-    max-height: 35pc;
-  }
+	.box {
+		display: inline-block;
+		padding: 10px;
+		border: 1px solid gainsboro;
+		margin: 3px;
+	}
 
-  .box {
-    display: inline-block;
-    padding: 10px;
-    border: 1px solid gainsboro;
-    margin: 3px;
+	.row {
+		padding: 10px;
+		border: 1px solid gainsboro;
+		margin: 3px;
+		display: flex;
+		align-items: center;
 
+		svg {
+			margin-right: 10px;
+		}
+	}
 
-  }
+	.row,
+	.box {
+		&.selected {
+			background: green;
+		}
 
-  .row{
-    padding: 10px;
-    border: 1px solid gainsboro;
-    margin: 3px;
-    display: flex;
-    align-items: center;
-
-    svg{
-      margin-right: 10px;
-    }
-  }
-
-  .row,.box{
-    &.selected{
-      background: green;
-    }
-
-    &:hover {
-      box-shadow: 0 0 14px -8px #000000;
-      cursor: pointer;
-    }
-  }
+		&:hover {
+			box-shadow: 0 0 14px -8px #000000;
+			cursor: pointer;
+		}
+	}
 }
