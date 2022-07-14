@@ -24,7 +24,7 @@ import {
 	randomVenue,
 } from '../../TestUtils';
 import { EventTable } from '../../../components/components/event-table/EventTable';
-import {NotificationContext} from '../../../context/NotificationContext'
+import { NotificationContext } from '../../../context/NotificationContext';
 
 import 'react-dates/initialize';
 // import { APIOverrides } from '../../../utilities/APIGen';
@@ -32,16 +32,18 @@ const APIOverrides = [];
 
 const notificationRender = (ui: ReactElement, renderOptions: any = {}) => {
 	return render(
-		<NotificationContext.Provider value={{
-			clearNotification: () => true,
-			clearNotifications: () => 0,
-			showNotification: () => '',
-		}}>
+		<NotificationContext.Provider
+			value={{
+				clearNotification: () => true,
+				clearNotifications: () => 0,
+				showNotification: () => '',
+			}}
+		>
 			{ui}
 		</NotificationContext.Provider>,
-		renderOptions,
-	)
-}
+		renderOptions
+	);
+};
 
 beforeAll(() => {
 	// @ts-ignore
