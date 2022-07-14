@@ -320,7 +320,7 @@ class RootSite extends React.Component<{}, RootSiteState & ReadableContextType> 
 											{/*<FormElement detail={'some details'} prompt={'some prompt'}*/ }
 											{/*             required={true}/>*/ }
 											{/*<FormDemo/>*/ }
-											<AutomationEditor/>
+											{/*<AutomationEditor/>*/}
 											{/*<Checkbox*/ }
 											{/*    required*/ }
 											{/*    prompt='This is a checkbox prompt'*/ }
