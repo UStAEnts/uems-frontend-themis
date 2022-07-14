@@ -41,6 +41,7 @@ specifiers:
   cookie-parser: ^1.4.5
   eslint: ^6.6.0
   eslint-config-airbnb: ^18.2.0
+  eslint-config-prettier: ^8.5.0
   eslint-config-react-app: ^7.0.1
   eslint-plugin-import: ^2.21.2
   eslint-plugin-jsx-a11y: ^6.3.1
@@ -57,11 +58,10 @@ specifiers:
   passport: ^0.4.1
   passport-cookie: ^1.0.9
   passport-http-bearer: ^1.0.1
+  prettier: 2.7.1
   react: ^16.13.1
   react-color: ^2.18.1
   react-dates: ^21.8.0
-  react-dnd: ^16.0.1
-  react-dnd-html5-backend: ^16.0.1
   react-dom: ^16.13.1
   react-flatpickr: ^3.10.1
   react-flow-renderer: ^10.3.8
@@ -108,8 +108,6 @@ dependencies:
   react: 16.14.0
   react-color: 2.19.3_react@16.14.0
   react-dates: 21.8.0_f9273a22af3555a7a6bf9bf87b363343
-  react-dnd: 16.0.1_0b26733ad934009b35bb278ab42cac88
-  react-dnd-html5-backend: 16.0.1
   react-dom: 16.14.0_react@16.14.0
   react-flatpickr: 3.10.7_react@16.14.0
   react-flow-renderer: 10.3.8_react-dom@16.14.0+react@16.14.0
@@ -153,12 +151,14 @@ devDependencies:
   '@typescript-eslint/parser': 3.10.1_eslint@6.8.0+typescript@3.9.10
   axios-mock-adapter: 1.20.0_axios@0.21.4
   eslint-config-airbnb: 18.2.1_4ffff1528c399a5237bb678c9996d0cf
+  eslint-config-prettier: 8.5.0_eslint@6.8.0
   eslint-config-react-app: 7.0.1_eslint@6.8.0+typescript@3.9.10
   eslint-plugin-import: 2.25.3_eslint@6.8.0
   eslint-plugin-jsx-a11y: 6.5.1_eslint@6.8.0
   eslint-plugin-react: 7.27.1_eslint@6.8.0
   eslint-plugin-react-hooks: 4.3.0_eslint@6.8.0
   history: 5.2.0
+  prettier: 2.7.1
   react-scripts: 5.0.1_cf3753db176fa2f42601a670df4e0bbe
   ts-node: 10.8.2_86744a2217f55a46274a2e9103c9c80c
 
@@ -2193,18 +2193,6 @@ packages:
       webpack: 5.73.0
       webpack-dev-server: 4.9.2_webpack@5.73.0
     dev: true
-
-  /@react-dnd/asap/5.0.2:
-    resolution: {integrity: sha512-WLyfoHvxhs0V9U+GTsGilGgf2QsPl6ZZ44fnv0/b8T3nQyvzxidxsg/ZltbWssbsRDlYW8UKSQMTGotuTotZ6A==}
-    dev: false
-
-  /@react-dnd/invariant/4.0.2:
-    resolution: {integrity: sha512-xKCTqAK/FFauOM9Ta2pswIyT3D8AQlfrYdOi/toTPEhqCuAs1v5tcJ3Y08Izh1cJ5Jchwy9SeAXmMg6zrKs2iw==}
-    dev: false
-
-  /@react-dnd/shallowequal/4.0.2:
-    resolution: {integrity: sha512-/RVXdLvJxLg4QKvMoM5WlwNR9ViO9z8B/qPcc+C0Sa/teJY7QG7kJ441DwzOjMYEY7GmU4dj5EcGHIkKZiQZCA==}
-    dev: false
 
   /@rollup/plugin-babel/5.3.1_@babel+core@7.18.6+rollup@2.75.7:
     resolution: {integrity: sha512-WFfdLWU/xVWKeRQnKmIAQULUI7Il0gZnBIH/ZFO069wYIfPu+8zrfp/KMW0atmELoRDq8FbiP3VCss9MhCut7Q==}
@@ -5105,14 +5093,6 @@ packages:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
     dev: true
 
-  /dnd-core/16.0.1:
-    resolution: {integrity: sha512-HK294sl7tbw6F6IeuK16YSBUoorvHpY8RHO+9yFfaJyCDVb6n7PRcezrOEOa2SBCqiYpemh5Jx20ZcjKdFAVng==}
-    dependencies:
-      '@react-dnd/asap': 5.0.2
-      '@react-dnd/invariant': 4.0.2
-      redux: 4.2.0
-    dev: false
-
   /dns-equal/1.0.0:
     resolution: {integrity: sha512-z+paD6YUQsk+AbGCEM4PrOXSss5gd66QfcVBFTKR/HpFL9jCqikS94HYwKww6fQyO7IxrIIyUu+g0Ka9tUS2Cg==}
     dev: true
@@ -5460,6 +5440,15 @@ packages:
       eslint-plugin-react-hooks: 4.3.0_eslint@6.8.0
       object.assign: 4.1.2
       object.entries: 1.1.5
+    dev: true
+
+  /eslint-config-prettier/8.5.0_eslint@6.8.0:
+    resolution: {integrity: sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==}
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
+    dependencies:
+      eslint: 6.8.0
     dev: true
 
   /eslint-config-react-app/7.0.1_cba35f6c5f4f5d42874acf6e020ae185:
@@ -9651,6 +9640,12 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
+  /prettier/2.7.1:
+    resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: true
+
   /pretty-bytes/5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
     engines: {node: '>=6'}
@@ -9911,37 +9906,6 @@ packages:
       - vue-template-compiler
       - webpack
     dev: true
-
-  /react-dnd-html5-backend/16.0.1:
-    resolution: {integrity: sha512-Wu3dw5aDJmOGw8WjH1I1/yTH+vlXEL4vmjk5p+MHxP8HuHJS1lAGeIdG/hze1AvNeXWo/JgULV87LyQOr+r5jw==}
-    dependencies:
-      dnd-core: 16.0.1
-    dev: false
-
-  /react-dnd/16.0.1_0b26733ad934009b35bb278ab42cac88:
-    resolution: {integrity: sha512-QeoM/i73HHu2XF9aKksIUuamHPDvRglEwdHL4jsp784BgUuWcg6mzfxT0QDdQz8Wj0qyRKx2eMg8iZtWvU4E2Q==}
-    peerDependencies:
-      '@types/hoist-non-react-statics': '>= 3.3.1'
-      '@types/node': '>= 12'
-      '@types/react': '>= 16'
-      react: '>= 16.14'
-    peerDependenciesMeta:
-      '@types/hoist-non-react-statics':
-        optional: true
-      '@types/node':
-        optional: true
-      '@types/react':
-        optional: true
-    dependencies:
-      '@react-dnd/invariant': 4.0.2
-      '@react-dnd/shallowequal': 4.0.2
-      '@types/node': 12.20.38
-      '@types/react': 16.14.21
-      dnd-core: 16.0.1
-      fast-deep-equal: 3.1.3
-      hoist-non-react-statics: 3.3.2
-      react: 16.14.0
-    dev: false
 
   /react-dom/16.14.0_react@16.14.0:
     resolution: {integrity: sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==}
@@ -10400,12 +10364,6 @@ packages:
     resolution: {integrity: sha512-Hl/tuV2VDgWgCSEeWMLwxLZqX7OK59eU1guxXsRKTAyeYimivsKdtcV4fu3r710tpG5GmDKDhQ0HSZLExnNmyQ==}
     dependencies:
       balanced-match: 1.0.2
-    dev: false
-
-  /redux/4.2.0:
-    resolution: {integrity: sha512-oSBmcKKIuIR4ME29/AeNUnl5L+hvBq7OaJWzaptTQJAntaPvxIJqfnjbaEiCzzaIz+XmVILfqAM3Ob0aXLPfjA==}
-    dependencies:
-      '@babel/runtime': 7.18.3
     dev: false
 
   /referrer-policy/1.2.0:
