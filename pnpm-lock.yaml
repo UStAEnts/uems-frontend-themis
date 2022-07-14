@@ -51,6 +51,7 @@ specifiers:
   flatpickr: ^4.6.9
   helmet: ^3.23.3
   history: ^5.0.0
+  identity-obj-proxy: ^3.0.0
   include-media: ^1.4.9
   javascript-time-ago: ^2.3.3
   markdown-to-jsx: ^6.11.4
@@ -158,6 +159,7 @@ devDependencies:
   eslint-plugin-react: 7.27.1_eslint@6.8.0
   eslint-plugin-react-hooks: 4.3.0_eslint@6.8.0
   history: 5.2.0
+  identity-obj-proxy: 3.0.0
   prettier: 2.7.1
   react-scripts: 5.0.1_cf3753db176fa2f42601a670df4e0bbe
   ts-node: 10.8.2_86744a2217f55a46274a2e9103c9c80c

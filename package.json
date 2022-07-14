@@ -107,6 +107,7 @@
     "eslint-plugin-react": "7.27.1",
     "eslint-plugin-react-hooks": "^4.0.4",
     "history": "^5.0.0",
+    "identity-obj-proxy": "^3.0.0",
     "prettier": "2.7.1",
     "react-scripts": "^5.0.1",
     "ts-node": "^10.8.2"
