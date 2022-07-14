@@ -23,7 +23,7 @@ export type GenericListPropsType<T> = {
 	dontPad?: boolean;
 	onClick?: (value: T) => void;
 	searchable?: (value: GenericRecord<T>) => (string | undefined)[];
-} & RouteComponentProps<{}>;
+};
 
 export type GenericListStateType = {
 	identifiers: string[];
@@ -235,4 +235,4 @@ export const GenericList: React.ComponentClass<
 	GenericListPropsType<any>,
 	// @ts-ignore
 	GenericListStateType
-> = withRouter(GenericListClass);
+> = GenericListClass;
