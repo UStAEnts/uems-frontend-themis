@@ -19,16 +19,27 @@ import { Redirect } from "react-router";
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { ColorUtilities } from "../../../utilities/ColorUtilities";
 import { KeyValueOption } from "../../atoms/select/Select";
-import { API, EntsStateResponse, EventResponse, StateResponse, VenueResponse } from "../../../utilities/APIGen";
 import VenueChip from "../../atoms/venue-chip/VenueChip";
+import apiInstance, {
+	EntState,
+	EntStateList,
+	EventList,
+	State,
+	StateList, Venue,
+	VenueList,
+} from "../../../utilities/APIPackageGen";
+import { UIUtilities } from "../../../utilities/UIUtilities";
+import { NotificationPropsType } from "../../../context/NotificationContext";
+import { withNotificationContext } from "../../WithNotificationContext";
+import { UEMSEvent } from "../../../types/type-aliases";
 
 export type EventTablePropsType = {
     /**
      * The list of events to display in this table
      */
-    events: EventResponse[],
+    events: EventList,
     filters?: { [key: string]: DateFilterStatus | NumberFilterStatus | SelectFilterStatus | SearchFilterStatus },
-}
+} & NotificationPropsType;
 
 export type EventTableStateType = {
     /**
@@ -42,13 +53,13 @@ export type EventTableStateType = {
     forcedRedirect?: string,
 
     loaded: {
-        venues?: VenueResponse[],
-        states?: StateResponse[],
-        ents?: EntsStateResponse[],
+        venues?: VenueList,
+        states?: StateList,
+        ents?: EntStateList,
     }
 };
 
-export class EventTable extends React.Component<EventTablePropsType, EventTableStateType> {
+class EventTableInner extends React.Component<EventTablePropsType, EventTableStateType> {
 
     static displayName = 'EventTable';
 
@@ -68,48 +79,37 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
     }
 
     componentDidMount() {
-        API.venues.get().then((venues) => {
-            this.setState((oldState) => {
-                const clone = { ...oldState };
-
-                clone.loaded.venues = venues.result;
-
-                return clone;
-            })
-        }).catch((err) => {
-            //TODO: add error handling
-            console.error(err);
-        });
-        API.states.get().then((states) => {
-            this.setState((oldState) => {
-                const clone = { ...oldState };
-
-                clone.loaded.states = states.result;
-
-                return clone;
-            })
-        }).catch((err) => {
-            //TODO: add error handling
-            console.error(err);
-        });
-        API.ents.get().then((ents) => {
-            this.setState((oldState) => {
-                const clone = { ...oldState };
-
-                clone.loaded.ents = ents.result;
-
-                return clone;
-            })
-        }).catch((err) => {
-            //TODO: add error handling
-            console.error(err);
-        });
+        UIUtilities.load(this.props, apiInstance.venues().get({}))
+            .data((venues) => this.setState((oldState) => ({
+                    ...oldState,
+                    loaded: {
+                        ...oldState.loaded,
+                        venues,
+                    },
+                }),
+            ))
+        UIUtilities.load(this.props, apiInstance.states().get({}))
+            .data((states) => this.setState((old) => ({
+                ...old,
+                loaded: {
+                    ...old.loaded,
+                    states,
+                },
+            })));
+        UIUtilities.load(this.props, apiInstance.ents().get({}))
+            .data((ents) => this.setState((old) => ({
+                ...old,
+                loaded: {
+                    ...old.loaded,
+                    ents,
+                },
+            })));
     }
 
     /**
      * Returns an ents state based on the value in the event, either 'unknown' by default or the value held in the event
      */
-    private makeEntsStatus(entsStatus: undefined | EntsStateResponse) {
+    private makeEntsStatus(entsStatus: undefined | EntState) {
         let status = <div className="ents-state unknown">Unknown</div>;
 
         if (entsStatus !== undefined) {
@@ -144,7 +144,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
     /**
      * Returns an ents state based on the value in the event, either 'unknown' by default or the value held in the event
      */
-    private makeEventState(entsStatus: undefined | StateResponse) {
+    private makeEventState(entsStatus: undefined | State) {
         let status = <div className="ents-state unknown">Unknown</div>;
 
         if (entsStatus !== undefined) {
@@ -187,7 +187,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      * box in the table is rendered with {@link LinkedTD} which will allow it to be supported by screen readers.
      * @param event the event to render.
      */
-    private eventToRow(event: EventResponse) {
+    private eventToRow(event: UEMSEvent) {
         return (
             <tr
                 key={event.id}
@@ -240,7 +240,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
      * ents states and venues. If it returns false it means the event does not match the filters.
      * @param event the event to test
      */
-    private filter(event: EventResponse) {
+    private filter(event: UEMSEvent) {
         if ('name' in this.state.filters) {
             const filter = this.state.filters.name as SearchFilterStatus;
 
@@ -265,7 +265,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             if (typeof (filter.selectedOption) === 'string') return true;
 
             if (filter.selectedOption.value !== 'any') {
-                if (event.state?.name.toLowerCase() !== (filter.selectedOption.additional as StateResponse).name.toLowerCase()) return false;
+                if (event.state?.name.toLowerCase() !== (filter.selectedOption.additional as State).name.toLowerCase()) return false;
             }
         }
 
@@ -275,7 +275,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             if (typeof (filter.selectedOption) === 'string') return true;
 
             if (filter.selectedOption.value !== 'any') {
-                if (event.ents?.name.toLowerCase() !== (filter.selectedOption.additional as EntsStateResponse).name.toLowerCase()) return false;
+                if (event.ents?.name.toLowerCase() !== (filter.selectedOption.additional as EntState).name.toLowerCase()) return false;
             }
         }
 
@@ -285,7 +285,7 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
             if (typeof (filter.selectedOption) === 'string') return true;
 
             if (filter.selectedOption.value !== 'any') {
-                if(!event.venues.map((e) => e.name.toLowerCase()).includes((filter.selectedOption.additional as VenueResponse).name.toLowerCase())) return false;
+                if(!event.venues.map((e) => e.name.toLowerCase()).includes((filter.selectedOption.additional as Venue).name.toLowerCase())) return false;
                 // if (event.venue?.name.toLowerCase() !== (filter.selectedOption.additional as VenueResponse).name.toLowerCase()) return false;
             }
         }
@@ -413,3 +413,5 @@ export class EventTable extends React.Component<EventTablePropsType, EventTableS
     }
 
 }
+
+export const EventTable = withNotificationContext(EventTableInner);

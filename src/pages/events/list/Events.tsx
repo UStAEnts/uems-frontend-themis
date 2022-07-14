@@ -5,7 +5,6 @@ import {EventTable} from '../../../components/components/event-table/EventTable'
 import {Theme} from '../../../theme/Theme';
 
 import './Events.scss';
-import {API, EventResponse} from '../../../utilities/APIGen';
 import {
     FallibleReactComponent,
     FallibleReactStateType
@@ -16,6 +15,7 @@ import {withNotificationContext} from "../../../components/WithNotificationConte
 import {NotificationPropsType} from "../../../context/NotificationContext";
 import {CalendarRedo} from "../../../components/atoms/calendar/Calendar";
 import moment, {Moment} from "moment";
+import apiInstance, { EventList } from "../../../utilities/APIPackageGen";
 
 export type CalendarPropsType = {} & NotificationPropsType;
 
@@ -23,7 +23,7 @@ export type CalendarStateType = {
     /**
      * The list of events loaded from the gateway
      */
-    events?: EventResponse[],
+    events?: EventList,
     start: Moment,
     end: Moment,
     selected?: string,
@@ -43,23 +43,19 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
     }
 
     componentDidMount() {
-        this.loadComments();
-    }
-
-    /**
-     * Load the events from the API endpoint and update the state with the properties or populate the error state
-     */
-    private loadComments() {
-        loadAPIData<CalendarStateType>([{
-            call: API.events.get,
-            stateName: 'events',
-            params: [
-                new URLSearchParams({
-                    startafter: String(this.state.start.unix()),
-                    startbefore: String(this.state.end.unix()),
-                }),
-            ],
-        }], this.setState.bind(this), () => UIUtilities.tryShowPartialWarning(this));
+        this.setState((s) => ({...s, loading: true}), () => {
+            UIUtilities.load(this.props, apiInstance.events().get({
+                startBefore: this.state.end.unix(),
+                startAfter: this.state.start.unix(),
+            })).data((data)=>{
+                this.setState((s) => ({
+                    ...s,
+                    loading: false,
+                    calendarEvents: data,
+                    tableEvents: data,
+                }));
+            });
+        });
     }
 
     realRender() {
@@ -105,7 +101,7 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
                                             ...s,
                                             start: st,
                                             end: en,
-                                        }), () => this.loadComments())}
+                                        }), () => this.componentDidMount())}
                                     />
                                     : loadOrError
                             ),
