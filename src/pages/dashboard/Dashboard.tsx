@@ -19,42 +19,51 @@ import { Theme } from '../../theme/Theme';
 import { Tag } from '../../components/atoms/tag/Tag';
 import { Button } from '../../components/atoms/button/Button';
 import { ValueSquare } from '../../components/atoms/value-square/ValueSquare';
-import { GenericList, genericRender } from '../../components/components/generic-list/GenericList';
+import {
+	GenericList,
+	genericRender,
+} from '../../components/components/generic-list/GenericList';
 import { RenderUtilities } from '../../utilities/RenderUtilities';
-import { withNotificationContext } from "../../components/WithNotificationContext";
-import apiInstance, { EntState, EventList, State, Venue } from "../../utilities/APIPackageGen";
+import { withNotificationContext } from '../../components/WithNotificationContext';
+import apiInstance, {
+	EntState,
+	EventList,
+	State,
+	Venue,
+} from '../../utilities/APIPackageGen';
 
 export type DashboardPropsType = {} & NotificationPropsType;
 
 export type DashboardStateType = {
-	events?: EventList,
-	venues?: Venue[],
-	entsState?: EntState[],
-	buildingState?: State[],
+	events?: EventList;
+	venues?: Venue[];
+	entsState?: EntState[];
+	buildingState?: State[];
 
-	chartType: 'date' | 'state' | 'ents' | 'venue',
+	chartType: 'date' | 'state' | 'ents' | 'venue';
 
 	processed: {
 		eventsByDate: {
-			raw?: object[],
-			byVenue?: {},
-			byEnts?: {},
-			byState?: {},
-		}
-	}
+			raw?: object[];
+			byVenue?: {};
+			byEnts?: {};
+			byState?: {};
+		};
+	};
 };
 
 type EventDataPoint = {
-	x: number,
-	y: number,
-	events: EventList,
-	date: moment.Moment,
-	[key: string]: any,
+	x: number;
+	y: number;
+	events: EventList;
+	date: moment.Moment;
+	[key: string]: any;
 };
 
-const EventStackTooltip: React.FunctionComponent<TooltipProps> = (
-	{ active, payload },
-) => {
+const EventStackTooltip: React.FunctionComponent<TooltipProps> = ({
+	active,
+	payload,
+}) => {
 	if (!active) return null;
 	if (!payload) return null;
 	if (payload.length < 1) return null;
@@ -64,28 +73,28 @@ const EventStackTooltip: React.FunctionComponent<TooltipProps> = (
 
 	return (
 		<div className="event-stack-tooltip">
-			<div className="date">
-				{ data.date.format('dddd Do MMMM (YYYY)') }
-			</div>
+			<div className="date">{data.date.format('dddd Do MMMM (YYYY)')}</div>
 			<div className="title">Events</div>
 			<div className="events">
-				{ events.map((event) => (
+				{events.map((event) => (
 					<div className="event-line">
-						{ event.name }
-						<br/>
-						{ event.venues.map((e) => e.name).join(', ') }
-						<br/>
-						<Tag tag={ event.ents }/>
-						<Tag tag={ event.state }/>
+						{event.name}
+						<br />
+						{event.venues.map((e) => e.name).join(', ')}
+						<br />
+						<Tag tag={event.ents} />
+						<Tag tag={event.state} />
 					</div>
-				)) }
+				))}
 			</div>
 		</div>
 	);
 };
 
-class DashboardClass extends React.Component<DashboardPropsType, DashboardStateType> {
-
+class DashboardClass extends React.Component<
+	DashboardPropsType,
+	DashboardStateType
+> {
 	static displayName = 'Dashboard';
 
 	constructor(props: Readonly<DashboardPropsType>) {
@@ -99,30 +108,30 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
 	}
 
 	componentDidMount() {
-		UIUtilities.load(this.props, apiInstance.events().get({}))
-			.data((ev) => {
-				failEarlyStateSet(this.state, this.setState.bind(this), 'events')(ev);
-				return this.processEvents();
-			});
+		UIUtilities.load(this.props, apiInstance.events().get({})).data((ev) => {
+			failEarlyStateSet(this.state, this.setState.bind(this), 'events')(ev);
+			return this.processEvents();
+		});
 
-		UIUtilities.load(this.props, apiInstance.venues().get({}))
-			.data((ev) => {
-				console.log('venues are loaded');
-				failEarlyStateSet(this.state, this.setState.bind(this), 'venues')(ev);
-				return this.processEvents();
-			});
+		UIUtilities.load(this.props, apiInstance.venues().get({})).data((ev) => {
+			console.log('venues are loaded');
+			failEarlyStateSet(this.state, this.setState.bind(this), 'venues')(ev);
+			return this.processEvents();
+		});
 
-		UIUtilities.load(this.props, apiInstance.ents().get({}))
-			.data((ev) => {
-				failEarlyStateSet(this.state, this.setState.bind(this), 'entsState')(ev);
-				return this.processEvents();
-			});
+		UIUtilities.load(this.props, apiInstance.ents().get({})).data((ev) => {
+			failEarlyStateSet(this.state, this.setState.bind(this), 'entsState')(ev);
+			return this.processEvents();
+		});
 
-		UIUtilities.load(this.props, apiInstance.states().get({}))
-			.data((ev) => {
-				failEarlyStateSet(this.state, this.setState.bind(this), 'buildingState')(ev);
-				return this.processEvents();
-			});
+		UIUtilities.load(this.props, apiInstance.states().get({})).data((ev) => {
+			failEarlyStateSet(
+				this.state,
+				this.setState.bind(this),
+				'buildingState'
+			)(ev);
+			return this.processEvents();
+		});
 	}
 
 	private processEvents = async () => {
@@ -144,7 +153,10 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
 			}
 		}
 
-		for (const [date, events] of Object.entries(rawPre) as unknown as [number, EventList][]) {
+		for (const [date, events] of Object.entries(rawPre) as unknown as [
+			number,
+			EventList
+		][]) {
 			const entry: EventDataPoint = {
 				events,
 				x: date,
@@ -153,13 +165,19 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
 			};
 
 			for (const state of this.state.buildingState) {
-				entry[`st-${ state.name }`] = events.filter((e) => e.state?.id === state.id).length;
+				entry[`st-${state.name}`] = events.filter(
+					(e) => e.state?.id === state.id
+				).length;
 			}
 			for (const state of this.state.entsState) {
-				entry[`en-${ state.name }`] = events.filter((e) => e.ents?.id === state.id).length;
+				entry[`en-${state.name}`] = events.filter(
+					(e) => e.ents?.id === state.id
+				).length;
 			}
 			for (const state of this.state.venues) {
-				entry[`ve-${ state.name }`] = events.filter((e) => e.venues.map((e) => e.id).includes(state.id)).length;
+				entry[`ve-${state.name}`] = events.filter((e) =>
+					e.venues.map((e) => e.id).includes(state.id)
+				).length;
 			}
 
 			raw.push(entry);
@@ -172,9 +190,9 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
 			this.setState.bind(this),
 			'processed',
 			'eventsByDate',
-			'raw',
+			'raw'
 		)(raw);
-	}
+	};
 
 	render() {
 		let themeIterator = Theme.ALL[Symbol.iterator]();
@@ -212,12 +230,19 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
 		// UNSAFE: what if we are done?
 
 		const lines = lineGroup.map((e) => (
-			<Line dataKey={ `${ prefix }${ e.name }` } name={ e.name } strokeWidth={ 2 } type="monotone"
-				  stroke={ nextColor() }/>
+			<Line
+				dataKey={`${prefix}${e.name}`}
+				name={e.name}
+				strokeWidth={2}
+				type="monotone"
+				stroke={nextColor()}
+			/>
 		));
 
-		const limit = (new Date().getTime() / 1000) + 604800; // + 7 days in seconds
-		const eventsInNext7Days = (this.state.events ?? []).filter((e) => e.start < limit);
+		const limit = new Date().getTime() / 1000 + 604800; // + 7 days in seconds
+		const eventsInNext7Days = (this.state.events ?? []).filter(
+			(e) => e.start < limit
+		);
 
 		return (
 			<div className="dashboard">
@@ -225,33 +250,33 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
 					<div className="title">At a Glance</div>
 					<div className="boxes">
 						<ValueSquare
-							value={ this.state.events?.length ?? '?' }
+							value={this.state.events?.length ?? '?'}
 							name="Events"
-							color={ nextColor() }
+							color={nextColor()}
 							link="/events"
 						/>
 						<ValueSquare
-							value={ this.state.buildingState?.length ?? '?' }
+							value={this.state.buildingState?.length ?? '?'}
 							name="States"
-							color={ nextColor() }
+							color={nextColor()}
 							link="/states"
 						/>
 						<ValueSquare
-							value={ this.state.entsState?.length ?? '?' }
+							value={this.state.entsState?.length ?? '?'}
 							name="Ents States"
-							color={ nextColor() }
+							color={nextColor()}
 							link="/ents"
 						/>
 						<ValueSquare
-							value={ this.state.venues?.length ?? '?' }
+							value={this.state.venues?.length ?? '?'}
 							name="Venues"
-							color={ nextColor() }
+							color={nextColor()}
 							link="/venues"
 						/>
 						<ValueSquare
-							value={ eventsInNext7Days.length }
+							value={eventsInNext7Days.length}
 							name="Events within 7 Days"
-							color={ nextColor() }
+							color={nextColor()}
 						/>
 					</div>
 				</div>
@@ -259,115 +284,131 @@ class DashboardClass extends React.Component<DashboardPropsType, DashboardStateT
 					<div className="card half">
 						<div className="title">Events</div>
 						<Button
-							color={ this.state.chartType === 'date' ? Theme.PURPLE : Theme.PURPLE_LIGHT }
+							color={
+								this.state.chartType === 'date'
+									? Theme.PURPLE
+									: Theme.PURPLE_LIGHT
+							}
 							text="By Date"
-							onClick={ () => failEarlyStateSet(this.state, this.setState.bind(this), 'chartType')(
-								'date',
-							) }
+							onClick={() =>
+								failEarlyStateSet(
+									this.state,
+									this.setState.bind(this),
+									'chartType'
+								)('date')
+							}
 						/>
 						<Button
-							color={ this.state.chartType === 'venue' ? Theme.BLUE : Theme.BLUE_LIGHT }
+							color={
+								this.state.chartType === 'venue' ? Theme.BLUE : Theme.BLUE_LIGHT
+							}
 							text="By Venue"
-							onClick={ () => failEarlyStateSet(this.state, this.setState.bind(this), 'chartType')(
-								'venue',
-							) }
+							onClick={() =>
+								failEarlyStateSet(
+									this.state,
+									this.setState.bind(this),
+									'chartType'
+								)('venue')
+							}
 						/>
 						<Button
-							color={ this.state.chartType === 'state' ? Theme.TEAL : Theme.TEAL_LIGHT }
+							color={
+								this.state.chartType === 'state' ? Theme.TEAL : Theme.TEAL_LIGHT
+							}
 							text="By State"
-							onClick={ () => failEarlyStateSet(this.state, this.setState.bind(this), 'chartType')(
-								'state',
-							) }
+							onClick={() =>
+								failEarlyStateSet(
+									this.state,
+									this.setState.bind(this),
+									'chartType'
+								)('state')
+							}
 						/>
 						<Button
-							color={ this.state.chartType === 'ents' ? Theme.RED : Theme.RED_LIGHT }
+							color={
+								this.state.chartType === 'ents' ? Theme.RED : Theme.RED_LIGHT
+							}
 							text="By Ents"
-							onClick={ () => failEarlyStateSet(this.state, this.setState.bind(this), 'chartType')(
-								'ents',
-							) }
+							onClick={() =>
+								failEarlyStateSet(
+									this.state,
+									this.setState.bind(this),
+									'chartType'
+								)('ents')
+							}
 						/>
-						{
-							this.state.processed.eventsByDate.raw
-								? (
-									<ResponsiveContainer height={ 400 }>
-										<LineChart
-											data={ this.state.processed.eventsByDate.raw }
-										>
-											<Legend/>
-											<Line
-												dataKey="y"
-												name="Total Events"
-												type="monotone"
-												strokeWidth={ 3 }
-											/>
-											{ lines }
-											<YAxis
-												dataKey="y"
-											/>
-											<XAxis
-												dataKey="x"
-												tickFormatter={ (value) => moment.unix(value).format('DD/MM') }
-											/>
-											<Tooltip
-												content={ <EventStackTooltip/> }
-											/>
-											<CartesianGrid/>
-										</LineChart>
-									</ResponsiveContainer>
-								)
-								: undefined
-						}
-
+						{this.state.processed.eventsByDate.raw ? (
+							<ResponsiveContainer height={400}>
+								<LineChart data={this.state.processed.eventsByDate.raw}>
+									<Legend />
+									<Line
+										dataKey="y"
+										name="Total Events"
+										type="monotone"
+										strokeWidth={3}
+									/>
+									{lines}
+									<YAxis dataKey="y" />
+									<XAxis
+										dataKey="x"
+										tickFormatter={(value) =>
+											moment.unix(value).format('DD/MM')
+										}
+									/>
+									<Tooltip content={<EventStackTooltip />} />
+									<CartesianGrid />
+								</LineChart>
+							</ResponsiveContainer>
+						) : undefined}
 					</div>
 					<div className="card half">
 						<div className="title">Upcoming</div>
 						<GenericList
-							records={ (this.state.events ?? []).map((e) => ({
+							records={(this.state.events ?? []).map((e) => ({
 								value: e,
-								target: `/events/${ e.id }`,
+								target: `/events/${e.id}`,
 								identifier: e.id,
-							})) }
-							render={ RenderUtilities.renderBasicEvent }
+							}))}
+							render={RenderUtilities.renderBasicEvent}
 						/>
 					</div>
 					<div className="card half">
 						<div className="title">Ents States</div>
 						<GenericList
-							records={ (this.state.entsState ?? []).map((e) => ({
+							records={(this.state.entsState ?? []).map((e) => ({
 								value: e,
-								target: `/ents/${ e.id }`,
+								target: `/ents/${e.id}`,
 								identifier: e.id,
-							})) }
-							render={ genericRender() }
+							}))}
+							render={genericRender()}
 						/>
 					</div>
 					<div className="card half">
 						<div className="title">Building States</div>
 						<GenericList
-							records={ (this.state.buildingState ?? []).map((e) => ({
+							records={(this.state.buildingState ?? []).map((e) => ({
 								value: e,
-								target: `/states/${ e.id }`,
+								target: `/states/${e.id}`,
 								identifier: e.id,
-							})) }
-							render={ genericRender() }
+							}))}
+							render={genericRender()}
 						/>
 					</div>
 					<div className="card half">
 						<div className="title">Venues</div>
 						<GenericList
-							records={ (this.state.venues ?? []).map((e) => ({
+							records={(this.state.venues ?? []).map((e) => ({
 								value: e,
-								target: `/venues/${ e.id }`,
+								target: `/venues/${e.id}`,
 								identifier: e.id,
-							})) }
-							render={ genericRender(['date', 'user']) }
+							}))}
+							render={genericRender(['date', 'user'])}
 						/>
 					</div>
 				</div>
 			</div>
 		);
 	}
-
 }
 
 export const Dashboard = withNotificationContext(DashboardClass);

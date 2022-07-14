@@ -1,55 +1,55 @@
 .events-table {
-  margin-top: 20px;
+	margin-top: 20px;
 
-  table {
-    margin-top: 30px;
-    width: 100%;
-    border-collapse: collapse;
+	table {
+		margin-top: 30px;
+		width: 100%;
+		border-collapse: collapse;
 
-    tr {
-      text-align: left;
-      cursor: pointer;
+		tr {
+			text-align: left;
+			cursor: pointer;
 
-      a{
-        text-decoration: none;
-        color: initial;
-      }
+			a {
+				text-decoration: none;
+				color: initial;
+			}
 
-      &:hover{
-        background: lighten(gainsboro, 8%);
-      }
-    }
+			&:hover {
+				background: lighten(gainsboro, 8%);
+			}
+		}
 
-    td,th{
-      padding: 10px 10px;
-      border-bottom: 1px solid gainsboro;
+		td,
+		th {
+			padding: 10px 10px;
+			border-bottom: 1px solid gainsboro;
+		}
 
-    }
+		.name-column {
+			width: 28%;
+		}
 
-    .name-column{
-      width: 28%;
-    }
+		.time-column {
+			width: 37%;
+		}
 
-    .time-column{
-      width: 37%;
-    }
+		.icon-column {
+			width: 2%;
+		}
 
-    .icon-column{
-      width: 2%;
-    }
+		.venue-column {
+			width: 9%;
+		}
 
-    .venue-column{
-      width: 9%;
-    }
+		.status-column {
+			width: 8%;
+		}
+	}
 
-    .status-column{
-      width: 8%;
-    }
-  }
-
-  .ents-state{
-    padding: 10px;
-    border-radius: 10px;
-    margin: 3px;
-  }
+	.ents-state {
+		padding: 10px;
+		border-radius: 10px;
+		margin: 3px;
+	}
 }

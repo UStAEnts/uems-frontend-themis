@@ -12,199 +12,195 @@ import { Filter } from '../../../components/components/filter/Filter';
 //   - search
 
 describe('<Filter />', () => {
+	describe('rendering', () => {
+		it('fields match configuration', async () => {
+			await cleanDOMTest(() => {
+				const { queryByAltText } = render(
+					<Filter
+						filters={{
+							number: {
+								name: 'number',
+								type: 'number',
+							},
+						}}
+					/>
+				);
 
-    describe('rendering', () => {
+				expect(queryByAltText('number')).not.toBeNull();
+			});
 
-        it('fields match configuration', async () => {
-            await cleanDOMTest(() => {
-                const { queryByAltText } = render(
-                    <Filter
-                        filters={{
-                            number: {
-                                name: 'number',
-                                type: 'number',
-                            },
-                        }}
-                    />,
-                );
+			await cleanDOMTest(() => {
+				const { queryByRole } = render(
+					<Filter
+						filters={{
+							number: {
+								name: 'number',
+								type: 'option',
+								options: ['a', 'b', 'c'],
+							},
+						}}
+					/>
+				);
 
-                expect(queryByAltText('number')).not.toBeNull();
-            });
+				expect(queryByRole('button')).not.toBeNull();
+			});
 
-            await cleanDOMTest(() => {
-                const { queryByRole } = render(
-                    <Filter
-                        filters={{
-                            number: {
-                                name: 'number',
-                                type: 'option',
-                                options: ['a', 'b', 'c'],
-                            },
-                        }}
-                    />,
-                );
+			await cleanDOMTest(() => {
+				const { queryByAltText } = render(
+					<Filter
+						filters={{
+							number: {
+								name: 'number',
+								type: 'search',
+							},
+						}}
+					/>
+				);
 
-                expect(queryByRole('button')).not.toBeNull();
-            });
+				expect(queryByAltText('number')).not.toBeNull();
+			});
+		});
+	});
 
-            await cleanDOMTest(() => {
-                const { queryByAltText } = render(
-                    <Filter
-                        filters={{
-                            number: {
-                                name: 'number',
-                                type: 'search',
-                            },
-                        }}
-                    />,
-                );
+	describe('functional', () => {
+		it('number update calls handler', async () => {
+			const fn = jest.fn();
 
-                expect(queryByAltText('number')).not.toBeNull();
-            });
-        });
+			const { getByAltText } = render(
+				<Filter
+					filters={{
+						number: {
+							name: 'number',
+							type: 'number',
+						},
+					}}
+					onFilterChange={fn}
+				/>
+			);
 
-    });
+			expect(fn).not.toBeCalled();
+			fireEvent.input(getByAltText('number'), { target: { value: 10 } });
+			expect(fn).toBeCalled();
+			expect(fn).toBeCalledWith({
+				number: {
+					value: 10,
+				},
+			});
+			fireEvent.input(getByAltText('number'), { target: { value: 20 } });
+			expect(fn).toBeCalledWith({
+				number: {
+					value: 20,
+				},
+			});
+		});
 
-    describe('functional', () => {
+		it('options update calls handler', async () => {
+			await cleanDOMTest(() => {
+				const fn = jest.fn();
 
-        it('number update calls handler', async () => {
-            const fn = jest.fn();
+				const { getByRole, getByText } = render(
+					<Filter
+						filters={{
+							number: {
+								name: 'number',
+								type: 'option',
+								options: ['a option', 'bopt', 'c'],
+							},
+						}}
+						onFilterChange={fn}
+					/>
+				);
 
-            const { getByAltText } = render(
-                <Filter
-                    filters={{
-                        number: {
-                            name: 'number',
-                            type: 'number',
-                        },
-                    }}
-                    onFilterChange={fn}
-                />,
-            );
+				expect(fn).not.toBeCalled();
+				fireEvent.click(getByRole('button'));
+				fireEvent.click(getByText(/a option/gi));
+				expect(fn).toBeCalled();
+				expect(fn).toBeCalledWith({
+					number: {
+						selectedOption: 'a option',
+					},
+				});
+				fireEvent.click(getByRole('button'));
+				fireEvent.click(getByText(/bopt/gi));
+				expect(fn).toBeCalled();
+				expect(fn).toBeCalledWith({
+					number: {
+						selectedOption: 'bopt',
+					},
+				});
+			});
 
-            expect(fn).not.toBeCalled();
-            fireEvent.input(getByAltText('number'), { target: { value: 10 } });
-            expect(fn).toBeCalled();
-            expect(fn).toBeCalledWith({
-                number: {
-                    value: 10,
-                },
-            });
-            fireEvent.input(getByAltText('number'), { target: { value: 20 } });
-            expect(fn).toBeCalledWith({
-                number: {
-                    value: 20,
-                },
-            });
-        });
+			await cleanDOMTest(() => {
+				const fn = jest.fn();
 
-        it('options update calls handler', async () => {
-            await cleanDOMTest(() => {
-                const fn = jest.fn();
+				const { getByRole, getByText } = render(
+					<Filter
+						filters={{
+							number: {
+								name: 'number',
+								type: 'option',
+								options: [
+									{
+										value: 'key',
+										text: 'option',
+									},
+									{
+										value: 'two',
+										text: 'second',
+									},
+								],
+							},
+						}}
+						onFilterChange={fn}
+					/>
+				);
 
-                const { getByRole, getByText } = render(
-                    <Filter
-                        filters={{
-                            number: {
-                                name: 'number',
-                                type: 'option',
-                                options: ['a option', 'bopt', 'c'],
-                            },
-                        }}
-                        onFilterChange={fn}
-                    />,
-                );
+				expect(fn).not.toBeCalled();
+				fireEvent.click(getByRole('button'));
+				fireEvent.click(getByText(/option/gi));
+				expect(fn).toBeCalled();
+				expect(fn).toBeCalledWith({
+					number: {
+						selectedOption: {
+							value: 'key',
+							text: 'option',
+						},
+					},
+				});
+			});
+		});
 
-                expect(fn).not.toBeCalled();
-                fireEvent.click(getByRole('button'));
-                fireEvent.click(getByText(/a option/ig));
-                expect(fn).toBeCalled();
-                expect(fn).toBeCalledWith({
-                    number: {
-                        selectedOption: 'a option',
-                    },
-                });
-                fireEvent.click(getByRole('button'));
-                fireEvent.click(getByText(/bopt/ig));
-                expect(fn).toBeCalled();
-                expect(fn).toBeCalledWith({
-                    number: {
-                        selectedOption: 'bopt',
-                    },
-                });
-            });
+		it('search updates calls handler', async () => {
+			const fn = jest.fn();
 
-            await cleanDOMTest(() => {
-                const fn = jest.fn();
+			const { getByAltText } = render(
+				<Filter
+					filters={{
+						number: {
+							name: 'number',
+							type: 'search',
+						},
+					}}
+					onFilterChange={fn}
+				/>
+			);
 
-                const { getByRole, getByText } = render(
-                    <Filter
-                        filters={{
-                            number: {
-                                name: 'number',
-                                type: 'option',
-                                options: [
-                                    {
-                                        value: 'key',
-                                        text: 'option',
-                                    },
-                                    {
-                                        value: 'two',
-                                        text: 'second',
-                                    },
-                                ],
-                            },
-                        }}
-                        onFilterChange={fn}
-                    />,
-                );
-
-                expect(fn).not.toBeCalled();
-                fireEvent.click(getByRole('button'));
-                fireEvent.click(getByText(/option/ig));
-                expect(fn).toBeCalled();
-                expect(fn).toBeCalledWith({
-                    number: {
-                        selectedOption: {
-                            value: 'key',
-                            text: 'option',
-                        },
-                    },
-                });
-            });
-        });
-
-        it('search updates calls handler', async () => {
-            const fn = jest.fn();
-
-            const { getByAltText } = render(
-                <Filter
-                    filters={{
-                        number: {
-                            name: 'number',
-                            type: 'search',
-                        },
-                    }}
-                    onFilterChange={fn}
-                />,
-            );
-
-            expect(fn).not.toBeCalled();
-            fireEvent.input(getByAltText('number'), { target: { value: 'some content' } });
-            expect(fn).toBeCalled();
-            expect(fn).toBeCalledWith({
-                number: {
-                    content: 'some content',
-                },
-            });
-            fireEvent.input(getByAltText('number'), { target: { value: 'content' } });
-            expect(fn).toBeCalledWith({
-                number: {
-                    content: 'content',
-                },
-            });
-        });
-
-    });
-
+			expect(fn).not.toBeCalled();
+			fireEvent.input(getByAltText('number'), {
+				target: { value: 'some content' },
+			});
+			expect(fn).toBeCalled();
+			expect(fn).toBeCalledWith({
+				number: {
+					content: 'some content',
+				},
+			});
+			fireEvent.input(getByAltText('number'), { target: { value: 'content' } });
+			expect(fn).toBeCalledWith({
+				number: {
+					content: 'content',
+				},
+			});
+		});
+	});
 });

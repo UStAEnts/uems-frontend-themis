@@ -1,91 +1,91 @@
 .comment {
-  display: flex;
-  flex-direction: row;
-  border: 1px solid #efefef;
-  margin: 15px 0;
+	display: flex;
+	flex-direction: row;
+	border: 1px solid #efefef;
+	margin: 15px 0;
 
-  &.attention{
-    box-shadow: red 0px 0px 6px 1px;
-  }
+	&.attention {
+		box-shadow: red 0px 0px 6px 1px;
+	}
 
-  .flags{
-    margin-top: 10px;
-    margin-right: 10px;
+	.flags {
+		margin-top: 10px;
+		margin-right: 10px;
 
-    svg{
-      cursor: pointer;
-    }
-  }
+		svg {
+			cursor: pointer;
+		}
+	}
 
-  .left {
-    flex-basis: 5.5pc;
-    flex-grow: 0;
-    flex-shrink: 0;
+	.left {
+		flex-basis: 5.5pc;
+		flex-grow: 0;
+		flex-shrink: 0;
 
-    display: flex;
-    align-items: center;
+		display: flex;
+		align-items: center;
 
-    .bar{
-      flex-basis: 10px;
-      flex-grow: 0;
-      flex-shrink: 0;
-      background: red;
-      height: 100%;
-    }
+		.bar {
+			flex-basis: 10px;
+			flex-grow: 0;
+			flex-shrink: 0;
+			background: red;
+			height: 100%;
+		}
 
-    .image {
-      flex-grow: 1;
-      margin-left: 10px;
-      //padding: 20px;
+		.image {
+			flex-grow: 1;
+			margin-left: 10px;
+			//padding: 20px;
 
-      img {
-        border-radius: 1000px;
-        border: 3px solid white;
-        box-sizing: border-box;
-        width: 100%;
-      }
-    }
-  }
+			img {
+				border-radius: 1000px;
+				border: 3px solid white;
+				box-sizing: border-box;
+				width: 100%;
+			}
+		}
+	}
 
-  .right {
-    padding: 20px;
-    flex-grow: 1;
-    .top {
-      display: flex;
-      flex-direction: row;
+	.right {
+		padding: 20px;
+		flex-grow: 1;
+		.top {
+			display: flex;
+			flex-direction: row;
 
-      .poster {
-        flex-grow: 0;
-        display: flex;
-        align-items: center;
+			.poster {
+				flex-grow: 0;
+				display: flex;
+				align-items: center;
 
-        .username{
-          margin-left: 10px;
-          font-size: 0.7em;
-        }
-      }
+				.username {
+					margin-left: 10px;
+					font-size: 0.7em;
+				}
+			}
 
-      .spacer {
-        flex-grow: 1;
-      }
-    }
+			.spacer {
+				flex-grow: 1;
+			}
+		}
 
-    .bottom {
-      margin-top: 10px;
-      line-height: 1.5;
+		.bottom {
+			margin-top: 10px;
+			line-height: 1.5;
 
-      &.submit{
-        .error{
-          color: darkred;
-        }
+			&.submit {
+				.error {
+					color: darkred;
+				}
 
-        .text-field.text-area{
-          margin: 5px 0;
-        }
-        .button{
-          float:right;
-        }
-      }
-    }
-  }
+				.text-field.text-area {
+					margin: 5px 0;
+				}
+				.button {
+					float: right;
+				}
+			}
+		}
+	}
 }

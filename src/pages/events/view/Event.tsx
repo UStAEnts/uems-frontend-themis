@@ -4,7 +4,12 @@ import Loader from 'react-loader-spinner';
 
 import moment from 'moment';
 import ReactTimeAgo from 'react-time-ago';
-import { faFileCode, faNetworkWired, faSkullCrossbones, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+	faFileCode,
+	faNetworkWired,
+	faSkullCrossbones,
+	faTimes,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withNotificationContext } from '../../../components/WithNotificationContext';
 import { NotificationContextType } from '../../../context/NotificationContext';
@@ -12,81 +17,90 @@ import { FileList } from '../../../components/atoms/file-bar/FileBar';
 import { CommentList } from '../../../components/components/comment-list/CommentList';
 import { EditableProperty } from '../../../components/components/editable-property/EditableProperty';
 import { Theme } from '../../../theme/Theme';
-import { KeyValueOption, Select } from '../../../components/atoms/select/Select';
+import {
+	KeyValueOption,
+	Select,
+} from '../../../components/atoms/select/Select';
 import { Button } from '../../../components/atoms/button/Button';
 import { GlobalContext } from '../../../context/GlobalContext';
 import './Event.scss';
 import {
 	FallibleReactComponent,
 	FallibleReactStateType,
-} from "../../../components/components/error-screen/FallibleReactComponent";
-import { UIUtilities } from "../../../utilities/UIUtilities";
-import { RemovableVenueChip } from "../../../components/atoms/venue-chip/VenueChip";
+} from '../../../components/components/error-screen/FallibleReactComponent';
+import { UIUtilities } from '../../../utilities/UIUtilities';
+import { RemovableVenueChip } from '../../../components/atoms/venue-chip/VenueChip';
 import apiInstance, {
 	UEMSFile,
 	CommentList as UEMSCommentList,
-	EntState, State, Topic, Signup, Venue, PATCHEventsIdBody, User, EventList,
-} from "../../../utilities/APIPackageGen";
+	EntState,
+	State,
+	Topic,
+	Signup,
+	Venue,
+	PATCHEventsIdBody,
+	User,
+	EventList,
+} from '../../../utilities/APIPackageGen';
 
 type UEMSEvent = EventList[number];
 
 export type SimpleEventProps = {
-	notificationContext?: NotificationContextType,
+	notificationContext?: NotificationContextType;
 	/**
 	 * The ID of the event to be rendered. This will be looked up from the API endpoint
 	 */
-	id: string,
-	onChange?: (event: UEMSEvent) => void,
+	id: string;
+	onChange?: (event: UEMSEvent) => void;
 };
 
 export type EventPropsType = {
-	notificationContext?: NotificationContextType,
-	onChange?: (event: UEMSEvent) => void,
+	notificationContext?: NotificationContextType;
+	onChange?: (event: UEMSEvent) => void;
 } & RouteComponentProps<{
 	/**
 	 * The ID of the event to be rendered. This will be looked up from the API endpoint
 	 */
-	id: string
-}>
+	id: string;
+}>;
 
 export type EventStateType = {
 	/**
 	 * The ID of this event
 	 */
-	id?: string,
+	id?: string;
 	/**
 	 * The retrieved event properties
 	 */
-	event?: UEMSEvent,
+	event?: UEMSEvent;
 	/**
 	 * TODO: this had a type once
 	 */
-	changelog?: never[],
+	changelog?: never[];
 	/**
 	 * The list of possible ents states to which this event can be updated
 	 */
-	entsStates?: EntState[],
+	entsStates?: EntState[];
 	/**
 	 * The list of possible building states to which this event can be updated
 	 */
-	buildingStates?: State[],
-	files?: UEMSFile[],
-	comments?: UEMSCommentList,
-	topics?: Topic[],
+	buildingStates?: State[];
+	files?: UEMSFile[];
+	comments?: UEMSCommentList;
+	topics?: Topic[];
 	/**
 	 * The venues that this event could take place in
 	 */
-	venues?: Venue[],
+	venues?: Venue[];
 	/**
 	 * All users signed on to this event and their roles
 	 */
-	signups?: Signup[],
+	signups?: Signup[];
 
-	chosenRole?: string,
+	chosenRole?: string;
 } & FallibleReactStateType;
 
 class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
-
 	static displayName = 'Event';
 
 	static contextType = GlobalContext;
@@ -101,10 +115,16 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 		};
 	}
 
-	shouldComponentUpdate(nextProps: Readonly<SimpleEventProps>, nextState: Readonly<EventStateType>, nextContext: any): boolean {
+	shouldComponentUpdate(
+		nextProps: Readonly<SimpleEventProps>,
+		nextState: Readonly<EventStateType>,
+		nextContext: any
+	): boolean {
 		if (nextProps.id !== this.props.id) return true;
 		if (super.shouldComponentUpdate) {
-			return super.shouldComponentUpdate(nextProps, nextState, nextContext) ?? true;
+			return (
+				super.shouldComponentUpdate(nextProps, nextState, nextContext) ?? true
+			);
 		}
 
 		return true;
@@ -114,24 +134,43 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 	 * When the components mount, we need to query the API for the actual properties we need
 	 */
 	componentDidMount() {
-		UIUtilities.load(this.props, apiInstance.topics().get({}))
-			.data((d) => this.setState((o) => ({ ...o, topics: d })));
-		UIUtilities.load(this.props, apiInstance.events().eventID(this.props.id).signups().get({}))
-			.data((d) => this.setState((o) => ({ ...o, signups: d })));
-		UIUtilities.load(this.props, apiInstance.events().id(this.props.id).comments().get())
-			.data((d) => this.setState((o) => ({ ...o, comments: d })));
-		UIUtilities.load(this.props, apiInstance.events().id(this.props.id).files().get())
-			.data((d) => this.setState((o) => ({ ...o, files: d })));
-		UIUtilities.load(this.props, apiInstance.venues().get({}))
-			.data((d) => this.setState((o) => ({ ...o, venues: d })));
-		UIUtilities.load(this.props, apiInstance.ents().get({}))
-			.data((d) => this.setState((o) => ({ ...o, entsStates: d })));
-		UIUtilities.load(this.props, apiInstance.states().get({}))
-			.data((d) => this.setState((o) => ({ ...o, buildingStates: d })));
+		UIUtilities.load(this.props, apiInstance.topics().get({})).data((d) =>
+			this.setState((o) => ({ ...o, topics: d }))
+		);
+		UIUtilities.load(
+			this.props,
+			apiInstance.events().eventID(this.props.id).signups().get({})
+		).data((d) => this.setState((o) => ({ ...o, signups: d })));
+		UIUtilities.load(
+			this.props,
+			apiInstance.events().id(this.props.id).comments().get()
+		).data((d) => this.setState((o) => ({ ...o, comments: d })));
+		UIUtilities.load(
+			this.props,
+			apiInstance.events().id(this.props.id).files().get()
+		).data((d) => this.setState((o) => ({ ...o, files: d })));
+		UIUtilities.load(this.props, apiInstance.venues().get({})).data((d) =>
+			this.setState((o) => ({ ...o, venues: d }))
+		);
+		UIUtilities.load(this.props, apiInstance.ents().get({})).data((d) =>
+			this.setState((o) => ({ ...o, entsStates: d }))
+		);
+		UIUtilities.load(this.props, apiInstance.states().get({})).data((d) =>
+			this.setState((o) => ({ ...o, buildingStates: d }))
+		);
 		// UIUtilities.load(this.props, apiInstance.events().id(this.props.id).get())
 		// 	.data((d) => this.setState((o) => ({ ...o, event: d.event })));
-		UIUtilities.load(this.props, apiInstance.events().id(this.props.id).get())
-			.data((d) => this.setState((o) => ({ ...o, event: d.event, changelog: d.changelog, loading: false })));
+		UIUtilities.load(
+			this.props,
+			apiInstance.events().id(this.props.id).get()
+		).data((d) =>
+			this.setState((o) => ({
+				...o,
+				event: d.event,
+				changelog: d.changelog,
+				loading: false,
+			}))
+		);
 		// TODO: reintroduce changelog
 	}
 
@@ -140,28 +179,32 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 			try {
 				this.props.notificationContext.showNotification(
 					'Failed to Load',
-					`There was an error: ${ reason }`,
+					`There was an error: ${reason}`,
 					faSkullCrossbones,
-					Theme.FAILURE,
+					Theme.FAILURE
 				);
 				console.log('Notification shown');
 			} catch (e) {
 				console.error('Notification system failed to send');
 			}
 		}
-	}
+	};
 
 	private patchEvent = (changeProps: PATCHEventsIdBody) => {
 		if (!this.state.event) return;
 
 		const filtered: Partial<UEMSEvent> = Object.fromEntries(
-			Object.entries(changeProps).filter(([, value]) => value !== undefined),
+			Object.entries(changeProps).filter(([, value]) => value !== undefined)
 		);
 		if (Object.prototype.hasOwnProperty.call(filtered, 'ents')) {
-			filtered.ents = this.state.entsStates?.find((e) => e.id === changeProps.ents);
+			filtered.ents = this.state.entsStates?.find(
+				(e) => e.id === changeProps.ents
+			);
 		}
 		if (Object.prototype.hasOwnProperty.call(filtered, 'state')) {
-			filtered.state = this.state.buildingStates?.find((e) => e.id === changeProps.state);
+			filtered.state = this.state.buildingStates?.find(
+				(e) => e.id === changeProps.state
+			);
 		}
 		if (Object.prototype.hasOwnProperty.call(filtered, 'start')) {
 			// @ts-ignore
@@ -188,90 +231,104 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 		// }
 		const updatedEvent: UEMSEvent = { ...this.state.event, ...filtered };
 
-		UIUtilities.load(this.props, apiInstance.events().id(this.state.event.id).patch(changeProps), (e) => `Failed to update the event! ${ e }`)
-			.data(() => {
-				// The response only contains an ID so we need to spread the updated parameters on top of the existing ones
-				this.setState((oldState) => ({
-					...oldState,
-					event: updatedEvent,
-				}));
+		UIUtilities.load(
+			this.props,
+			apiInstance.events().id(this.state.event.id).patch(changeProps),
+			(e) => `Failed to update the event! ${e}`
+		).data(() => {
+			// The response only contains an ID so we need to spread the updated parameters on top of the existing ones
+			this.setState((oldState) => ({
+				...oldState,
+				event: updatedEvent,
+			}));
 
-				if (this.props.onChange) this.props.onChange(updatedEvent);
-			});
-	}
+			if (this.props.onChange) this.props.onChange(updatedEvent);
+		});
+	};
 
 	private changeStartTime = (date: Date) => {
 		// TODO: timezone issues?
 		this.patchEvent({
 			start: date.getTime(),
 		});
-	}
+	};
 
 	private changeEndTime = (date: Date) => {
 		// TODO: timezone issues?
 		this.patchEvent({
 			end: date.getTime(),
 		});
-	}
+	};
 
 	private changeSelectedRole = (role: string) => {
 		this.setState((oldState) => ({
 			...oldState,
 			chosenRole: role,
 		}));
-	}
+	};
 
 	private signup = () => {
-		if (this.state.chosenRole === undefined || this.state.event === undefined) return;
+		if (this.state.chosenRole === undefined || this.state.event === undefined)
+			return;
 
-		UIUtilities.load(this.props, apiInstance.events().eventID(this.state.event.id).signups().post({
-			role: this.state.chosenRole,
-			signupUser: this.context.user.id,
-		}), (e) => `Failed to sign up to this event! ${ e }`)
-			.data((id) => {
-				if (id.length !== 1 || typeof (id[0]) !== 'string') {
-					UIUtilities.tryShowNotification(
-						this.props.notificationContext,
-						'Failed to save',
-						`Received an error response: ID was not returned`,
-						faNetworkWired,
-						Theme.FAILURE,
-					);
-				}
+		UIUtilities.load(
+			this.props,
+			apiInstance.events().eventID(this.state.event.id).signups().post({
+				role: this.state.chosenRole,
+				signupUser: this.context.user.id,
+			}),
+			(e) => `Failed to sign up to this event! ${e}`
+		).data((id) => {
+			if (id.length !== 1 || typeof id[0] !== 'string') {
+				UIUtilities.tryShowNotification(
+					this.props.notificationContext,
+					'Failed to save',
+					`Received an error response: ID was not returned`,
+					faNetworkWired,
+					Theme.FAILURE
+				);
+			}
 
-				this.setState((oldState) => ({
-					signups: [{
+			this.setState((oldState) => ({
+				signups: [
+					{
 						role: oldState.chosenRole ?? 'Unknown',
 						date: new Date().getTime() / 1000,
 						id: id[0] as string,
 						user: this.context.user,
 						event: this.state.event as UEMSEvent,
-					}, ...(oldState.signups ?? [])],
-				}));
-			});
-	}
+					},
+					...(oldState.signups ?? []),
+				],
+			}));
+		});
+	};
 
 	private removeSignup = (id: string) => {
 		if (this.state.event === undefined) return;
 
 		const stateID = this.state.event.id;
 
-		UIUtilities.deleteWith409Support(() => apiInstance.events().eventID(stateID).signups().id(id).delete()).then((b) => {
-			if (!b) throw new Error();
-			this.setState((oldState) => ({
-				signups: (oldState.signups ?? []).filter((e) => e.id !== id),
-			}));
-		}).catch((err) => {
-			if (this.props.notificationContext) {
-				this.props.notificationContext.showNotification(
-					'Could not remove signup',
-					`Failed to remove: ${ err.message }`,
-					faSkullCrossbones,
-					Theme.FAILURE,
-				);
-			}
-		})
-	}
+		UIUtilities.deleteWith409Support(() =>
+			apiInstance.events().eventID(stateID).signups().id(id).delete()
+		)
+			.then((b) => {
+				if (!b) throw new Error();
+				this.setState((oldState) => ({
+					signups: (oldState.signups ?? []).filter((e) => e.id !== id),
+				}));
+			})
+			.catch((err) => {
+				if (this.props.notificationContext) {
+					this.props.notificationContext.showNotification(
+						'Could not remove signup',
+						`Failed to remove: ${err.message}`,
+						faSkullCrossbones,
+						Theme.FAILURE
+					);
+				}
+			});
+	};
 
 	/**
 	 * Generates a select editable property with the values provided. This currently does not support an udpate handler
@@ -283,36 +340,31 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 		options: string[] | KeyValueOption[] | undefined,
 		name: string,
 		selected: string | undefined,
-		property: keyof PATCHEventsIdBody,
-	) => (
+		property: keyof PATCHEventsIdBody
+	) =>
 		options ? (
 			<EditableProperty
-				name={ name }
-				config={ {
+				name={name}
+				config={{
 					options,
 					type: 'select',
 					// TODO: dangerous?
-					onChange: (x: string | KeyValueOption) => this.changeProperty(property)(
-						typeof x === 'string' ? x : x.additional.id,
-					),
-				} }
+					onChange: (x: string | KeyValueOption) =>
+						this.changeProperty(property)(
+							typeof x === 'string' ? x : x.additional.id
+						),
+				}}
 			>
-				<div className="value">{ selected || 'Not set' }</div>
+				<div className="value">{selected || 'Not set'}</div>
 			</EditableProperty>
 		) : (
 			<div>
-				<div className="value">{ selected || 'Not set' }</div>
+				<div className="value">{selected || 'Not set'}</div>
 				<div className="loader">
-					<Loader
-						type="Grid"
-						color={ Theme.NOTICE }
-						width={ 20 }
-						height={ 20 }
-					/>
+					<Loader type="Grid" color={Theme.NOTICE} width={20} height={20} />
 				</div>
 			</div>
-		)
-	)
+		);
 
 	private groupSignups = () => {
 		if (this.state.signups === undefined) return {};
@@ -320,7 +372,12 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 		const result: { [key: string]: Signup[] } = {};
 
 		for (const signup of this.state.signups) {
-			if (Object.prototype.hasOwnProperty.call(result, signup.role ?? 'Unassigned')) {
+			if (
+				Object.prototype.hasOwnProperty.call(
+					result,
+					signup.role ?? 'Unassigned'
+				)
+			) {
 				result[signup.role ?? 'Unassigned'].push(signup);
 			} else {
 				result[signup.role ?? 'Unassigned'] = [signup];
@@ -328,22 +385,25 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 		}
 
 		return result;
-	}
+	};
 
 	private makeSignupComponent = (signupID: string, user: User) => (
-		<div key={ `signup.${ user.id }.${ signupID }` } className="signup">
-			<Link className="user" to={ `/users/${ user.id }` }>
+		<div key={`signup.${user.id}.${signupID}`} className="signup">
+			<Link className="user" to={`/users/${user.id}`}>
 				<div className="profile">
-					<img alt={ `Profile for ${ user.name }` } src={ user.profile ?? '/default-icon.png' }/>
+					<img
+						alt={`Profile for ${user.name}`}
+						src={user.profile ?? '/default-icon.png'}
+					/>
 				</div>
-				<div className="name">{ user.name }</div>
+				<div className="name">{user.name}</div>
 			</Link>
-			<div className="spacer"/>
-			{/* TODO: FIGURE OUT PERMISSIONS SO THIS IS NOT AVAILABLE TO EVERYONE */ }
+			<div className="spacer" />
+			{/* TODO: FIGURE OUT PERMISSIONS SO THIS IS NOT AVAILABLE TO EVERYONE */}
 			<div className="remove">
 				<FontAwesomeIcon
-					icon={ faTimes }
-					onClick={ () => this.removeSignup(signupID) }
+					icon={faTimes}
+					onClick={() => this.removeSignup(signupID)}
 				/>
 			</div>
 		</div>
@@ -357,7 +417,8 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 				.events()
 				.id(this.state.event.id)
 				.comments()
-				.commentID(comment)[type === 'resolve' ? 'resolve' : 'attention']()
+				.commentID(comment)
+				[type === 'resolve' ? 'resolve' : 'attention']()
 				.post()
 				.then(() => {
 					if (this.state.comments) {
@@ -377,44 +438,48 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 					if (this.props.notificationContext) {
 						this.props.notificationContext.showNotification(
 							'Could not resolve comment',
-							`Failed to resolve comment due to an error! ${ e.message }`,
+							`Failed to resolve comment due to an error! ${e.message}`,
 							faSkullCrossbones,
-							Theme.FAILURE,
+							Theme.FAILURE
 						);
 					}
-				})
-		}
-	}
+				});
+		};
+	};
 
 	private sendComment = (comment: string, topicID: string) => {
-		console.log('Send comment was called')
+		console.log('Send comment was called');
 		if (this.state.event === undefined) return;
 
-		console.log('Event was not undefined')
-		UIUtilities.load(this.props, apiInstance.events().id(this.state.event.id).comments().post({
-			body: comment,
-			topic: topicID,
-			// TODO: move ot actual UI
-			requiresAttention: false,
-		}), (e) => {
-			console.log('Error handler called');
-			return `Failed to post your comment! ${ e }`;
-		})
-			.data((id) => {
-		console.log('Data received')
-				if (id.length !== 1 || typeof (id[0]) !== 'string') {
-					UIUtilities.tryShowNotification(
-						this.props.notificationContext,
-						'Failed to save',
-						`Received an error response: ID was not returned`,
-						faNetworkWired,
-						Theme.FAILURE,
-					);
-				}
+		console.log('Event was not undefined');
+		UIUtilities.load(
+			this.props,
+			apiInstance.events().id(this.state.event.id).comments().post({
+				body: comment,
+				topic: topicID,
+				// TODO: move ot actual UI
+				requiresAttention: false,
+			}),
+			(e) => {
+				console.log('Error handler called');
+				return `Failed to post your comment! ${e}`;
+			}
+		).data((id) => {
+			console.log('Data received');
+			if (id.length !== 1 || typeof id[0] !== 'string') {
+				UIUtilities.tryShowNotification(
+					this.props.notificationContext,
+					'Failed to save',
+					`Received an error response: ID was not returned`,
+					faNetworkWired,
+					Theme.FAILURE
+				);
+			}
 
-				this.setState((old) => ({
-					...old,
-					comments: [{
+			this.setState((old) => ({
+				...old,
+				comments: [
+					{
 						id: id[0] as string,
 						body: comment,
 						posted: new Date().getTime() / 1000,
@@ -425,10 +490,12 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 						assetID: this.props.id,
 						assetType: 'event',
 						attendedDate: undefined,
-					}, ...(old.comments ?? [])],
-				}));
-			});
-	}
+					},
+					...(old.comments ?? []),
+				],
+			}));
+		});
+	};
 
 	private changeProperty(property: keyof PATCHEventsIdBody) {
 		return (e: any) => {
@@ -443,13 +510,15 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 	private renderSignups = () => {
 		const grouped = this.groupSignups();
 
-		return Object.entries(grouped).map(
-			(([name, signups]) => ([
-				(<div key={ `role.${ name }` } className="role">{ name }</div>),
+		return Object.entries(grouped)
+			.map(([name, signups]) => [
+				<div key={`role.${name}`} className="role">
+					{name}
+				</div>,
 				...signups.map((e) => this.makeSignupComponent(e.id, e.user)),
-			])),
-		).flat();
-	}
+			])
+			.flat();
+	};
 
 	private editVenues = (action: 'add' | 'remove', ids: string[]) => {
 		if (this.state.event === undefined) return;
@@ -459,19 +528,29 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 		else edit.removeVenues = ids;
 
 		const replacement = { ...this.state.event };
-		if (action === 'remove') replacement.venues = replacement.venues.filter((e) => !ids.includes(e.id));
-		else replacement.venues = [...replacement.venues, ...(this.state.venues?.filter((e) => ids.includes(e.id)) ?? [])];
+		if (action === 'remove')
+			replacement.venues = replacement.venues.filter(
+				(e) => !ids.includes(e.id)
+			);
+		else
+			replacement.venues = [
+				...replacement.venues,
+				...(this.state.venues?.filter((e) => ids.includes(e.id)) ?? []),
+			];
 
-		UIUtilities.load(this.props, apiInstance.events().id(this.state.event.id).patch(edit), (e) => `Failed to update the event! ${ e }`)
-			.data((edit) => {
-				this.setState((oldState) => ({
-					...oldState,
-					event: replacement,
-				}));
+		UIUtilities.load(
+			this.props,
+			apiInstance.events().id(this.state.event.id).patch(edit),
+			(e) => `Failed to update the event! ${e}`
+		).data((edit) => {
+			this.setState((oldState) => ({
+				...oldState,
+				event: replacement,
+			}));
 
-				if (this.props.onChange) this.props.onChange(replacement);
-			});
-	}
+			if (this.props.onChange) this.props.onChange(replacement);
+		});
+	};
 
 	realRender() {
 		const venueIDs = this.state.event?.venues.map((e) => e.id) ?? [];
@@ -480,181 +559,184 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 				<div className="real">
 					<EditableProperty
 						name="name"
-						config={ {
+						config={{
 							value: this.state.event.name,
 							type: 'text',
-							onChange: (name: string) => this.patchEvent({
-								name,
-							}),
-						} }
+							onChange: (name: string) =>
+								this.patchEvent({
+									name,
+								}),
+						}}
 					>
-						<h1 style={ { display: 'inline-block' } }>{ this.state.event.name }</h1>
+						<h1 style={{ display: 'inline-block' }}>{this.state.event.name}</h1>
 					</EditableProperty>
 					<div className="properties-bar">
 						<div className="property creation">
 							<span className="label">Created</span>
 							<span className="value">
-                                <ReactTimeAgo date={ this.state.event.start * 1000 }/>
-                            </span>
+								<ReactTimeAgo date={this.state.event.start * 1000} />
+							</span>
 						</div>
 						<div className="property updates">
 							<span className="label">Updates</span>
 							<span className="value">
-                                { (this.state.comments ?? []).length + (this.state.changelog ?? []).length }
-                            </span>
+								{(this.state.comments ?? []).length +
+									(this.state.changelog ?? []).length}
+							</span>
 						</div>
 					</div>
-					{/* TODO: add file loading */ }
-					{
-						this.state.files
-							? (<FileList files={ this.state.files }/>)
-							: undefined
-					}
+					{/* TODO: add file loading */}
+					{this.state.files ? <FileList files={this.state.files} /> : undefined}
 					<Button
-						color={ Theme.GREEN }
+						color={Theme.GREEN}
 						text="Attach new file"
-						icon={ faFileCode }
+						icon={faFileCode}
 					/>
-					{
-						this.state.comments
-							? (
-								<CommentList
-									comments={ this.state.comments }
-									updates={ this.state.changelog }
-									topics={ this.state.topics ?? [] }
-									onCommentSent={ this.sendComment }
-									onCommentResolved={ this.markComment('resolve').bind(this) }
-									onCommentMarked={ this.markComment('mark').bind(this) }
-								/>
-							)
-							: undefined
-					}
+					{this.state.comments ? (
+						<CommentList
+							comments={this.state.comments}
+							updates={this.state.changelog}
+							topics={this.state.topics ?? []}
+							onCommentSent={this.sendComment}
+							onCommentResolved={this.markComment('resolve').bind(this)}
+							onCommentMarked={this.markComment('mark').bind(this)}
+						/>
+					) : undefined}
 				</div>
 				<div className="rightbar-real">
 					<div className="entry">
 						<div className="title">Venue</div>
 						<EditableProperty
 							name="Add New Venue"
-							config={ {
+							config={{
 								type: 'select',
 								options: (this.state.venues ?? [])
 									.filter((e) => !venueIDs.includes(e.id))
 									.map((e) => ({ text: e.name, value: e.id })),
-								onChange: (result) => typeof (result) === 'string' ? this.editVenues('add', [result])
-									: this.editVenues('add', [result.value]),
-							} }
+								onChange: (result) =>
+									typeof result === 'string'
+										? this.editVenues('add', [result])
+										: this.editVenues('add', [result.value]),
+							}}
 						>
-							{ (this.state.event.venues ?? []).map((e) =>
-								<RemovableVenueChip venue={ e } key={ e.id }
-													onRemove={ () => this.editVenues('remove', [e.id]) }/>,
-							) }
+							{(this.state.event.venues ?? []).map((e) => (
+								<RemovableVenueChip
+									venue={e}
+									key={e.id}
+									onRemove={() => this.editVenues('remove', [e.id])}
+								/>
+							))}
 						</EditableProperty>
 					</div>
 					<div className="entry">
 						<div className="title">Reservation</div>
 						<EditableProperty
 							name="Reserved"
-							config={ {
+							config={{
 								type: 'checkbox',
 								value: this.state.event.reserved ?? false,
 								onChange: this.changeProperty('reserved'),
-							} }
+							}}
 						>
-							{ this.state.event.reserved ? 'Space reserved' : 'Unreserved' }
+							{this.state.event.reserved ? 'Space reserved' : 'Unreserved'}
 						</EditableProperty>
 					</div>
 					<div className="entry">
 						<div className="title">Projected Attendance</div>
 						<EditableProperty
 							name="attendance"
-							config={ {
+							config={{
 								type: 'text',
 								onChange: this.changeProperty('attendance'),
 								fieldType: 'number',
 								value: this.state.event.attendance,
-							} }
+							}}
 						>
-							{ this.state.event.attendance }
+							{this.state.event.attendance}
 						</EditableProperty>
-						{
-							this.state.event.attendance > this.state.event.venues.map((e) => e.capacity).reduce((a, b) => a + b, 0)
-								? <i style={{color: Theme.RED}}>Warning: projected attendance exceeds the total listed capacity of these venues</i>
-								: undefined
-						}
+						{this.state.event.attendance >
+						this.state.event.venues
+							.map((e) => e.capacity)
+							.reduce((a, b) => a + b, 0) ? (
+							<i style={{ color: Theme.RED }}>
+								Warning: projected attendance exceeds the total listed capacity
+								of these venues
+							</i>
+						) : undefined}
 					</div>
 					<div className="entry">
 						<div className="title">Ents State</div>
-						{ this.generateEditableProperty(
+						{this.generateEditableProperty(
 							this.state.entsStates
 								? this.state.entsStates.map((e) => ({
-									text: e.name,
-									value: e.id,
-									additional: e,
-								}))
+										text: e.name,
+										value: e.id,
+										additional: e,
+								  }))
 								: undefined,
 							'Ents State',
-							this.state.event.ents
-								? this.state.event.ents.name
-								: undefined,
-							'ents',
-						) }
+							this.state.event.ents ? this.state.event.ents.name : undefined,
+							'ents'
+						)}
 					</div>
 					<div className="entry">
 						<div className="title">Building Status</div>
-						{ this.generateEditableProperty(
+						{this.generateEditableProperty(
 							this.state.buildingStates
 								? this.state.buildingStates.map((e) => ({
-									text: e.name,
-									value: e.id,
-									additional: e,
-								}))
+										text: e.name,
+										value: e.id,
+										additional: e,
+								  }))
 								: undefined,
 							'Building State',
-							this.state.event.state
-								? this.state.event.state.name
-								: undefined,
-							'state',
-						) }
+							this.state.event.state ? this.state.event.state.name : undefined,
+							'state'
+						)}
 					</div>
 					<div className="entry">
 						<div className="title">Timing</div>
 						<div className="value flow">
-							<div className="label">
-								Booking Start
-							</div>
+							<div className="label">Booking Start</div>
 							<div className="time">
 								<EditableProperty
 									name="Booking Start"
-									config={ {
+									config={{
 										type: 'date',
 										value: new Date(this.state.event.start * 1000),
 										onChange: this.changeStartTime,
-									} }
+									}}
 								>
-									{ moment.unix(this.state.event.start).format('dddd Do MMMM (YYYY), HH:mm') }
+									{moment
+										.unix(this.state.event.start)
+										.format('dddd Do MMMM (YYYY), HH:mm')}
 								</EditableProperty>
 							</div>
-							<div className="bar"/>
+							<div className="bar" />
 							<div className="duration">
-								{ moment.duration(
-									moment.unix(this.state.event.start).diff(moment.unix(this.state.event.end)),
-								).humanize() }
+								{moment
+									.duration(
+										moment
+											.unix(this.state.event.start)
+											.diff(moment.unix(this.state.event.end))
+									)
+									.humanize()}
 							</div>
-							<div className="bar"/>
-							<div className="label">
-								Booking End
-							</div>
+							<div className="bar" />
+							<div className="label">Booking End</div>
 
 							<div className="time">
 								<EditableProperty
 									name="Booking End"
-									config={ {
+									config={{
 										type: 'date',
 										value: new Date(this.state.event.end * 1000),
 										onChange: this.changeEndTime,
-									} }
+									}}
 								>
-									{ moment.unix(this.state.event.end).format('dddd Do MMMM (YYYY), HH:mm') }
+									{moment
+										.unix(this.state.event.end)
+										.format('dddd Do MMMM (YYYY), HH:mm')}
 								</EditableProperty>
 							</div>
 						</div>
@@ -662,14 +744,12 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 
 					<div className="entry">
 						<div className="title">Signups</div>
-						<div className="signup-list">
-							{ this.renderSignups() }
-						</div>
+						<div className="signup-list">{this.renderSignups()}</div>
 						<div className="title">Join</div>
 						<Select
 							placeholder="Role"
 							name="role"
-							options={ [
+							options={[
 								'Lighting (LX)',
 								'Sound (S)',
 								'Video / Projections (V)',
@@ -679,41 +759,44 @@ class Event extends FallibleReactComponent<SimpleEventProps, EventStateType> {
 								'Operator (OP)',
 								'Shadow',
 								'Other',
-							] }
-							initialOption={ this.state.chosenRole }
-							onSelectListener={ this.changeSelectedRole }
+							]}
+							initialOption={this.state.chosenRole}
+							onSelectListener={this.changeSelectedRole}
 						/>
 						<Button
-							color={ Theme.PURPLE_LIGHT }
-							onClick={ this.signup }
+							color={Theme.PURPLE_LIGHT}
+							onClick={this.signup}
 							text="Signup"
 						/>
 					</div>
 				</div>
-				<div className="rightbar-spacer"/>
+				<div className="rightbar-spacer" />
 			</div>
 		) : (
 			<div className="event-view loading-pane">
 				<Loader
 					type="BallTriangle"
-					color={ Theme.NOTICE }
-					width={ 100 }
-					height={ 100 }
+					color={Theme.NOTICE}
+					width={100}
+					height={100}
 				/>
 			</div>
 		);
 	}
-
 }
 
-const RouteredEvent: FunctionComponent<EventPropsType> = ({ match, notificationContext, onChange }) => {
+const RouteredEvent: FunctionComponent<EventPropsType> = ({
+	match,
+	notificationContext,
+	onChange,
+}) => {
 	const copy: SimpleEventProps = {
 		id: match.params.id,
 		notificationContext,
 		onChange,
 	};
-	return (<Event { ...copy } />);
-}
+	return <Event {...copy} />;
+};
 
 /**
  * Bind the event page with the router so we can access the ID if the path

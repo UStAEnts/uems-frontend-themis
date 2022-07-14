@@ -2,7 +2,6 @@ import React from 'react';
 
 import './EventUpdate.scss';
 
-
 // export type EventUpdateProps = {
 //     update: EventPropertyChangeResponse,
 // };
@@ -137,7 +136,5 @@ import './EventUpdate.scss';
 
 // TODO: implement this
 export const EventUpdate: React.FunctionComponent<any> = () => (
-    <div className="event-update">
-        This has gone missing :(
-    </div>
-)
+	<div className="event-update">This has gone missing :(</div>
+);

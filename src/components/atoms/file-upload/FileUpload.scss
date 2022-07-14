@@ -1,28 +1,28 @@
 .file-upload {
-  .dropzone {
-    height: 8pc;
-    border: 4px dashed gainsboro;
-    border-radius: 7px;
+	.dropzone {
+		height: 8pc;
+		border: 4px dashed gainsboro;
+		border-radius: 7px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
-    font-family: 'MuseoModerno', cursive;
-    color: #8b8b8b;
+		font-family: 'MuseoModerno', cursive;
+		color: #8b8b8b;
 
-    &.hovering {
-      color: #01a3a4;
-      border-color: #01a3a4;
-    }
+		&.hovering {
+			color: #01a3a4;
+			border-color: #01a3a4;
+		}
 
-    &.chosen {
-      color: #1dd1a1;
-      border-color: #1dd1a1;
-    }
-  }
+		&.chosen {
+			color: #1dd1a1;
+			border-color: #1dd1a1;
+		}
+	}
 
-  input {
-    margin-top: 10px;
-  }
+	input {
+		margin-top: 10px;
+	}
 }

@@ -1,154 +1,153 @@
 $rightbarWidth: 15%;
 $rightbarMinWidth: 14pc;
 
-@import "../../../../node_modules/include-media/dist/include-media";
+@import '../../../../node_modules/include-media/dist/include-media';
 
 .event-view {
-  &.loading-pane {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+	&.loading-pane {
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
-  &.loaded {
-    display: flex;
-    flex-direction: row;
+	&.loaded {
+		display: flex;
+		flex-direction: row;
 
+		@include media('<=1400px') {
+			.real {
+				padding: 0 0 0 30px !important;
+			}
+		}
 
-    @include media('<=1400px') {
-      .real {
-        padding: 0 0 0 30px !important;
-      }
-    }
+		.real {
+			padding: 0 10%;
+			flex-grow: 1;
+		}
 
-    .real {
-      padding: 0 10%;
-      flex-grow: 1;
-    }
+		.rightbar-spacer {
+			flex-basis: $rightbarWidth;
+			min-width: $rightbarMinWidth;
+			flex-grow: 0;
+			flex-shrink: 0;
+			padding: 20px;
+		}
 
-    .rightbar-spacer {
-      flex-basis: $rightbarWidth;
-      min-width: $rightbarMinWidth;
-      flex-grow: 0;
-      flex-shrink: 0;
-      padding: 20px;
-    }
+		.rightbar-real {
+			background: #f6f6f6;
+			border-left: 1px solid gainsboro;
 
-    .rightbar-real {
-      background: #f6f6f6;
-      border-left: 1px solid gainsboro;
+			position: fixed;
+			top: 0;
+			right: 0;
+			width: $rightbarWidth;
+			min-width: $rightbarMinWidth;
+			height: 100vh;
+			z-index: 50;
+			padding: 20px;
+			box-sizing: border-box;
 
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: $rightbarWidth;
-      min-width: $rightbarMinWidth;
-      height: 100vh;
-      z-index: 50;
-      padding: 20px;
-      box-sizing: border-box;
+			overflow-y: auto;
 
-      overflow-y: auto;
+			.entry {
+				margin-bottom: 15px;
+				padding-bottom: 15px;
+				border-bottom: 1px solid gainsboro;
 
-      .entry {
-        margin-bottom: 15px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid gainsboro;
+				.title {
+					font-family: 'MuseoModerno', cursive;
+				}
 
-        .title {
-          font-family: "MuseoModerno", cursive;
-        }
+				.loader {
+					margin-top: 7px;
+					margin-left: 7px;
+				}
 
-        .loader {
-          margin-top: 7px;
-          margin-left: 7px;
-        }
+				.flow {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					text-align: center;
 
-        .flow {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
+					.bar {
+						width: 1px;
+						flex-grow: 0;
+						flex-shrink: 0;
+						background: gainsboro;
+						height: 10px;
+					}
 
-          .bar {
-            width: 1px;
-            flex-grow: 0;
-            flex-shrink: 0;
-            background: gainsboro;
-            height: 10px;
-          }
+					.time,
+					.label,
+					.duration {
+						padding: 5px;
+						box-sizing: border-box;
 
-          .time, .label, .duration {
-            padding: 5px;
-            box-sizing: border-box;
+						&.duration {
+							font-style: italic;
+						}
 
-            &.duration {
-              font-style: italic;
-            }
+						&.label {
+							border-radius: 100px;
+							font-weight: 500;
+						}
+					}
+				}
+			}
 
-            &.label {
-              border-radius: 100px;
-              font-weight: 500;
-            }
-          }
-        }
+			.signup-list {
+				& ~ .button {
+					margin-top: 30px;
+				}
+				.role {
+					margin-top: 10px;
+				}
+				.signup {
+					display: flex;
+					align-items: center;
+					margin: 10px 10px 10px 20px;
 
-      }
+					.spacer {
+						flex-grow: 1;
+					}
 
-      .signup-list{
-        & ~ .button{
-          margin-top: 30px;
-        }
-        .role{
-          margin-top: 10px;
-        }
-        .signup{
-          display: flex;
-          align-items: center;
-          margin: 10px 10px 10px 20px;
+					.user {
+						display: flex;
+						flex-direction: row;
+						align-items: center;
 
-          .spacer{
-            flex-grow: 1;
-          }
+						.profile {
+							max-width: 40px;
+							margin-right: 10px;
 
-          .user{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
+							img {
+								width: 100%;
+								border-radius: 100px;
+								border: 3px solid white;
+							}
+						}
+					}
+				}
+			}
+		}
 
-            .profile{
-              max-width: 40px;
-              margin-right: 10px;
+		.properties-bar {
+			color: gray;
+			display: flex;
+			border-bottom: 1px solid gainsboro;
+			padding: 0 0 10px;
+			margin-bottom: 30px;
+			margin-top: -10px;
 
-              img{
-                width: 100%;
-                border-radius: 100px;
-                border: 3px solid white;
-              }
-            }
-          }
-        }
+			.property {
+				flex-grow: 1;
 
-      }
-    }
-
-    .properties-bar {
-      color: gray;
-      display: flex;
-      border-bottom: 1px solid gainsboro;
-      padding: 0 0 10px;
-      margin-bottom: 30px;
-      margin-top: -10px;
-
-      .property {
-        flex-grow: 1;
-
-        .label{
-          margin-right: 10px;
-          font-weight: bold;
-        }
-      }
-    }
-  }
+				.label {
+					margin-right: 10px;
+					font-weight: bold;
+				}
+			}
+		}
+	}
 }

@@ -7,34 +7,34 @@ import { ColorUtilities } from '../../../utilities/ColorUtilities';
 import './Button.scss';
 
 export type ButtonPropsType = {
-    /**
-     * The optional icon to be displayed to the left of the text on this button
-     */
-    icon?: IconDefinition,
-    /**
-     * The optional color code to be used for this button. Default prop provided
-     */
-    color: string,
-    /**
-     * The text to display for this button
-     */
-    text: string,
-    /**
-     * If the arrow on the right hand side of the text should be displayed in this button
-     */
-    includeArrow?: boolean,
-    /**
-     * If this button should span the full width of its container
-     */
-    fullWidth?: boolean,
-    /**
-     * Click listener
-     */
-    onClick?: () => void,
-    /**
-     * An optional name to apply to the button
-     */
-    name?: string;
+	/**
+	 * The optional icon to be displayed to the left of the text on this button
+	 */
+	icon?: IconDefinition;
+	/**
+	 * The optional color code to be used for this button. Default prop provided
+	 */
+	color: string;
+	/**
+	 * The text to display for this button
+	 */
+	text: string;
+	/**
+	 * If the arrow on the right hand side of the text should be displayed in this button
+	 */
+	includeArrow?: boolean;
+	/**
+	 * If this button should span the full width of its container
+	 */
+	fullWidth?: boolean;
+	/**
+	 * Click listener
+	 */
+	onClick?: () => void;
+	/**
+	 * An optional name to apply to the button
+	 */
+	name?: string;
 };
 
 /**
@@ -44,34 +44,39 @@ export type ButtonPropsType = {
  * @constructor
  */
 export function Button(props: ButtonPropsType) {
-    const arrow = props.includeArrow ? <FontAwesomeIcon className="arrow" icon={faArrowRight} /> : null;
-    const icon = props.icon === undefined
-        ? <i style={{ height: '1em' }} />
-        : <FontAwesomeIcon className="icon" icon={props.icon} fixedWidth />;
+	const arrow = props.includeArrow ? (
+		<FontAwesomeIcon className="arrow" icon={faArrowRight} />
+	) : null;
+	const icon =
+		props.icon === undefined ? (
+			<i style={{ height: '1em' }} />
+		) : (
+			<FontAwesomeIcon className="icon" icon={props.icon} fixedWidth />
+		);
 
-    const buttonStyle = {
-        backgroundColor: props.color,
-        color: ColorUtilities.determineForegroundColor(props.color),
-    } as React.CSSProperties;
+	const buttonStyle = {
+		backgroundColor: props.color,
+		color: ColorUtilities.determineForegroundColor(props.color),
+	} as React.CSSProperties;
 
-    return (
-        <button
-            className={`button ${props.fullWidth ? 'full-width' : ''}`}
-            type="button"
-            style={buttonStyle}
-            onClick={props.onClick}
-            name={props.name}
-            aria-label={props.name}
-        >
-            {icon}
-            <div className="text">{props.text}</div>
-            {arrow}
-        </button>
-    );
+	return (
+		<button
+			className={`button ${props.fullWidth ? 'full-width' : ''}`}
+			type="button"
+			style={buttonStyle}
+			onClick={props.onClick}
+			name={props.name}
+			aria-label={props.name}
+		>
+			{icon}
+			<div className="text">{props.text}</div>
+			{arrow}
+		</button>
+	);
 }
 
 Button.defaultProps = {
-    color: '#aeaeae',
-    includeArrow: false,
-    fullWidth: false,
+	color: '#aeaeae',
+	includeArrow: false,
+	fullWidth: false,
 } as Partial<ButtonPropsType>;
