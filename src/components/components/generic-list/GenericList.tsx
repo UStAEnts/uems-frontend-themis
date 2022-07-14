@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import { v4 } from 'uuid';
 import { IconBox } from '../../atoms/icon-box/IconBox';
@@ -23,7 +23,7 @@ export type GenericListPropsType<T> = {
 	dontPad?: boolean;
 	onClick?: (value: T) => void;
 	searchable?: (value: GenericRecord<T>) => (string | undefined)[];
-};
+} & RouteComponentProps<{}>;
 
 export type GenericListStateType = {
 	identifiers: string[];
@@ -232,7 +232,7 @@ export function genericRender<T extends Record<string, any>>(
 
 // @ts-ignore
 export const GenericList: React.ComponentClass<
-	GenericListPropsType,
+	GenericListPropsType<any>,
 	// @ts-ignore
 	GenericListStateType
 > = withRouter(GenericListClass);
