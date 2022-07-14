@@ -23,7 +23,7 @@
     "include-media": "^1.4.9",
     "javascript-time-ago": "^2.3.3",
     "markdown-to-jsx": "^6.11.4",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "passport": "^0.4.1",
     "passport-cookie": "^1.0.9",
     "passport-http-bearer": "^1.0.1",
