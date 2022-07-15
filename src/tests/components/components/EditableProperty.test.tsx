@@ -12,120 +12,113 @@ import { EditableProperty } from '../../../components/components/editable-proper
 // - clicking cancel reverts without calling callback
 
 describe('<EditableProperty />', () => {
+	describe('render', () => {
+		it('renders default property', () => {
+			const { queryByText } = render(
+				<EditableProperty
+					name="Property"
+					config={{
+						type: 'select',
+						options: [],
+					}}
+				>
+					<p>Some basic content</p>
+				</EditableProperty>
+			);
 
-    describe('render', () => {
+			expect(queryByText('Some basic content')).not.toBeNull();
+			expect(queryByText('Some basic content')).toBeVisible();
+		});
 
-        it('renders default property', () => {
-            const { queryByText } = render(
-                <EditableProperty
-                    name="Property"
-                    config={{
-                        type: 'select',
-                        options: [],
-                    }}
-                >
-                    <p>Some basic content</p>
-                </EditableProperty>,
-            );
+		it('renders an edit button', () => {
+			const { queryByText } = render(
+				<EditableProperty
+					name="Property"
+					config={{
+						type: 'select',
+						options: [],
+					}}
+				>
+					<p>Some basic content</p>
+				</EditableProperty>
+			);
 
-            expect(queryByText('Some basic content')).not.toBeNull();
-            expect(queryByText('Some basic content')).toBeVisible();
-        });
+			expect(queryByText(/(Edit\.\.\.)/gi)).not.toBeNull();
+			expect(queryByText(/(Edit\.\.\.)/gi)).toBeVisible();
+		});
+	});
 
-        it('renders an edit button', () => {
-            const { queryByText } = render(
-                <EditableProperty
-                    name="Property"
-                    config={{
-                        type: 'select',
-                        options: [],
-                    }}
-                >
-                    <p>Some basic content</p>
-                </EditableProperty>,
-            );
+	describe('functional', () => {
+		it('editing produces input field', () => {
+			const { queryByText, queryByRole, getByRole } = render(
+				<EditableProperty
+					name="Property"
+					config={{
+						type: 'select',
+						options: [],
+					}}
+				>
+					<p>Some basic content</p>
+				</EditableProperty>
+			);
 
-            expect(queryByText(/(Edit\.\.\.)/ig)).not.toBeNull();
-            expect(queryByText(/(Edit\.\.\.)/ig)).toBeVisible();
-        });
+			fireEvent.click(getByRole('button'));
+			expect(queryByRole('listbox')).not.toBeNull();
+			expect(queryByRole('listbox')).toBeVisible();
+			expect(queryByText(/(Edit\.\.\.)/gi)).toBeNull();
+		});
 
-    });
+		it('saving triggers callback and reverts state', () => {
+			const fn = jest.fn();
 
-    describe('functional', () => {
+			const { queryByText, queryByRole, getByRole, getByText } = render(
+				<EditableProperty
+					name="Property"
+					config={{
+						type: 'select',
+						options: ['option 1'],
+						onChange: fn,
+					}}
+				>
+					<p>Some basic content</p>
+				</EditableProperty>
+			);
 
-        it('editing produces input field', () => {
-            const { queryByText, queryByRole, getByRole } = render(
-                <EditableProperty
-                    name="Property"
-                    config={{
-                        type: 'select',
-                        options: [],
-                    }}
-                >
-                    <p>Some basic content</p>
-                </EditableProperty>,
-            );
+			fireEvent.click(getByRole('button'));
+			fireEvent.click(getByRole('button', { name: 'launch-menu' }));
+			fireEvent.click(getByText('option 1'));
+			fireEvent.click(getByText('Save'));
 
-            fireEvent.click(getByRole('button'));
-            expect(queryByRole('listbox')).not.toBeNull();
-            expect(queryByRole('listbox')).toBeVisible();
-            expect(queryByText(/(Edit\.\.\.)/ig)).toBeNull();
-        });
+			expect(queryByRole('listbox')).toBeNull();
+			expect(queryByText(/(Edit\.\.\.)/gi)).not.toBeNull();
 
-        it('saving triggers callback and reverts state', () => {
-            const fn = jest.fn();
+			expect(fn).toBeCalledTimes(1);
+			expect(fn).toBeCalledWith('option 1');
+		});
 
-            const { queryByText, queryByRole, getByRole, getByText } = render(
-                <EditableProperty
-                    name="Property"
-                    config={{
-                        type: 'select',
-                        options: ['option 1'],
-                        onChange: fn,
-                    }}
-                >
-                    <p>Some basic content</p>
-                </EditableProperty>,
-            );
+		it('cancelling does not trigger callback and reverts state', () => {
+			const fn = jest.fn();
 
-            fireEvent.click(getByRole('button'));
-            fireEvent.click(getByRole('button', { name: 'launch-menu' }));
-            fireEvent.click(getByText('option 1'));
-            fireEvent.click(getByText('Save'));
+			const { queryByText, queryByRole, getByRole, getByText } = render(
+				<EditableProperty
+					name="Property"
+					config={{
+						type: 'select',
+						options: ['option 1'],
+						onChange: fn,
+					}}
+				>
+					<p>Some basic content</p>
+				</EditableProperty>
+			);
 
-            expect(queryByRole('listbox')).toBeNull();
-            expect(queryByText(/(Edit\.\.\.)/ig)).not.toBeNull();
+			fireEvent.click(getByRole('button'));
+			fireEvent.click(getByText('Cancel'));
 
-            expect(fn).toBeCalledTimes(1);
-            expect(fn).toBeCalledWith('option 1');
-        });
+			expect(queryByRole('listbox')).toBeNull();
+			expect(queryByText(/(Edit\.\.\.)/gi)).not.toBeNull();
 
-        it('cancelling does not trigger callback and reverts state', () => {
-
-            const fn = jest.fn();
-
-            const { queryByText, queryByRole, getByRole, getByText } = render(
-                <EditableProperty
-                    name="Property"
-                    config={{
-                        type: 'select',
-                        options: ['option 1'],
-                        onChange: fn,
-                    }}
-                >
-                    <p>Some basic content</p>
-                </EditableProperty>,
-            );
-
-            fireEvent.click(getByRole('button'));
-            fireEvent.click(getByText('Cancel'));
-
-            expect(queryByRole('listbox')).toBeNull();
-            expect(queryByText(/(Edit\.\.\.)/ig)).not.toBeNull();
-
-            expect(fn).not.toBeCalled();
-        });
-
-    });
-
+			expect(fn).not.toBeCalled();
+		});
+	});
 });

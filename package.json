@@ -34,10 +34,10 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^16.13.1",
     "react-flatpickr": "^3.10.1",
+    "react-flow-renderer": "^10.3.8",
     "react-loader-spinner": "^3.1.14",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
     "react-time-ago": "^6.0.0",
     "react-tooltip": "^4.2.7",
     "react-transition-group": "^4.4.1",
@@ -51,16 +51,17 @@
   "scripts": {
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .ts,.tsx src/",
-    "build": "REACT_APP_STAGE=development react-scripts build",
+    "lint": "prettier --check src/",
+    "lint:fix": "prettier --write src/",
+    "build": "DISABLE_ESLINT_PLUGIN=true REACT_APP_STAGE=development react-scripts build",
     "build:docker": "REACT_APP_STAGE=docker react-scripts build",
     "build:production": "REACT_APP_STAGE=production react-scripts build",
-    "start": "REACT_APP_STAGE=development react-scripts start",
+    "start": "DISABLE_ESLINT_PLUGIN=true REACT_APP_STAGE=development react-scripts start",
     "start:docker": "REACT_APP_STAGE=docker react-scripts start",
     "start:production": "REACT_APP_STAGE=production react-scripts start"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "prettier"
   },
   "browserslist": {
     "production": [
@@ -101,10 +102,17 @@
     "@typescript-eslint/parser": "^3.4.0",
     "axios-mock-adapter": "^1.18.2",
     "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jsx-a11y": "^6.3.1",
-    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react": "7.27.1",
     "eslint-plugin-react-hooks": "^4.0.4",
-    "history": "^5.0.0"
-  }
+    "history": "^5.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "prettier": "2.7.1",
+    "react-scripts": "^5.0.1",
+    "ts-node": "^10.8.2"
+  },
+  "proxy": "http://localhost:15450/"
 }

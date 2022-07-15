@@ -1,50 +1,52 @@
 import * as React from 'react';
 import Loader from 'react-loader-spinner';
-import {TabPane} from '../../../components/components/tab-pane/TabPane';
-import {EventTable} from '../../../components/components/event-table/EventTable';
-import {Theme} from '../../../theme/Theme';
+import { TabPane } from '../../../components/components/tab-pane/TabPane';
+import { EventTable } from '../../../components/components/event-table/EventTable';
+import { Theme } from '../../../theme/Theme';
 
 import './Events.scss';
-import {API, EventResponse} from '../../../utilities/APIGen';
 import {
-    FallibleReactComponent,
-    FallibleReactStateType
-} from "../../../components/components/error-screen/FallibleReactComponent";
-import {UIUtilities} from "../../../utilities/UIUtilities";
-import {withNotificationContext} from "../../../components/WithNotificationContext";
-import {NotificationPropsType} from "../../../context/NotificationContext";
-import {CalendarRedo} from "../../../components/atoms/calendar/Calendar";
-import moment, {Moment} from "moment";
+	FallibleReactComponent,
+	FallibleReactStateType,
+} from '../../../components/components/error-screen/FallibleReactComponent';
+import { loadAPIData } from '../../../utilities/DataUtilities';
+import { UIUtilities } from '../../../utilities/UIUtilities';
+import { withNotificationContext } from '../../../components/WithNotificationContext';
+import { NotificationPropsType } from '../../../context/NotificationContext';
+import { CalendarRedo } from '../../../components/atoms/calendar/Calendar';
+import moment, { Moment } from 'moment';
+import apiInstance, { EventList } from '../../../utilities/APIPackageGen';
 import {Filter, FilterConfiguration} from "../../../components/components/filter/Filter";
 
 export type CalendarPropsType = {} & NotificationPropsType;
 
 export type CalendarStateType = {
-    /**
-     * The list of events loaded from the gateway
-     */
-    calendarEvents?: EventResponse[],
-    tableEvents?: EventResponse[],
-    start: Moment,
-    end: Moment,
-    selected?: string,
+	/**
+	 * The list of events loaded from the gateway
+	 */
+    calendarEvents?: EventList;
+	tableEvents?: EventList;
+	start: Moment;
+	end: Moment;
+	selected?: string;
 
-    calendarFilters: Record<string, FilterConfiguration>,
-    tableFilters: Record<string, FilterConfiguration>,
+    calendarFilters: Record<string, FilterConfiguration>;
+    tableFilters: Record<string, FilterConfiguration>;
 } & FallibleReactStateType;
 
+class EventsClass extends FallibleReactComponent<
+	CalendarPropsType,
+	CalendarStateType
+> {
+	static displayName = 'Calendar';
 
-class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStateType> {
-
-    static displayName = 'Calendar';
-
-    constructor(props: Readonly<CalendarPropsType>) {
-        super(props);
+	constructor(props: Readonly<CalendarPropsType>) {
+		super(props);
 
         const start = moment().startOf('week').subtract('1', 'minute');
         const end = moment().startOf('week').add('7', 'days').subtract('1', 'minute');
 
-        this.state = {
+		this.state = {
             start,
             end,
             tableFilters: {
@@ -58,34 +60,33 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
                 },
             },
             calendarFilters: {},
-        };
-    }
+		};
+	}
 
-    componentDidMount() {
-        this.setState((s) => ({...s, loading: true}), () => {
-            API.events.get(new URLSearchParams({
-                startafter: String(this.state.start.unix()),
-                startbefore: String(this.state.end.unix()),
-            })).then((data) => {
-                if (data.status === 'PARTIAL') UIUtilities.tryShowPartialWarning(this);
+	componentDidMount() {
+		this.setState(
+			(s) => ({ ...s, loading: true }),
+			() => {
+				UIUtilities.load(
+					this.props,
+					apiInstance.events().get({
+						startBefore: this.state.end.unix(),
+						startAfter: this.state.start.unix(),
+					})
+				).data((data) => {
+					this.setState((s) => ({
+						...s,
+						loading: false,
+						calendarEvents: data,
+						tableEvents: data,
+					}));
+				});
+			}
+		);
+	}
 
-                this.setState((s) => ({
-                    ...s,
-                    loading: false,
-                    calendarEvents: data.result,
-                    tableEvents: data.result,
-                }));
-            }).catch((err) => {
-                this.setState((s) => ({
-                    ...s,
-                    loading: false,
-                    error: `Failed to load events: ${err.message}`,
-                }));
-            });
-        });
-    }
 
-    private fitersToQuery(filters: Record<string, FilterConfiguration>): URLSearchParams {
+    private filtersToQuery(filters: Record<string, FilterConfiguration>): URLSearchParams {
         console.log(filters);
         const params = new URLSearchParams();
 
@@ -132,61 +133,44 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
         return params;
     }
 
-    private updateCalendar() {
+    private updateCalendar(){
 
     }
 
-    private updateTable() {
-        this.fitersToQuery(this.state.tableFilters);
+    private updateTable(){
+        this.filtersToQuery(this.state.tableFilters);
     }
 
-    /**
-     * Load the events from the API endpoint and update the state with the properties or populate the error state
-     */
-    private loadComments() {
-        // loadAPIData<CalendarStateType>([{
-        //     call: API.events.get,
-        //     stateName: 'events',
-        //     params: [
-        //         ,
-        //     ],
-        // }], this.setState.bind(this), () => UIUtilities.tryShowPartialWarning(this));
-    }
+	realRender() {
+		const loadOrError = this.state.error ? (
+			<div>{this.state.error}</div>
+		) : (
+			<div className="loading-pane">
+				<Loader
+					type="BallTriangle"
+					color={Theme.NOTICE}
+					height={100}
+					width={100}
+				/>
+			</div>
+		);
 
-    realRender() {
-
-        const loadOrError = this.state.error
-            ? (
-                <div>
-                    {this.state.error}
-                </div>
-            )
-            : (
-                <div className="loading-pane">
-                    <Loader
-                        type="BallTriangle"
-                        color={Theme.NOTICE}
-                        height={100}
-                        width={100}
-                    />
-                </div>
-            );
-
-        return (
-            <div
-                style={{
-                    padding: '20px',
-                }}
-                className="events-page"
-            >
-                <TabPane
-                    style={{flexGrow: 1}}
-                    listeners={{
-                        onTabChange: (_, pane) => this.setState((s) => ({...s, selected: pane.key})),
-                    }}
-                    panes={[
-                        {
-                            key: 'calendar',
+		return (
+			<div
+				style={{
+					padding: '20px',
+				}}
+				className="events-page"
+			>
+				<TabPane
+					style={{ flexGrow: 1 }}
+					listeners={{
+						onTabChange: (_, pane) =>
+							this.setState((s) => ({ ...s, selected: pane.key })),
+					}}
+					panes={[
+						{
+							key: 'calendar',
                             content: (
                                 this.state.calendarEvents
                                     ? <>
@@ -195,41 +179,48 @@ class EventsClass extends FallibleReactComponent<CalendarPropsType, CalendarStat
                                             events={this.state.calendarEvents}
                                             days={7}
                                             startDate={this.state.start.toDate()}
-                                            onDateChange={(st, en) => this.setState((s) => ({
+									onDateChange={(st, en) =>
+										this.setState(
+											(s) => ({
                                                 ...s,
                                                 start: st,
                                                 end: en,
-                                            }), () => this.loadComments())}
+											}),
+											() => this.componentDidMount()
+										)
+									}
                                         />
                                     </>
                                     : loadOrError
-                            ),
-                            name: 'Calendar',
-                            initial: this.state.selected === 'calendar',
-                        },
-                        {
-                            name: 'Table',
-                            content: (
+							),
+							name: 'Calendar',
+							initial: this.state.selected === 'calendar',
+						},
+						{
+							name: 'Table',
+                            content:
                                 this.state.tableEvents
-                                    ? <EventTable
+                                    ? (<EventTable
                                         events={this.state.tableEvents}
                                         filters={this.state.tableFilters}
                                         onFiltersChange={(e) => this.setState((s) => ({
                                             ...s,
                                             tableFilters: e,
                                         }), () => this.updateTable())}
-                                    />
-                                    : loadOrError
-                            ),
-                            key: 'table',
-                            initial: this.state.selected ? this.state.selected === 'table' : true,
-                        },
-                    ]}
-                />
-            </div>
-        );
-    }
-
+								/>
+							) : (
+								loadOrError
+							),
+							key: 'table',
+							initial: this.state.selected
+								? this.state.selected === 'table'
+								: true,
+						},
+					]}
+				/>
+			</div>
+		);
+	}
 }
 
 export const Events = withNotificationContext(EventsClass);

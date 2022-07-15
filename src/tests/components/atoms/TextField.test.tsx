@@ -13,78 +13,82 @@ import { cleanDOMTest } from '../../TestUtils';
 // - onchange listener is executed
 
 describe('<TextField />', () => {
+	describe('rendering', () => {
+		it('noLabel property hides label', () => {
+			let { queryByText } = render(<TextField name="something" noLabel />);
+			expect(queryByText(/something/gi)).toBeNull();
 
-    describe('rendering', () => {
+			queryByText = render(<TextField name="something" />).queryByText;
+			expect(queryByText(/something/gi)).not.toBeNull();
+		});
 
-        it('noLabel property hides label', () => {
-            let { queryByText } = render(<TextField name="something" noLabel />);
-            expect(queryByText(/something/ig)).toBeNull();
+		it('required property adds required string', async () => {
+			await cleanDOMTest(() => {
+				const { queryByText } = render(<TextField name="something" />);
+				expect(queryByText(/required/gi)).toBeNull();
+			});
 
-            queryByText = render(<TextField name="something" />).queryByText;
-            expect(queryByText(/something/ig)).not.toBeNull();
-        });
+			await cleanDOMTest(() => {
+				const { queryByText } = render(<TextField name="something" required />);
+				expect(queryByText(/required/gi)).not.toBeNull();
+				expect(queryByText(/required/gi)).toBeVisible();
+			});
 
-        it('required property adds required string', async () => {
-            await cleanDOMTest(() => {
-                const { queryByText } = render(<TextField name="something" />);
-                expect(queryByText(/required/ig)).toBeNull();
-            });
+			await cleanDOMTest(() => {
+				const { queryByText } = render(
+					<TextField name="something" noLabel required />
+				);
+				expect(queryByText(/required/gi)).not.toBeNull();
+				expect(queryByText(/required/gi)).toBeVisible();
+			});
+		});
 
-            await cleanDOMTest(() => {
-                const { queryByText } = render(<TextField name="something" required />);
-                expect(queryByText(/required/ig)).not.toBeNull();
-                expect(queryByText(/required/ig)).toBeVisible();
-            });
+		it('type property renders correct element', async () => {
+			await cleanDOMTest(() => {
+				const { getByRole } = render(<TextField name="something" />);
 
-            await cleanDOMTest(() => {
-                const { queryByText } = render(<TextField name="something" noLabel required />);
-                expect(queryByText(/required/ig)).not.toBeNull();
-                expect(queryByText(/required/ig)).toBeVisible();
-            });
-        });
+				expect(getByRole('textbox').tagName).toEqual('INPUT');
+			});
 
-        it('type property renders correct element', async () => {
-            await cleanDOMTest(() => {
-                const { getByRole } = render(<TextField name="something" />);
+			await cleanDOMTest(() => {
+				const { getByRole } = render(
+					<TextField name="something" type="textarea" />
+				);
 
-                expect(getByRole('textbox').tagName).toEqual('INPUT');
-            });
+				expect(getByRole('textbox').tagName).toEqual('TEXTAREA');
+			});
+		});
 
-            await cleanDOMTest(() => {
-                const { getByRole } = render(<TextField name="something" type="textarea" />);
+		it('initialContent property populates filed', async () => {
+			await cleanDOMTest(() => {
+				const { getByRole } = render(<TextField name="something" />);
+				// @ts-ignore - see below
+				expect(getByRole('textbox').value).toEqual('');
+			});
+			await cleanDOMTest(() => {
+				const { getByRole } = render(
+					<TextField name="something" initialContent="some content" />
+				);
+				// @ts-ignore - value does exist but only on input nodes
+				expect(getByRole('textbox').value).toEqual('some content');
+			});
+		});
+	});
 
-                expect(getByRole('textbox').tagName).toEqual('TEXTAREA');
-            });
-        });
+	describe('functionality', () => {
+		it('onChange property is executed on update', () => {
+			const fn = jest.fn();
 
-        it('initialContent property populates filed', async () => {
-            await cleanDOMTest(() => {
-                const { getByRole } = render(<TextField name="something" />);
-                // @ts-ignore - see below
-                expect(getByRole('textbox').value).toEqual('');
-            });
-            await cleanDOMTest(() => {
-                const { getByRole } = render(<TextField name="something" initialContent="some content" />);
-                // @ts-ignore - value does exist but only on input nodes
-                expect(getByRole('textbox').value).toEqual('some content');
-            });
-        });
+			const { getByRole } = render(
+				<TextField name="something" onChange={fn} />
+			);
+			fireEvent.input(getByRole('textbox'), { target: { value: 'a' } });
+			expect(fn).toBeCalledWith('a');
 
-    });
-
-    describe('functionality', () => {
-
-        it('onChange property is executed on update', () => {
-            const fn = jest.fn();
-
-            const { getByRole } = render(<TextField name="something" onChange={fn} />);
-            fireEvent.input(getByRole('textbox'), { target: { value: 'a' } });
-            expect(fn).toBeCalledWith('a');
-
-            fireEvent.input(getByRole('textbox'), { target: { value: 'some content' } });
-            expect(fn).toBeCalledWith('some content');
-        });
-
-    });
-
+			fireEvent.input(getByRole('textbox'), {
+				target: { value: 'some content' },
+			});
+			expect(fn).toBeCalledWith('some content');
+		});
+	});
 });

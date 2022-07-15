@@ -1,55 +1,55 @@
 $borderStyle: 1px solid #efefef;
 
 .calendar {
-  .hour-sequence {
-    overflow-y: auto;
-    max-height: 60pc;
-  }
+	.hour-sequence {
+		overflow-y: auto;
+		max-height: 60pc;
+	}
 
-  .c-row {
-    display: flex;
-    flex-direction: row;
+	.c-row {
+		display: flex;
+		flex-direction: row;
 
-    .hour-label, .head-entry.blank {
-      flex-basis: 80px !important;
-      min-width: 0;
-    }
+		.hour-label,
+		.head-entry.blank {
+			flex-basis: 80px !important;
+			min-width: 0;
+		}
 
-    .hour-label{
-      font-family: 'MuseoModerno', cursive;
-      text-align: right;
-      padding-right: 30px;
-      border-bottom: $borderStyle;
-    }
+		.hour-label {
+			font-family: 'MuseoModerno', cursive;
+			text-align: right;
+			padding-right: 30px;
+			border-bottom: $borderStyle;
+		}
 
-    > div {
-      min-width: 130px;
-      width: 12.5%;
-      flex-grow: 0;
-    }
-  }
+		> div {
+			min-width: 130px;
+			width: 12.5%;
+			flex-grow: 0;
+		}
+	}
 
-  .hour-entry {
-    min-height: 30px;
+	.hour-entry {
+		min-height: 30px;
 
-    border-right: $borderStyle;
-    border-bottom: $borderStyle;
+		border-right: $borderStyle;
+		border-bottom: $borderStyle;
 
-    .month {
-      font-weight: bold;
-      font-size: 1.2em;
-    }
+		.month {
+			font-weight: bold;
+			font-size: 1.2em;
+		}
 
-    .weekday {
-      padding-bottom: 10px;
-      font-size: 0.7em;
-    }
+		.weekday {
+			padding-bottom: 10px;
+			font-size: 0.7em;
+		}
 
-    .date {
-      font-family: 'MuseoModerno', cursive;
-      font-weight: bold;
-      font-size: x-large;
-    }
-
-  }
+		.date {
+			font-family: 'MuseoModerno', cursive;
+			font-weight: bold;
+			font-size: x-large;
+		}
+	}
 }

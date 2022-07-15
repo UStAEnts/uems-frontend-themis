@@ -1,43 +1,43 @@
-.button{
-  display: inline-flex;
-  padding: 12px 20px;
-  border-radius: 100px;
-  align-items: center;
-  box-shadow: 2px 2px 8px -4px #d9d9d9;
-  cursor: pointer;
-  border: none;
-  background-color: #2196f3;
-  justify-content: center;
-  margin: 10px 10px 0;
+.button {
+	display: inline-flex;
+	padding: 12px 20px;
+	border-radius: 100px;
+	align-items: center;
+	box-shadow: 2px 2px 8px -4px #d9d9d9;
+	cursor: pointer;
+	border: none;
+	background-color: #2196f3;
+	justify-content: center;
+	margin: 10px 10px 0;
 
-  filter: brightness(100%);
-  background-position: center;
-  transition: filter 1s;
+	filter: brightness(100%);
+	background-position: center;
+	transition: filter 1s;
 
-  &:focus{
-    outline: none;
-    border: none;
-  }
+	&:focus {
+		outline: none;
+		border: none;
+	}
 
-  &:active {
-    filter: brightness(120%);
-    background-size: 100%;
-    transition: filter 0s;
-  }
+	&:active {
+		filter: brightness(120%);
+		background-size: 100%;
+		transition: filter 0s;
+	}
 
-  .arrow{
-    margin-left: 10px;
-  }
+	.arrow {
+		margin-left: 10px;
+	}
 
-  .icon{
-    margin-right: 10px;
-  }
+	.icon {
+		margin-right: 10px;
+	}
 
-  &.full-width{
-    width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 0;
-    margin-right: 0;
-  }
+	&.full-width {
+		width: 100%;
+		padding-left: 0;
+		padding-right: 0;
+		margin-left: 0;
+		margin-right: 0;
+	}
 }

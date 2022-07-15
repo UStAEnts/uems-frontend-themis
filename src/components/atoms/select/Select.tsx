@@ -6,58 +6,58 @@ import './Select.scss';
 import styles from '../text-field/TextField.module.scss';
 import {classes} from "../../../utilities/UIUtilities";
 
-export type KeyValueOption = { text: string, value: string, additional?: any };
+export type KeyValueOption = { text: string; value: string; additional?: any };
 
 export type KeyValueConfiguration = {
-    options: KeyValueOption[],
-    initialOption?: KeyValueOption|string,
-    onSelectListener?: (option: KeyValueOption) => void,
+    options: KeyValueOption[];
+    initialOption?: KeyValueOption|string;
+    onSelectListener?: (option: KeyValueOption) => void;
 };
 
 export type StringConfiguration = {
-    options: string[],
-    initialOption?: string,
-    onSelectListener?: (option: string) => void,
+	options: string[];
+	initialOption?: string;
+	onSelectListener?: (option: string) => void;
 };
 
 export type SelectPropsType = {
-    /**
-     * The placeholder value to display in this select when no value is selected
-     */
-    placeholder: string,
-    /**
-     * The name of this select to be set as the 'name' and 'id' on the actual input element
-     */
-    name: string,
-    /**
-     * The possible options in the select
-     */
-    options: string[] | KeyValueOption[],
-    // /**
-    //  * The initially selected option
-    //  */
-    // initialOption?: string | KeyValueOption
-    // /**
-    //  * Listener to be called when the option is changed
-    //  * @param option the option which is now selected
-    //  */
-    // onSelectListener?: (option: string | KeyValueOption) => void,
+	/**
+	 * The placeholder value to display in this select when no value is selected
+	 */
+	placeholder: string;
+	/**
+	 * The name of this select to be set as the 'name' and 'id' on the actual input element
+	 */
+	name: string;
+	/**
+	 * The possible options in the select
+	 */
+	options: string[] | KeyValueOption[];
+	// /**
+	//  * The initially selected option
+	//  */
+	// initialOption?: string | KeyValueOption
+	// /**
+	//  * Listener to be called when the option is changed
+	//  * @param option the option which is now selected
+	//  */
+	// onSelectListener?: (option: string | KeyValueOption) => void,
     style?: CSSProperties,
 } & (KeyValueConfiguration | StringConfiguration);
 
 export type SelectStateType = {
-    /**
-     * The currently selected element or undefined if it is currently displaying the placeholder
-     */
-    selected: string | KeyValueOption | undefined,
-    /**
-     * If the menu is currently open for this select
-     */
-    active: boolean,
-    /**
-     * UUID for prepending to keys
-     */
-    uuid: string,
+	/**
+	 * The currently selected element or undefined if it is currently displaying the placeholder
+	 */
+	selected: string | KeyValueOption | undefined;
+	/**
+	 * If the menu is currently open for this select
+	 */
+	active: boolean;
+	/**
+	 * UUID for prepending to keys
+	 */
+	uuid: string;
 };
 
 export const Select: React.FunctionComponent<SelectPropsType> = (props) => {

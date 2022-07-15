@@ -5,48 +5,43 @@ import { UIUtilities } from '../../../utilities/UIUtilities';
 import { ErrorScreen } from './ErrorScreen';
 
 export type FallibleReactStateType = {
-    error?: React.ReactNode,
-    loading?: boolean,
-}
+	error?: React.ReactNode;
+	loading?: boolean;
+};
 
-export abstract class FallibleReactComponent<Props extends any,
-    State extends FallibleReactStateType> extends React.Component<Props, State> {
+export abstract class FallibleReactComponent<
+	Props extends any,
+	State extends FallibleReactStateType
+> extends React.Component<Props, State> {
+	constructor(props: Readonly<Props>) {
+		super(props);
 
-    constructor(props: Readonly<Props>) {
-        super(props);
+		this.state = { loading: true } as Readonly<State>;
+	}
 
-        this.state = { loading: true } as Readonly<State>;
-    }
+	abstract realRender(): React.ReactNode;
 
-    abstract realRender(): React.ReactNode;
+	render() {
+		if (this.state.error) {
+			return <ErrorScreen error={this.state.error} />;
+		}
 
-    render() {
-        if (this.state.error) {
-            return (
-                <ErrorScreen error={this.state.error} />
-            );
-        }
+		if (this.state.loading) {
+			return (
+				<div
+					style={{
+						width: '100%',
+						height: '100%',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+				>
+					<Loader color={Theme.PINK} type={UIUtilities.randomLoaderType()} />
+				</div>
+			);
+		}
 
-        if (this.state.loading) {
-            return (
-                <div
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Loader
-                        color={Theme.PINK}
-                        type={UIUtilities.randomLoaderType()}
-                    />
-                </div>
-            );
-        }
-
-        return this.realRender();
-    }
-
+		return this.realRender();
+	}
 }

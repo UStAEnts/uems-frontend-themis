@@ -1,16 +1,15 @@
 .progress-bar {
-  height: 13px;
-  position: relative;
-  border-radius: 20px;
-  background: #e3efee;
-  margin: 10px;
+	height: 13px;
+	position: relative;
+	border-radius: 20px;
+	background: #e3efee;
+	margin: 10px;
 
-  .inner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    border-radius: 20px;
-  }
-
+	.inner {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		border-radius: 20px;
+	}
 }

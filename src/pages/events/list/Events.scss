@@ -1,56 +1,12 @@
-.events-page{
-  padding: 20px;
-  height: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+.events-page {
+	padding: 20px;
+	height: 100%;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
 
-  .loading-pane{
-    text-align: center;
-    margin-top: 7pc;
-  }
-
-  table {
-    border-collapse: collapse;
-
-    tr {
-      text-align: left;
-      cursor: pointer;
-
-      a{
-        text-decoration: none;
-        color: initial;
-      }
-
-      &:hover{
-        background: lighten(gainsboro, 8%);
-      }
-    }
-
-    td{
-      padding: 10px 0;
-      border-bottom: 1px solid gainsboro;
-
-    }
-
-    .name-column{
-      width: 28%;
-    }
-
-    .time-column{
-      width: 37%;
-    }
-
-    .icon-column{
-      width: 2%;
-    }
-
-    .venue-column{
-      width: 9%;
-    }
-
-    .status-column{
-      width: 8%;
-    }
-  }
+	.loading-pane {
+		text-align: center;
+		margin-top: 7pc;
+	}
 }
