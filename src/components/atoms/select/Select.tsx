@@ -33,6 +33,10 @@ export type SelectPropsType = {
 	 * The possible options in the select
 	 */
 	options: string[] | KeyValueOption[];
+	/**
+	 * If the select input should be disabled
+	 */
+	disabled?: boolean;
 	// /**
 	//  * The initially selected option
 	//  */
@@ -44,21 +48,6 @@ export type SelectPropsType = {
 	// onSelectListener?: (option: string | KeyValueOption) => void,
 	style?: CSSProperties;
 } & (KeyValueConfiguration | StringConfiguration);
-
-export type SelectStateType = {
-	/**
-	 * The currently selected element or undefined if it is currently displaying the placeholder
-	 */
-	selected: string | KeyValueOption | undefined;
-	/**
-	 * If the menu is currently open for this select
-	 */
-	active: boolean;
-	/**
-	 * UUID for prepending to keys
-	 */
-	uuid: string;
-};
 
 export const Select: React.FunctionComponent<SelectPropsType> = (props) => {
 	const [selected, setSelected] = useState<string | KeyValueOption | undefined>(
@@ -80,6 +69,7 @@ export const Select: React.FunctionComponent<SelectPropsType> = (props) => {
 				name={props.name}
 				id={props.name}
 				required={true}
+				disabled={props.disabled}
 				// defaultValue={''}
 				onChange={(v) => {
 					const options = props.options;
