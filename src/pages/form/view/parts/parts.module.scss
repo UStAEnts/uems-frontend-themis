@@ -1,202 +1,203 @@
 .form {
-  width: 60%;
-  min-width: 50pc;
-  margin: 0 auto;
+	width: 60%;
+	min-width: 50pc;
+	margin: 0 auto;
 
-  .error {
-    background: #ffdede;
-    padding: 20px;
-    border-radius: 5px;
-  }
+	.error {
+		background: #ffdede;
+		padding: 20px;
+		border-radius: 5px;
+	}
 
-  h2 {
-    font-size: 1.8em;
-  }
+	h2 {
+		font-size: 1.8em;
+	}
 
-  //background: red;
+	//background: red;
 }
 
 .entry {
-  padding: 10px;
-  //background: #f1f1f1;
-  margin: 8px 0;
-  //border: 1px solid gainsboro;
-  //border-left: 5px solid #e25d14;
-  //border-top-left-radius: 10px;
-  //border-bottom-left-radius: 10px;
+	padding: 10px;
+	//background: #f1f1f1;
+	margin: 8px 0;
+	//border: 1px solid gainsboro;
+	//border-left: 5px solid #e25d14;
+	//border-top-left-radius: 10px;
+	//border-bottom-left-radius: 10px;
 
+	.dateRange {
+		display: flex;
+		flex-direction: row;
 
-  .dateRange {
-    display: flex;
-    flex-direction: row;
+		> div {
+			flex-grow: 1;
 
-    > div {
-      flex-grow: 1;
+			&:first-child {
+				margin-right: 10px;
+			}
 
-      &:first-child {
-        margin-right: 10px;
-      }
+			&:last-child {
+				margin-left: 10px;
+			}
+		}
+	}
 
-      &:last-child {
-        margin-left: 10px;
-      }
-    }
-  }
+	&.edit {
+		--edit-padding: 20px;
 
-  &.edit {
-    --edit-padding: 20px;
+		padding: 0;
+		border-radius: 10px;
 
-    padding: 0;
-    border-radius: 10px;
+		.header {
+			padding: var(--edit-padding);
+			box-sizing: border-box;
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
 
-    .header {
-      padding: var(--edit-padding);
-      box-sizing: border-box;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+			.move {
+				display: flex;
+				flex-direction: column;
 
-      .move {
-        display: flex;
-        flex-direction: column;
+				svg {
+					margin-left: 0;
+					margin-right: 10px;
 
-        svg {
-          margin-left: 0;
-          margin-right: 10px;
+					&:first-child {
+						margin-bottom: 10px;
+					}
+				}
+			}
 
-          &:first-child {
-            margin-bottom: 10px;
-          }
-        }
-      }
+			.input {
+				flex-grow: 1;
+			}
 
-      .input {
-        flex-grow: 1;
-      }
+			svg {
+				margin-left: 20px;
+			}
+		}
 
-      svg {
-        margin-left: 20px;
-      }
-    }
+		.detail {
+			padding: var(--edit-padding);
+		}
 
-    .detail {
-      padding: var(--edit-padding);
-    }
+		.content {
+			padding: var(--edit-padding);
+			border-top: 1px solid gainsboro;
+			margin-top: 10px;
+			//padding-top: 10px;
+		}
 
-    .content {
-      padding: var(--edit-padding);
-      border-top: 1px solid gainsboro;
-      margin-top: 10px;
-      //padding-top: 10px;
-    }
+		.bottom {
+			padding: var(--edit-padding);
+			border-top: 1px solid gainsboro;
+			//margin-top: 10px;
+			//padding-top: 5px;
+			display: flex;
+			flex-direction: row;
 
-    .bottom {
-      padding: var(--edit-padding);
-      border-top: 1px solid gainsboro;
-      //margin-top: 10px;
-      //padding-top: 5px;
-      display: flex;
-      flex-direction: row;
+			.requiredSelect {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
 
-      .requiredSelect {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+				> label,
+				> input {
+					flex-grow: 0;
+				}
 
-        > label, > input {
-          flex-grow: 0;
-        }
+				> input {
+					margin: initial;
+					margin-left: 10px;
+				}
+			}
 
-        > input {
-          margin: initial;
-          margin-left: 10px;
-        }
-      }
+			.typeSelect {
+				//width: ;
+				flex-grow: 1;
+				margin-left: 10pc;
+				padding-bottom: 30px;
+			}
+		}
+	}
 
-      .typeSelect {
-        //width: ;
-        flex-grow: 1;
-        margin-left: 10pc;
-        padding-bottom: 30px;
-      }
-    }
-  }
+	.header {
+		font-weight: bold;
+		font-size: 1.3em;
+		display: inline-block;
+	}
 
-  .header {
-    font-weight: bold;
-    font-size: 1.3em;
-    display: inline-block;
-  }
+	.detail {
+		font-style: italic;
+		padding-top: 5px;
+		padding-bottom: 10px;
+	}
 
-  .detail {
-    font-style: italic;
-    padding-top: 5px;
-    padding-bottom: 10px;
-  }
+	.required {
+		margin-left: 10px;
+		display: inline;
+		font-weight: normal;
+		color: darkred;
+		font-size: 0.8em;
+	}
 
-  .required {
-    margin-left: 10px;
-    display: inline;
-    font-weight: normal;
-    color: darkred;
-    font-size: 0.8em;
-  }
+	input,
+	textarea {
+		//margin: 10px;
+	}
 
-  input, textarea {
-    //margin: 10px;
-  }
+	input[type='checkbox'] {
+		width: 20px;
+		height: 20px;
+		margin: 10px;
+	}
 
-  input[type='checkbox'] {
-    width: 20px;
-    height: 20px;
-    margin: 10px;
-  }
-
-  //input[type='text']{
-  //  width: 100%;
-  //  padding: 5px;
-  //}
+	//input[type='text']{
+	//  width: 100%;
+	//  padding: 5px;
+	//}
 }
 
 .select {
-  .list {
-    li {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+	.list {
+		li {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
 
-      > * {
-        flex-grow: 1;
-        margin-right: 20px;
-      }
+			> * {
+				flex-grow: 1;
+				margin-right: 20px;
+			}
 
-      > svg {
-        flex-grow: 0;
-      }
-    }
-  }
+			> svg {
+				flex-grow: 0;
+			}
+		}
+	}
 }
 
 //}
 .marker {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
+	display: flex;
+	align-items: center;
+	flex-direction: row;
 
-  > div {
-    flex-grow: 1;
-    height: 1px;
-    background: gainsboro;
-  }
+	> div {
+		flex-grow: 1;
+		height: 1px;
+		background: gainsboro;
+	}
 
-  > span {
-    padding: 0 20px;
-    font-weight: bold;
-    font-size: 2em;
-  }
+	> span {
+		padding: 0 20px;
+		font-weight: bold;
+		font-size: 2em;
+	}
 
-  > svg {
-    margin-left: 10px;
-  }
+	> svg {
+		margin-left: 10px;
+	}
 }

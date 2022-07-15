@@ -1,17 +1,17 @@
 import * as React from 'react';
-import {CSSProperties, useState} from 'react';
+import { CSSProperties, useState } from 'react';
 import './Select.scss';
 
 // A little hacky but the styles were designed for both
 import styles from '../text-field/TextField.module.scss';
-import {classes} from "../../../utilities/UIUtilities";
+import { classes } from '../../../utilities/UIUtilities';
 
 export type KeyValueOption = { text: string; value: string; additional?: any };
 
 export type KeyValueConfiguration = {
-    options: KeyValueOption[];
-    initialOption?: KeyValueOption|string;
-    onSelectListener?: (option: KeyValueOption) => void;
+	options: KeyValueOption[];
+	initialOption?: KeyValueOption | string;
+	onSelectListener?: (option: KeyValueOption) => void;
 };
 
 export type StringConfiguration = {
@@ -42,7 +42,7 @@ export type SelectPropsType = {
 	//  * @param option the option which is now selected
 	//  */
 	// onSelectListener?: (option: string | KeyValueOption) => void,
-    style?: CSSProperties,
+	style?: CSSProperties;
 } & (KeyValueConfiguration | StringConfiguration);
 
 export type SelectStateType = {
@@ -61,50 +61,59 @@ export type SelectStateType = {
 };
 
 export const Select: React.FunctionComponent<SelectPropsType> = (props) => {
-    const [selected, setSelected] = useState<string | KeyValueOption | undefined>(props.initialOption);
-    const [focus, setFocus] = useState<boolean>(false);
+	const [selected, setSelected] = useState<string | KeyValueOption | undefined>(
+		props.initialOption
+	);
+	const [focus, setFocus] = useState<boolean>(false);
 
-    return (
-        <div className={classes(
-            styles.wrapper,
-            focus ? styles['wrapper--focus'] : undefined
-        )}>
-            <select onFocus={() => setFocus(true)}
-                    onBlur={() => setFocus(false)}
-                    value={typeof (selected) === 'object' ? selected.value : selected}
-                    name={props.name}
-                    id={props.name}
-                    required={true}
-                    // defaultValue={''}
-                    onChange={(v) => {
-                        const options = props.options;
-                        if (options.length === 0) return;
-                        if (typeof (options[0]) !== 'string') {
-                            const set = options as KeyValueOption[];
-                            const picked = set.find((e) => e.value === v.target.value);
-                            setSelected(picked);
+	return (
+		<div
+			className={classes(
+				styles.wrapper,
+				focus ? styles['wrapper--focus'] : undefined
+			)}
+		>
+			<select
+				onFocus={() => setFocus(true)}
+				onBlur={() => setFocus(false)}
+				value={typeof selected === 'object' ? selected.value : selected}
+				name={props.name}
+				id={props.name}
+				required={true}
+				// defaultValue={''}
+				onChange={(v) => {
+					const options = props.options;
+					if (options.length === 0) return;
+					if (typeof options[0] !== 'string') {
+						const set = options as KeyValueOption[];
+						const picked = set.find((e) => e.value === v.target.value);
+						setSelected(picked);
 
-                            if (picked !== undefined) props.onSelectListener?.(picked as any);
-                        } else {
-                            setSelected(v.target.value)
-                            if (v.target.value !== undefined) props.onSelectListener?.(v.target.value as any);
-                        }
-                    }}
-            >
-                <option value=''></option>
-                {
-                    (props.options as (string | KeyValueOption)[]).map(
-                        (entry) => (typeof (entry) === 'string'
-                                ? <option key={entry} value={entry}>{entry}</option>
-                                : <option key={entry.value} value={entry.value}>{entry.text}</option>
-                        )
-                    )
-                }
-            </select>
-            <label>{props.placeholder}</label>
-        </div>
-    )
-}
+						if (picked !== undefined) props.onSelectListener?.(picked as any);
+					} else {
+						setSelected(v.target.value);
+						if (v.target.value !== undefined)
+							props.onSelectListener?.(v.target.value as any);
+					}
+				}}
+			>
+				<option value=""></option>
+				{(props.options as (string | KeyValueOption)[]).map((entry) =>
+					typeof entry === 'string' ? (
+						<option key={entry} value={entry}>
+							{entry}
+						</option>
+					) : (
+						<option key={entry.value} value={entry.value}>
+							{entry.text}
+						</option>
+					)
+				)}
+			</select>
+			<label>{props.placeholder}</label>
+		</div>
+	);
+};
 
 // export class Select extends React.Component<SelectPropsType, SelectStateType> {
 //

@@ -4,7 +4,7 @@ import { CSSProperties } from 'react';
 import './TextField.scss';
 import '../text-area/TextArea.scss';
 import DatePicker from 'react-flatpickr';
-import {classes} from "../../../utilities/UIUtilities";
+import { classes } from '../../../utilities/UIUtilities';
 import styles from './TextField.module.scss';
 
 export type BaseConfiguration = {
@@ -30,12 +30,12 @@ export type BaseConfiguration = {
 	/**
 	 * Any additional style properties to be added to the field
 	 */
-    style?: CSSProperties;
-    /**
-     * Additional class names to add to the element
-     */
-    className?: string;
-}
+	style?: CSSProperties;
+	/**
+	 * Additional class names to add to the element
+	 */
+	className?: string;
+};
 
 export type TextAreaConfiguration = {
 	type: 'textarea';
@@ -101,11 +101,11 @@ export type TextFieldStateType = {
 	/**
 	 * The current contents of the text field
 	 */
-    contents: string | Date | number;
-    /**
-     * If the input currently has focus
-     */
-    focus: boolean;
+	contents: string | Date | number;
+	/**
+	 * If the input currently has focus
+	 */
+	focus: boolean;
 };
 
 export class TextField extends React.Component<
@@ -151,7 +151,7 @@ export class TextField extends React.Component<
 	constructor(props: Readonly<TextFieldPropsType>) {
 		super(props);
 
-        this.state = {contents: (this.props.initialContent || ''), focus: false};
+		this.state = { contents: this.props.initialContent || '', focus: false };
 	}
 
 	/**
@@ -226,153 +226,168 @@ export class TextField extends React.Component<
 	);
 
 	render() {
-        // New type until the full migration is done
-        if (this.props.type === 'text') {
-            return (
-                <div className={classes(
-                    styles.wrapper,
-                    this.state.focus ? styles['wrapper--focus'] : undefined,
-                    this.props.className
-                )} style={this.props.style}>
-                    <input type='text'
-                           onFocus={() => this.setState((s) => ({...s, focus: true}))}
-                           onBlur={() => this.setState((s) => ({...s, focus: false}))}
-                           value={this.state.contents as string}
-                           name={this.props.name}
-                           required={this.props.required}
-                           onChange={this.handleChange}
-                    />
-                    {
-                        this.props.noLabel
-                            ? null
-                            :
-                            <label>{this.props.placeholder ?? this.props.name}{this.props.required ? ' *' : ''}</label>
-                    }
-                </div>
-            )
-        }
-        if (this.props.type === 'number') {
-            return (
-                <div className={classes(
-                    styles.wrapper,
-                    this.state.focus ? styles['wrapper--focus'] : undefined,
-                    this.props.className
-                )} style={this.props.style}>
-                    <input type='number'
-                           onFocus={() => this.setState((s) => ({...s, focus: true}))}
-                           onBlur={() => this.setState((s) => ({...s, focus: false}))}
-                           value={this.state.contents as string}
-                           name={this.props.name}
-                           required={this.props.required}
-                           onChange={this.handleChange}
-                           min={this.props.min}
-                           max={this.props.max}
-                    />
-                    {
-                        this.props.noLabel
-                            ? null
-                            :
-                            <label>{this.props.placeholder ?? this.props.name}{this.props.required ? ' *' : ''}</label>
-                    }
-                </div>
-            )
-        }
-        if (this.props.type === 'textarea') {
-            return (
-                <div className={classes(
-                    styles.wrapper,
-                    this.state.focus ? styles['wrapper--focus'] : undefined,
-                    this.props.className
-                )} style={this.props.style}>
-                    <textarea onFocus={() => this.setState((s) => ({...s, focus: true}))}
-                              onBlur={() => this.setState((s) => ({...s, focus: false}))}
-                              value={this.state.contents as string}
-                              name={this.props.name}
-                              required={this.props.required}
-                              onChange={this.handleChange}
-                    ></textarea>
-                    {
-                        this.props.noLabel
-                            ? null
-                            :
-                            <label>{this.props.placeholder ?? this.props.name}{this.props.required ? ' *' : ''}</label>
-                    }
-                </div>
-            )
+		// New type until the full migration is done
+		if (this.props.type === 'text') {
+			return (
+				<div
+					className={classes(
+						styles.wrapper,
+						this.state.focus ? styles['wrapper--focus'] : undefined,
+						this.props.className
+					)}
+					style={this.props.style}
+				>
+					<input
+						type="text"
+						onFocus={() => this.setState((s) => ({ ...s, focus: true }))}
+						onBlur={() => this.setState((s) => ({ ...s, focus: false }))}
+						value={this.state.contents as string}
+						name={this.props.name}
+						required={this.props.required}
+						onChange={this.handleChange}
+					/>
+					{this.props.noLabel ? null : (
+						<label>
+							{this.props.placeholder ?? this.props.name}
+							{this.props.required ? ' *' : ''}
+						</label>
+					)}
+				</div>
+			);
 		}
-        if (this.props.type === 'datetime') {
-            const config: DateTimeConfiguration = this.props;
+		if (this.props.type === 'number') {
+			return (
+				<div
+					className={classes(
+						styles.wrapper,
+						this.state.focus ? styles['wrapper--focus'] : undefined,
+						this.props.className
+					)}
+					style={this.props.style}
+				>
+					<input
+						type="number"
+						onFocus={() => this.setState((s) => ({ ...s, focus: true }))}
+						onBlur={() => this.setState((s) => ({ ...s, focus: false }))}
+						value={this.state.contents as string}
+						name={this.props.name}
+						required={this.props.required}
+						onChange={this.handleChange}
+						min={this.props.min}
+						max={this.props.max}
+					/>
+					{this.props.noLabel ? null : (
+						<label>
+							{this.props.placeholder ?? this.props.name}
+							{this.props.required ? ' *' : ''}
+						</label>
+					)}
+				</div>
+			);
+		}
+		if (this.props.type === 'textarea') {
+			return (
+				<div
+					className={classes(
+						styles.wrapper,
+						this.state.focus ? styles['wrapper--focus'] : undefined,
+						this.props.className
+					)}
+					style={this.props.style}
+				>
+					<textarea
+						onFocus={() => this.setState((s) => ({ ...s, focus: true }))}
+						onBlur={() => this.setState((s) => ({ ...s, focus: false }))}
+						value={this.state.contents as string}
+						name={this.props.name}
+						required={this.props.required}
+						onChange={this.handleChange}
+					></textarea>
+					{this.props.noLabel ? null : (
+						<label>
+							{this.props.placeholder ?? this.props.name}
+							{this.props.required ? ' *' : ''}
+						</label>
+					)}
+				</div>
+			);
+		}
+		if (this.props.type === 'datetime') {
+			const config: DateTimeConfiguration = this.props;
 
-            // TODO: you have to click this twice??
-            return (
-                <div className={classes(
-                    styles.wrapper,
-                    this.state.focus ? styles['wrapper--focus'] : undefined,
-                    this.props.className
-                )} style={this.props.style}>
-                    <DatePicker
-                        data-enable-time
-                        value={this.state.contents as Date}
-                        options={{
-                            dateFormat: 'D J M Y @ H:i',
-                        }}
-                        onChange={(change) => this.handleBasicChange(change[0])}
-                        // min={config.min}
-                        // max={config.max}
-                        alt={config.placeholder ?? config.name}
-                        //@ts-ignore
-                        onFocus={() => this.setState((s) => ({...s, focus: true}))}
-                        //@ts-ignore
-                        onBlur={() => this.setState((s) => ({...s, focus: false}))}
-                    />
-                    {
-                        this.props.noLabel
-                            ? null
-                            :
-                            <label>{this.props.placeholder ?? this.props.name}{this.props.required ? ' *' : ''}</label>
-                    }
-                </div>
-            )
-        }
-        // let input;
-        //
-        // switch (this.props.type) {
-        //     case 'datetime':
-        //         input = this.buildDateTimeInput(this.props);
-        //         break;
-        //     default:
-        //         input = undefined;
-        //         break;
-        // }
-        //
-        // const sublabel = this.props.required
-        //     ? <small className="required">* Required</small>
-        //     : undefined;
-        //
-        // // Only render the label if we have opted to include the label
-        // // Include required even if we've opted to not have the label. If they are that concerned
-        // // they can hide it with CSS
-        // const label = this.props.noLabel
-        //     ? sublabel
-        //     : (
-        //         <label
-        //             htmlFor={this.props.name}
-        //             className={this.state.contents === '' || this.state.contents === undefined ? '' : 'contains'}
-        //         >
-        //             {this.props.placeholder || this.props.name}
-        //             {' '}
-        //             {sublabel}
-        //         </label>
-        //     );
-        //
-        // const cl = classes('text-field', this.props.className);
-        // return (
-        //     <div className={cl} style={this.props.style}>
-        //         {input}
-        //         <span className="highlight"/>
-        //         <span className="bar"/>
-        //         {label}
-        //     </div>
-        // );
+			// TODO: you have to click this twice??
+			return (
+				<div
+					className={classes(
+						styles.wrapper,
+						this.state.focus ? styles['wrapper--focus'] : undefined,
+						this.props.className
+					)}
+					style={this.props.style}
+				>
+					<DatePicker
+						data-enable-time
+						value={this.state.contents as Date}
+						options={{
+							dateFormat: 'D J M Y @ H:i',
+						}}
+						onChange={(change) => this.handleBasicChange(change[0])}
+						// min={config.min}
+						// max={config.max}
+						alt={config.placeholder ?? config.name}
+						//@ts-ignore
+						onFocus={() => this.setState((s) => ({ ...s, focus: true }))}
+						//@ts-ignore
+						onBlur={() => this.setState((s) => ({ ...s, focus: false }))}
+					/>
+					{this.props.noLabel ? null : (
+						<label>
+							{this.props.placeholder ?? this.props.name}
+							{this.props.required ? ' *' : ''}
+						</label>
+					)}
+				</div>
+			);
+		}
+		// let input;
+		//
+		// switch (this.props.type) {
+		//     case 'datetime':
+		//         input = this.buildDateTimeInput(this.props);
+		//         break;
+		//     default:
+		//         input = undefined;
+		//         break;
+		// }
+		//
+		// const sublabel = this.props.required
+		//     ? <small className="required">* Required</small>
+		//     : undefined;
+		//
+		// // Only render the label if we have opted to include the label
+		// // Include required even if we've opted to not have the label. If they are that concerned
+		// // they can hide it with CSS
+		// const label = this.props.noLabel
+		//     ? sublabel
+		//     : (
+		//         <label
+		//             htmlFor={this.props.name}
+		//             className={this.state.contents === '' || this.state.contents === undefined ? '' : 'contains'}
+		//         >
+		//             {this.props.placeholder || this.props.name}
+		//             {' '}
+		//             {sublabel}
+		//         </label>
+		//     );
+		//
+		// const cl = classes('text-field', this.props.className);
+		// return (
+		//     <div className={cl} style={this.props.style}>
+		//         {input}
+		//         <span className="highlight"/>
+		//         <span className="bar"/>
+		//         {label}
+		//     </div>
+		// );
 	}
 }

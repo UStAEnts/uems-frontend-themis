@@ -251,7 +251,7 @@ export class CalendarRedo extends React.Component<
 							className={styles.short}
 							style={{ gridArea: `${i + 1}/1/${i + 2}/2` }}
 							data-wtf={`${i + 1}/1/${i + 2}/2`}
-                            key={`short.deco.${i}`}
+							key={`short.deco.${i}`}
 						>
 							<span>
 								{i % 12 === 0 ? 12 : i % 12} {i > 12 ? 'PM' : 'AM'}
@@ -260,7 +260,7 @@ export class CalendarRedo extends React.Component<
 						<div
 							className={styles.long}
 							style={{ gridArea: `${i + 1}/2/${i + 2}/${this.props.days + 2}` }}
-                            key={`long.deco.${i}`}
+							key={`long.deco.${i}`}
 						/>,
 					])
 					.flat(),
@@ -270,7 +270,7 @@ export class CalendarRedo extends React.Component<
 						<div
 							className={styles.vertical}
 							style={{ gridArea: `1/${i + 2}/25/${i + 3}` }}
-                            key={`vertical.deco.${i}`}
+							key={`vertical.deco.${i}`}
 						/>
 					)),
 			];
@@ -328,7 +328,7 @@ export class CalendarRedo extends React.Component<
 						<div
 							className={classes(styles.topOne, styles.top)}
 							style={{ gridArea: `1/${i + 2}/2/${i + 3}` }}
-                            key={`day.${i}`}
+							key={`day.${i}`}
 						>
 							<div>
 								<div className={styles.number}>

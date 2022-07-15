@@ -6,7 +6,8 @@ import { Theme } from '../../../theme/Theme';
 import {
 	DateFilterStatus,
 	Filter,
-    FilterConfiguration, FilterPropsType,
+	FilterConfiguration,
+	FilterPropsType,
 	NumberFilterStatus,
 	SearchFilterStatus,
 	SelectFilterStatus,
@@ -16,7 +17,7 @@ import './EventTable.scss';
 import moment from 'moment';
 import { LinkedTD } from '../../atoms/LinkedTD';
 import { Redirect } from 'react-router';
-import {IconName} from '@fortawesome/free-solid-svg-icons';
+import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { ColorUtilities } from '../../../utilities/ColorUtilities';
 import { KeyValueOption } from '../../atoms/select/Select';
 import VenueChip from '../../atoms/venue-chip/VenueChip';
@@ -38,16 +39,16 @@ export type EventTablePropsType = {
 	/**
 	 * The list of events to display in this table
 	 */
-    events: EventList;
-    filters?: { [key: string]: FilterConfiguration };
-    onFiltersChange?: FilterPropsType['onFilterChange'];
+	events: EventList;
+	filters?: { [key: string]: FilterConfiguration };
+	onFiltersChange?: FilterPropsType['onFilterChange'];
 } & NotificationPropsType;
 
 export type EventTableStateType = {
 	/**
 	 * A set of filters to apply to the table
 	 */
-    filters: { [key: string]: FilterConfiguration };
+	filters: { [key: string]: FilterConfiguration };
 	/**
 	 * If set the {@link Redirect} element will be rendered which will force the page to redirect to the path set here.
 	 * This makes it easy to trigger a redirect without having to be in the render function
@@ -244,52 +245,92 @@ class EventTableInner extends React.Component<
 	 */
 	private filter(event: UEMSEvent) {
 		if ('name' in this.state.filters) {
-            const filter = this.state.filters.name;
+			const filter = this.state.filters.name;
 
-            if (!event.name.toLowerCase().includes((filter.value as string).toLowerCase())) return false;
+			if (
+				!event.name
+					.toLowerCase()
+					.includes((filter.value as string).toLowerCase())
+			)
+				return false;
 		}
 
 		if ('date' in this.state.filters) {
-            const filter = this.state.filters.date;
+			const filter = this.state.filters.date;
 
-            if (filter.value && typeof (filter.value) === 'object' && 'startDate' in filter.value) {
-                if (filter.value.startDate !== null) {
-                    if (moment(filter.value.startDate).isAfter(moment.unix(event.start))) return false;
-                }
+			if (
+				filter.value &&
+				typeof filter.value === 'object' &&
+				'startDate' in filter.value
+			) {
+				if (filter.value.startDate !== null) {
+					if (moment(filter.value.startDate).isAfter(moment.unix(event.start)))
+						return false;
+				}
 			}
 
-            if (filter.value && typeof (filter.value) === 'object' && 'endDate' in filter.value) {
-                if (moment(filter.value.endDate).isBefore(moment.unix(event.end))) return false;
+			if (
+				filter.value &&
+				typeof filter.value === 'object' &&
+				'endDate' in filter.value
+			) {
+				if (moment(filter.value.endDate).isBefore(moment.unix(event.end)))
+					return false;
 			}
 		}
 
 		if ('state' in this.state.filters) {
-            const filter = this.state.filters.state;
+			const filter = this.state.filters.state;
 
-            if (typeof (filter.value) === 'string') return true;
+			if (typeof filter.value === 'string') return true;
 
-            if (typeof (filter.value) === 'object' && 'value' in filter.value && filter.value.value !== 'any') {
-                if (event.state?.name.toLowerCase() !== (filter.value.additional as State).name.toLowerCase()) return false;
+			if (
+				typeof filter.value === 'object' &&
+				'value' in filter.value &&
+				filter.value.value !== 'any'
+			) {
+				if (
+					event.state?.name.toLowerCase() !==
+					(filter.value.additional as State).name.toLowerCase()
+				)
+					return false;
 			}
 		}
 
 		if ('ents' in this.state.filters) {
-            const filter = this.state.filters.ents;
+			const filter = this.state.filters.ents;
 
-            if (typeof (filter.value) === 'string') return true;
+			if (typeof filter.value === 'string') return true;
 
-            if (typeof (filter.value) === 'object' && 'value' in filter.value && filter.value.value !== 'any') {
-                if (event.ents?.name.toLowerCase() !== (filter.value.additional as EntState).name.toLowerCase()) return false;
+			if (
+				typeof filter.value === 'object' &&
+				'value' in filter.value &&
+				filter.value.value !== 'any'
+			) {
+				if (
+					event.ents?.name.toLowerCase() !==
+					(filter.value.additional as EntState).name.toLowerCase()
+				)
+					return false;
 			}
 		}
 
 		if ('venues' in this.state.filters) {
-            const filter = this.state.filters.venues;
+			const filter = this.state.filters.venues;
 
-            if (typeof (filter.value) === 'string') return true;
+			if (typeof filter.value === 'string') return true;
 
-            if (typeof (filter.value) === 'object' && 'value' in filter.value && filter.value.value !== 'any') {
-                if (!event.venues.map((e) => e.name.toLowerCase()).includes((filter.value.additional as Venue).name.toLowerCase())) return false;
+			if (
+				typeof filter.value === 'object' &&
+				'value' in filter.value &&
+				filter.value.value !== 'any'
+			) {
+				if (
+					!event.venues
+						.map((e) => e.name.toLowerCase())
+						.includes((filter.value.additional as Venue).name.toLowerCase())
+				)
+					return false;
 				// if (event.venue?.name.toLowerCase() !== (filter.selectedOption.additional as VenueResponse).name.toLowerCase()) return false;
 			}
 		}
@@ -313,16 +354,16 @@ class EventTableInner extends React.Component<
 		};
 
 		if (this.state.filters.date) {
-            const version = (this.state.filters.date);
-            if (typeof (version.value) === 'object' && 'startDate' in version.value) {
-                if (version.value.startDate && version.value.endDate) {
-                    filters.date.value = {
-                        startDate: version.value.startDate,
-                        endDate: version.value.endDate
-                    };
-                }
-            }
-        }
+			const version = this.state.filters.date;
+			if (typeof version.value === 'object' && 'startDate' in version.value) {
+				if (version.value.startDate && version.value.endDate) {
+					filters.date.value = {
+						startDate: version.value.startDate,
+						endDate: version.value.endDate,
+					};
+				}
+			}
+		}
 
 		if (this.state.loaded.ents) {
 			const entsFilter: KeyValueOption[] = this.state.loaded.ents.map((e) => ({
@@ -392,15 +433,17 @@ class EventTableInner extends React.Component<
 				) : undefined}
 				<Filter
 					filters={filters}
-                    onFilterChange={
-                        (filters) => {
-						this.setState({
-							filters,
-                            }, () => {
-                                if (this.props.onFiltersChange) this.props.onFiltersChange(this.state.filters);
-                            })
-                        }
-                    }
+					onFilterChange={(filters) => {
+						this.setState(
+							{
+								filters,
+							},
+							() => {
+								if (this.props.onFiltersChange)
+									this.props.onFiltersChange(this.state.filters);
+							}
+						);
+					}}
 				/>
 				<table>
 					<thead>

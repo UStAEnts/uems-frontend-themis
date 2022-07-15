@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {DateRangePicker} from 'react-dates';
-import moment, {Moment} from 'moment';
-import {TextField} from '../../atoms/text-field/TextField';
+import { DateRangePicker } from 'react-dates';
+import moment, { Moment } from 'moment';
+import { TextField } from '../../atoms/text-field/TextField';
 import 'react-dates/lib/css/_datepicker.css';
-import {KeyValueOption, Select} from '../../atoms/select/Select';
+import { KeyValueOption, Select } from '../../atoms/select/Select';
 
 import './Filter.scss';
 
@@ -20,7 +20,7 @@ export type FilterConfiguration = {
 	/**
 	 * The initial value with which to populate the field
 	 */
-    value?: number | string | { startDate: Date, endDate: Date } | KeyValueOption,
+	value?: number | string | { startDate: Date; endDate: Date } | KeyValueOption;
 	/**
 	 * The options to be displayed in  the options menu if relevant
 	 */
@@ -47,10 +47,8 @@ export type FilterPropsType = {
 	 * they have had a value provided
 	 * @param filters all filters currently in use with their current state
 	 */
-	onFilterChange?: (filters: {
-        [key: string]: FilterConfiguration,
-    }) => void,
-}
+	onFilterChange?: (filters: { [key: string]: FilterConfiguration }) => void;
+};
 
 export type DateFilterStatus = {
 	/**
@@ -116,21 +114,23 @@ export type FilterStateType = {
 };
 
 // focusedInput?: 'startDate' | 'endDate' | null
-export class Filter extends React.Component<FilterPropsType, Record<string, 'startDate' | 'endDate' | null>> {
-
+export class Filter extends React.Component<
+	FilterPropsType,
+	Record<string, 'startDate' | 'endDate' | null>
+> {
 	static displayName = 'Filter';
 
 	constructor(props: Readonly<FilterPropsType>) {
 		super(props);
 
-        this.state = {};
+		this.state = {};
 
-        // this.state = {
-        //     dateFilterStates: {},
-        //     numberFilterStates: {},
-        //     selectFilterStates: {},
-        //     searchFilterStates: {},
-        // };
+		// this.state = {
+		//     dateFilterStates: {},
+		//     numberFilterStates: {},
+		//     selectFilterStates: {},
+		//     searchFilterStates: {},
+		// };
 
 		const bindFunctions: Function[] = [
 			this.updateDateInput,
@@ -152,15 +152,15 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 	/**
 	 * Notifies the handler function if one has been specified by merging together all the active states
 	 */
-    private notify(values: Record<string, FilterConfiguration>) {
+	private notify(values: Record<string, FilterConfiguration>) {
 		if (this.props.onFilterChange) {
-            this.props.onFilterChange(values);
-            // this.props.onFilterChange({
-            //     ...this.state.searchFilterStates,
-            //     ...this.state.selectFilterStates,
-            //     ...this.state.numberFilterStates,
-            //     ...this.state.dateFilterStates,
-            // });
+			this.props.onFilterChange(values);
+			// this.props.onFilterChange({
+			//     ...this.state.searchFilterStates,
+			//     ...this.state.selectFilterStates,
+			//     ...this.state.numberFilterStates,
+			//     ...this.state.dateFilterStates,
+			// });
 		}
 	}
 
@@ -171,13 +171,13 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 	 * @param option the value that has been selected
 	 */
 	private updateSelectInput(key: string, option: string | KeyValueOption) {
-        const s = {...this.props.filters};
+		const s = { ...this.props.filters };
 
-        if (Object.prototype.hasOwnProperty.call(s, key)) {
-            s[key].value = option;
-        }
+		if (Object.prototype.hasOwnProperty.call(s, key)) {
+			s[key].value = option;
+		}
 
-        this.notify(s);
+		this.notify(s);
 	}
 
 	/**
@@ -187,13 +187,13 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 	 * @param value the value that has been entered
 	 */
 	private updateSearchInput(key: string, value: string) {
-        const s = {...this.props.filters};
+		const s = { ...this.props.filters };
 
-        if (Object.prototype.hasOwnProperty.call(s, key)) {
-            s[key].value = value;
-        }
+		if (Object.prototype.hasOwnProperty.call(s, key)) {
+			s[key].value = value;
+		}
 
-        this.notify(s);
+		this.notify(s);
 	}
 
 	/**
@@ -218,8 +218,8 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 							this.updateSelectInput(key, option)
 						}
 						initialOption={
-                            Object.prototype.hasOwnProperty.call(this.props.filters, key)
-                                ? this.props.filters[key].value as string
+							Object.prototype.hasOwnProperty.call(this.props.filters, key)
+								? (this.props.filters[key].value as string)
 								: undefined
 						}
 					/>
@@ -236,8 +236,8 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 						this.updateSelectInput(key, option)
 					}
 					initialOption={
-                        Object.prototype.hasOwnProperty.call(this.props.filters, key)
-                            ? this.props.filters[key].value as KeyValueOption
+						Object.prototype.hasOwnProperty.call(this.props.filters, key)
+							? (this.props.filters[key].value as KeyValueOption)
 							: undefined
 					}
 				/>
@@ -255,13 +255,13 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 		try {
 			const newVal = typeof value === 'number' ? value : parseInt(value, 10);
 
-            const s = {...this.props.filters};
+			const s = { ...this.props.filters };
 
-            if (Object.prototype.hasOwnProperty.call(s, key)) {
-                s[key].value = newVal;
-            }
+			if (Object.prototype.hasOwnProperty.call(s, key)) {
+				s[key].value = newVal;
+			}
 
-            this.notify(s);
+			this.notify(s);
 		} catch (e) {
 			console.log('Failed to parse as a number!!!');
 			// TODO: Fix;
@@ -276,8 +276,8 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 	 */
 	private makeNumberInput(key: string, number: FilterConfiguration) {
 		const spreadProps: any = {
-            ...(Object.prototype.hasOwnProperty.call(this.props.filters, key)
-                ? this.props.filters[key]
+			...(Object.prototype.hasOwnProperty.call(this.props.filters, key)
+				? this.props.filters[key]
 				: {}),
 		};
 
@@ -305,31 +305,31 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 	 * @param focus the currently focused element
 	 */
 	private updateDateFocus(key: string, focus: 'startDate' | 'endDate' | null) {
-        this.setState((s) => ({...s, [key]: focus}));
-        // const s = {...this.props.filters};
-        //
-        // if (Object.prototype.hasOwnProperty.call(s, key)) {
-        //     s[key].value = focus;
-        // }
-        //
-        // this.notify(s);
-        // this.setState((oldState) => {
-        //     const s = {...oldState};
-        //
-        //     if (Object.prototype.hasOwnProperty.call(s.dateFilterStates, key)) {
-        //         s.dateFilterStates[key].focusedInput = focus;
-        //     } else {
-        //         s.dateFilterStates[key] = {
-        //             startDate: null,
-        //             endDate: null,
-        //             focusedInput: focus,
-        //         };
-        //     }
-        //
-        //     this.notify();
-        //
-        //     return s;
-        // });
+		this.setState((s) => ({ ...s, [key]: focus }));
+		// const s = {...this.props.filters};
+		//
+		// if (Object.prototype.hasOwnProperty.call(s, key)) {
+		//     s[key].value = focus;
+		// }
+		//
+		// this.notify(s);
+		// this.setState((oldState) => {
+		//     const s = {...oldState};
+		//
+		//     if (Object.prototype.hasOwnProperty.call(s.dateFilterStates, key)) {
+		//         s.dateFilterStates[key].focusedInput = focus;
+		//     } else {
+		//         s.dateFilterStates[key] = {
+		//             startDate: null,
+		//             endDate: null,
+		//             focusedInput: focus,
+		//         };
+		//     }
+		//
+		//     this.notify();
+		//
+		//     return s;
+		// });
 	}
 
 	/**
@@ -339,35 +339,39 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 	 * @param start the select start time or null if one is not set
 	 * @param end the select end time or null if one is not set
 	 */
-    private updateDateInput(key: string, start: Moment | null, end: Moment | null) {
-        const s = {...this.props.filters};
+	private updateDateInput(
+		key: string,
+		start: Moment | null,
+		end: Moment | null
+	) {
+		const s = { ...this.props.filters };
 
-        if (Object.prototype.hasOwnProperty.call(s, key)) {
-            if (start && end)
-                s[key].value = {startDate: start.toDate(), endDate: end.toDate()};
-        }
+		if (Object.prototype.hasOwnProperty.call(s, key)) {
+			if (start && end)
+				s[key].value = { startDate: start.toDate(), endDate: end.toDate() };
+		}
 
-        this.notify(s);
+		this.notify(s);
 
-        // this.setState((oldState) => {
-        //     const s = {...oldState};
-        //
-        //     if (Object.prototype.hasOwnProperty.call(s.dateFilterStates, key)) {
-        //         s.dateFilterStates[key] = {
-        //             ...(s.dateFilterStates[key]),
-        //             startDate: start,
-        //             endDate: end,
-        //         };
-        //     } else {
-        //         s.dateFilterStates[key] = {
-        //             startDate: start,
-        //             endDate: end,
-        //             focusedInput: null,
-        //         };
-        //     }
-        //
-        //     return s;
-        // });
+		// this.setState((oldState) => {
+		//     const s = {...oldState};
+		//
+		//     if (Object.prototype.hasOwnProperty.call(s.dateFilterStates, key)) {
+		//         s.dateFilterStates[key] = {
+		//             ...(s.dateFilterStates[key]),
+		//             startDate: start,
+		//             endDate: end,
+		//         };
+		//     } else {
+		//         s.dateFilterStates[key] = {
+		//             startDate: start,
+		//             endDate: end,
+		//             focusedInput: null,
+		//         };
+		//     }
+		//
+		//     return s;
+		// });
 	}
 
 	/**
@@ -382,18 +386,18 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 		if (date.min instanceof Date) spreadProperties.minDate = moment(date.min);
 		if (date.max instanceof Date) spreadProperties.maxDate = moment(date.max);
 
-        if (Object.prototype.hasOwnProperty.call(this.props.filters, key)) {
-            spreadProperties = {...this.props.filters[key]};
-            delete spreadProperties['name'];
-            delete spreadProperties['type'];
-            delete spreadProperties['value'];
+		if (Object.prototype.hasOwnProperty.call(this.props.filters, key)) {
+			spreadProperties = { ...this.props.filters[key] };
+			delete spreadProperties['name'];
+			delete spreadProperties['type'];
+			delete spreadProperties['value'];
 		}
 
 		let initial = undefined;
 		let initialEnd = undefined;
-        if (typeof (date.value) === 'object' && 'startDate' in date.value) {
-            initial = moment(date.value.startDate);
-            initialEnd = moment(date.value.endDate);
+		if (typeof date.value === 'object' && 'startDate' in date.value) {
+			initial = moment(date.value.startDate);
+			initialEnd = moment(date.value.endDate);
 		}
 
 		return (
@@ -409,7 +413,7 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 						this.updateDateInput(key, change.startDate, change.endDate);
 					}}
 					onFocusChange={(focus) => this.updateDateFocus(key, focus)}
-                    focusedInput={this.state[key] ?? null}
+					focusedInput={this.state[key] ?? null}
 					startDateId="start-date-id"
 					endDateId="end-date-id"
 					displayFormat="DD/MM/yyyy"
@@ -426,8 +430,11 @@ export class Filter extends React.Component<FilterPropsType, Record<string, 'sta
 	 * @param search the search configuration
 	 */
 	private makeSearchInput(key: string, search: FilterConfiguration) {
-        const initialContent = Object.prototype.hasOwnProperty.call(this.props.filters, key)
-            ? this.props.filters[key].value as string
+		const initialContent = Object.prototype.hasOwnProperty.call(
+			this.props.filters,
+			key
+		)
+			? (this.props.filters[key].value as string)
 			: undefined;
 
 		return (

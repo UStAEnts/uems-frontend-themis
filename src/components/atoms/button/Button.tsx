@@ -5,7 +5,7 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { ColorUtilities } from '../../../utilities/ColorUtilities';
 
 import './Button.scss';
-import {CSSProperties} from "react";
+import { CSSProperties } from 'react';
 
 export type ButtonPropsType = {
 	/**
@@ -36,10 +36,10 @@ export type ButtonPropsType = {
 	 * An optional name to apply to the button
 	 */
 	name?: string;
-    /**
-     * Additional styles
-     */
-    style?: CSSProperties,
+	/**
+	 * Additional styles
+	 */
+	style?: CSSProperties;
 };
 
 /**
@@ -62,7 +62,7 @@ export function Button(props: ButtonPropsType) {
 	const buttonStyle = {
 		backgroundColor: props.color,
 		color: ColorUtilities.determineForegroundColor(props.color),
-        ...props.style,
+		...props.style,
 	} as React.CSSProperties;
 
 	return (
