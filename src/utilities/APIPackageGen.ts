@@ -274,10 +274,10 @@ export type PATCHTopicsIdBody = {
 };
 
 export type APIUserGetQuery = {
-	email: string;
-	id: string;
-	name: string;
-	username: string;
+	email?: string;
+	id?: string;
+	name?: string;
+	username?: string;
 };
 
 export type PATCHUserIdBody = {
