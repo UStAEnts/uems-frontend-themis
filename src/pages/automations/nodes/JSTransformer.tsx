@@ -4,6 +4,8 @@ import { v4 } from 'uuid';
 import { TextField } from '../../../components/atoms/text-field/TextField';
 import { DefaultConfigNode, GPSConfig } from './_types';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
+import AutomationException from '../execution/AutomationException';
+import sandbox from '../../../utilities/Sandbox';
 
 const JSTransformer: GPSConfig = {
 	id: 'js-transformer',
@@ -33,5 +35,14 @@ const JSTransformer: GPSConfig = {
 	description:
 		'Run some custom JavaScript code against the input object to transform it into another format',
 };
+
+export const requiredKeys = 'single';
+
+export async function jsTransformerExecutor(
+	configuration: any,
+	state: { code: string }
+) {
+	return sandbox(state.code, { $: configuration }, {});
+}
 
 export default JSTransformer;

@@ -4,6 +4,8 @@ import { v4 } from 'uuid';
 import { TextField } from '../../../components/atoms/text-field/TextField';
 import { DefaultConfigNode, GPSConfig } from './_types';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import AutomationException from '../execution/AutomationException';
+import apiInstance from '../../../utilities/APIPackageGen';
 
 const FindUser: GPSConfig = {
 	id: 'find-user',
@@ -33,5 +35,31 @@ const FindUser: GPSConfig = {
 		'Looks up a single, fixed user and returns their properties if one is found. This is not dynamic, if' +
 		'you need to look up a user from an input, see "Transform: Find User by Username"',
 };
+
+export const requiredKeys = undefined;
+
+export async function findUserExecutor(
+	configuration: {},
+	state: { username: string }
+) {
+	apiInstance
+		.user()
+		.id(state.username)
+		.get()
+		.then((d) => {
+			if (d.status === 'FAILED')
+				throw new AutomationException(
+					`Failed to locate user! There was a server side error: ${d.error}`
+				);
+
+			return { full_user: d.result, email: d.result.email };
+		})
+		.catch((e) => {
+			throw new AutomationException(
+				'Failed to locate user! An unknown error occurred!',
+				e
+			);
+		});
+}
 
 export default FindUser;

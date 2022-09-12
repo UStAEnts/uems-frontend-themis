@@ -31,6 +31,9 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import FindUserDynamic from './nodes/FindUserDynamic';
 import MarkdownFormat from './nodes/MarkdownFormat';
 import CreateEvent from './nodes/CreateEvent';
+import { Button } from '../../components/atoms/button/Button';
+import * as zod from 'zod';
+import { StoredAutomation } from './serialisation';
 
 // So the general idea:
 //  * A node performs an action in a workflow - these can be grouped into a few categories
@@ -66,6 +69,8 @@ import CreateEvent from './nodes/CreateEvent';
 // * create topic
 // * create event
 
+export const AUTOMATION_EDITOR_VERSION = 0;
+
 const GlobalContext = createContext<{
 	update: (state: (old: GlobalState) => GlobalState) => void;
 	state: GlobalState;
@@ -73,84 +78,6 @@ const GlobalContext = createContext<{
 	update: () => undefined,
 	state: {},
 });
-//
-// const makeNode = (
-//     title: string,
-//     content: () => React.ReactNode,
-//     inputHandle?: { name: string, schema: Record<string, any> },
-//     outputHandle?: { name: string, schema: Record<string, any> },
-// ):
-//     React.FunctionComponent<NodeProps> & { inSchema?: Record<string, any>, outSchema?: Record<string, any> } => {
-//     return Object.assign((props: PropsWithChildren<NodeProps>) => {
-//         return <>
-//             {inputHandle
-//                 ? <Handle type='target' position={Position.Left} id={inputHandle.name} className={styles.handle}
-//                           style={{background: Theme.RED_LIGHT}}/>
-//                 : null
-//             }
-//             <div className={styles.node}>
-//                 <div className={styles.title}>
-//                     {title}
-//                 </div>
-//                 <div className={styles.body}>
-//                     {content()}
-//                 </div>
-//             </div>
-//             {outputHandle
-//                 ? <Handle type='source' position={Position.Right} id={outputHandle.name} className={styles.handle}
-//                           style={{background: Theme.BLUE_LIGHT}}/>
-//                 : null
-//             }
-//         </>
-//     }, {
-//         inSchema: inputHandle?.schema,
-//         outSchema: outputHandle?.schema,
-//     });
-// }
-//
-// const DebugNode = makeNode(
-//     'Debug Node',
-//     () => <span>Debugging is fun!</span>,
-//     {
-//         name: 'debug-in',
-//         schema: {id: 'string'},
-//     },
-// );
-//
-// const Debug2Node: React.FunctionComponent<NodeProps> = ({data}) => {
-//     return (<>
-//         <Handle type='target' position={Position.Left} id="flow-in"/>
-//         <div style={{width: '5pc', height: '5pc', background: 'aqua'}}/>
-//     </>)
-// }
-//
-// const OnFormNode = makeNode(
-//     'Activate: Form Submission',
-//     () => {
-//         const [id] = useState(String(v4()));
-//         const context = useContext(GlobalContext);
-//
-//         return (<Select
-//             placeholder={'Form'}
-//             name={'form'}
-//             options={['Booking form', 'Request access change']}
-//             onSelectListener={(v: string) => {
-//                 context.update((o) => ({...o, [id]: {...(o[id] ?? {}), value: v}}));
-//             }}
-//             initialOption={context.state[id]?.value ?? ''}
-//         />);
-//     },
-//     undefined,
-//     {name: 'form-data', schema: {}},
-// );
-//
-// const TransformNode = makeNode(
-//     'Process: Transform Data',
-//     () => {
-//         return (<span>todo</span>);
-//     },
-//     {name: 'input-data', schema: {}}
-// )
 
 function validateConnection(
 	connection: Connection,
@@ -165,7 +92,6 @@ function validateConnection(
 			targetHandle: string | null;
 	  }
 	| false {
-	console.log('hi?', connection);
 	// Must be a valid connection
 	const source = connection.source;
 	const target = connection.target;
@@ -271,18 +197,22 @@ const VALID_CONNECTION_TYPES = ((c: Record<string, string[]>) => {
 	[CreateEvent.id]: [],
 });
 
-const AutomationEditor: React.FunctionComponent<NotificationPropsType> = (
-	props
-) => {
+const AutomationEditor: React.FunctionComponent<
+	{
+		configuration: StoredAutomation;
+		onConfigurationSave?: (config: StoredAutomation) => void;
+	} & NotificationPropsType
+> = (props) => {
+	const {
+		nodes: initialNodes,
+		edges: initialEdges,
+		state: initialState,
+	} = props.configuration;
+
 	const [reactFlowInstance, setReactFlowInstance] =
 		useState<null | ReactFlowInstance>(null);
-	const [nodes, setNodes, onNodesChange] = useNodesState([
-		// {id: 'node-1', type: FormSubmit.id, position: {x: 0, y: 0}, data: {value: 'Booking form'}},
-		// {id: 'node-2', type: JSTransformer.id, position: {x: 200, y: 100}, data: {}},
-		// {id: 'node-3', type: Email.id, position: {x: 400, y: 50}, data: {}},
-		// {id: 'node-4', type: FindUser.id, position: {x: 700, y: 50}, data: {}},
-	]);
-	const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+	const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+	const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 	const options = {
 		animated: true,
 	};
@@ -320,7 +250,7 @@ const AutomationEditor: React.FunctionComponent<NotificationPropsType> = (
 		[]
 	);
 
-	const [state, setState] = useState<GlobalState>({});
+	const [state, setState] = useState<GlobalState>(initialState);
 
 	const buttonOptions = NODE_TYPES.map((node) => (
 		<button
@@ -349,18 +279,52 @@ const AutomationEditor: React.FunctionComponent<NotificationPropsType> = (
 		<div style={{ width: '100%', flexGrow: '1' }} className={styles.editor}>
 			<div className={styles.left}>{buttonOptions}</div>
 			<div className={styles.right}>
-				<button
-					onClick={() =>
-						console.log(
-							reactFlowInstance?.toObject(),
-							state,
-							JSON.stringify(reactFlowInstance?.toObject()),
-							JSON.stringify(state)
-						)
-					}
+				<Button
+					style={{
+						position: 'fixed',
+						top: '20px',
+						right: '20px',
+						zIndex: 1000,
+					}}
+					onClick={() => {
+						if (props.onConfigurationSave) {
+							console.log(
+								JSON.stringify({
+									nodes,
+									edges: edges.map((e) => ({
+										...e,
+										label:
+											typeof e.label === 'string' ? e.label : String(e.label),
+									})),
+									state,
+									_meta: { editorVersion: AUTOMATION_EDITOR_VERSION },
+									viewport: reactFlowInstance?.getViewport?.() ?? {
+										x: 0,
+										y: 0,
+										zoom: 1,
+									},
+								})
+							);
+							props.onConfigurationSave({
+								nodes,
+								edges: edges.map((e) => ({
+									...e,
+									label:
+										typeof e.label === 'string' ? e.label : String(e.label),
+								})),
+								state,
+								_meta: { editorVersion: AUTOMATION_EDITOR_VERSION },
+								viewport: reactFlowInstance?.getViewport?.() ?? {
+									x: 0,
+									y: 0,
+									zoom: 1,
+								},
+							});
+						}
+					}}
 				>
 					Save
-				</button>
+				</Button>
 				<GlobalContext.Provider
 					value={{
 						state,
