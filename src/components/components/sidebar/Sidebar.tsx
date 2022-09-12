@@ -108,8 +108,6 @@ export default function Sidebar() {
 		// if (e.currentTarget.parentElement && e.currentTarget.parentElement.classList.contains(classes.marker)) e.currentTarget.parentElement.classList.add(classes.active);
 	};
 
-	console.log('ctx', ctx);
-
 	return (
 		<div className={and(classes.sidebar, classes.expanded)}>
 			<img
