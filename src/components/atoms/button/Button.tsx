@@ -6,6 +6,7 @@ import { ColorUtilities } from '../../../utilities/ColorUtilities';
 
 import './Button.scss';
 import { CSSProperties } from 'react';
+import { Theme } from '../../../theme/Theme';
 
 export type ButtonPropsType = {
 	/**
@@ -15,11 +16,11 @@ export type ButtonPropsType = {
 	/**
 	 * The optional color code to be used for this button. Default prop provided
 	 */
-	color: string;
+	color?: string;
 	/**
 	 * The text to display for this button
 	 */
-	text: string;
+	text?: string;
 	/**
 	 * If the arrow on the right hand side of the text should be displayed in this button
 	 */
@@ -40,6 +41,10 @@ export type ButtonPropsType = {
 	 * Additional styles
 	 */
 	style?: CSSProperties;
+	/**
+	 * Optional children elements to place inside this button
+	 */
+	children?: React.ReactNode;
 };
 
 /**
@@ -59,9 +64,13 @@ export function Button(props: ButtonPropsType) {
 			<FontAwesomeIcon className="icon" icon={props.icon} fixedWidth />
 		);
 
+	const text = props.text ? (
+		<div className="text">{props.text}</div>
+	) : undefined;
+
 	const buttonStyle = {
-		backgroundColor: props.color,
-		color: ColorUtilities.determineForegroundColor(props.color),
+		backgroundColor: props.color ?? Theme.GRAY,
+		color: ColorUtilities.determineForegroundColor(props.color ?? Theme.GRAY),
 		...props.style,
 	} as React.CSSProperties;
 
@@ -75,14 +84,14 @@ export function Button(props: ButtonPropsType) {
 			aria-label={props.name}
 		>
 			{icon}
-			<div className="text">{props.text}</div>
+			{text}
 			{arrow}
+			{props.children}
 		</button>
 	);
 }
 
 Button.defaultProps = {
-	color: '#aeaeae',
 	includeArrow: false,
 	fullWidth: false,
 } as Partial<ButtonPropsType>;
