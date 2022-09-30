@@ -39,7 +39,7 @@
     "react-time-ago": "^6.0.0",
     "react-tooltip": "^4.2.7",
     "react-transition-group": "^4.4.1",
-    "recharts": "^1.8.5",
+    "recharts": "^2.1.14",
     "sass": "^1.45.0",
     "typescript": "^3.7.5",
     "url-join": "^4.0.1",
